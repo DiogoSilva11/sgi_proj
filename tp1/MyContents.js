@@ -12,12 +12,15 @@ class MyContents  {
     */ 
     constructor(app) {
         this.app = app
+
         this.axis = null
+        this.axisEnabled = false
+        this.lastAxisEnabled = null
 
         // box related attributes
         this.boxMesh = null
         this.boxMeshSize = 1.0
-        this.boxEnabled = true
+        this.boxEnabled = false
         this.lastBoxEnabled = null
         this.boxDisplacement = new THREE.Vector3(0,2,0)
 
@@ -38,7 +41,8 @@ class MyContents  {
         
         // table related attributes
         this.table = new THREE.Group();
-        this.tableEnable = true;
+        this.tableEnabled = true
+        this.lastTableEnabled = null
         this.tableHeight = 4
         this.tableWidth = 7
         this.tableDepth = 5
@@ -71,6 +75,8 @@ class MyContents  {
 
         // chair related attributes
         this.chair = new THREE.Group()
+        this.chairEnabled = true
+        this.lastChairEnabled = null
         this.chairWidth = 2.5
         this.chairLength = 2.5
         this.chairLegHeight = 2.2
@@ -444,7 +450,7 @@ class MyContents  {
         this.planeShininess = value
         this.planeMaterial.shininess = this.planeShininess
     }
-    
+
     /**
      * rebuilds the box mesh if required
      * this method is called from the gui interface
@@ -457,7 +463,19 @@ class MyContents  {
         this.buildBox();
         this.lastBoxEnabled = null
     }
-    
+
+    updateAxisIfRequired() {
+        if (this.axisEnabled !== this.lastAxisEnabled) {
+            this.lastAxisEnabled = this.axisEnabled
+            if (this.axisEnabled) {
+                this.app.scene.add(this.axis)
+            }
+            else {
+                this.app.scene.remove(this.axis)
+            }
+        }
+    }
+
     /**
      * updates the box mesh if required
      * this method is called from the render method of the app
@@ -475,14 +493,41 @@ class MyContents  {
         }
     }
 
+    updateTableIfRequired() {
+        if (this.tableEnabled !== this.lastTableEnabled) {
+            this.lastTableEnabled = this.tableEnabled
+            if (this.tableEnabled) {
+                this.app.scene.add(this.table)
+            }
+            else {
+                this.app.scene.remove(this.table)
+            }
+        }
+    }
+
+    updateChairIfRequired() {
+        if (this.chairEnabled !== this.lastChairEnabled) {
+            this.lastChairEnabled = this.chairEnabled
+            if (this.chairEnabled) {
+                this.app.scene.add(this.chair)
+            }
+            else {
+                this.app.scene.remove(this.chair)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
      * 
      */
     update() {
-        // check if box mesh needs to be updated
+        // check if elements need to be updated
+        this.updateAxisIfRequired()
         this.updateBoxIfRequired()
+        this.updateTableIfRequired()
+        this.updateChairIfRequired()
 
         // sets the box mesh position based on the displacement vector
         this.boxMesh.position.x = this.boxDisplacement.x

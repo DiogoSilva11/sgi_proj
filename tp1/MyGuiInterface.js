@@ -29,34 +29,38 @@ class MyGuiInterface  {
      * Initialize the gui interface
      */
     init() {
+        this.datgui.add(this.contents, 'axisEnabled', false).name("Axis");
+        this.datgui.add(this.contents, 'boxEnabled', false).name("Box");
+        this.datgui.add(this.contents, 'tableEnabled', true).name("Table");
+        this.datgui.add(this.contents, 'chairEnabled', true).name("Chair");
+
         // add a folder to the gui interface for the box
         const boxFolder = this.datgui.addFolder( 'Box' );
         // note that we are using a property from the contents object 
         boxFolder.add(this.contents, 'boxMeshSize', 0, 10).name("size").onChange( () => { this.contents.rebuildBox() } );
-        boxFolder.add(this.contents, 'boxEnabled', true).name("enabled");
         boxFolder.add(this.contents.boxDisplacement, 'x', -5, 5)
         boxFolder.add(this.contents.boxDisplacement, 'y', -5, 5)
         boxFolder.add(this.contents.boxDisplacement, 'z', -5, 5)
-        boxFolder.open()
+        boxFolder.close();
         
         const data = {  
-            'diffuse color': this.contents.diffusePlaneColor,
-            'specular color': this.contents.specularPlaneColor,
+            'Diffuse color': this.contents.diffusePlaneColor,
+            'Specular color': this.contents.specularPlaneColor,
         };
 
         // adds a folder to the gui interface for the plane
         const planeFolder = this.datgui.addFolder( 'Plane' );
-        planeFolder.addColor( data, 'diffuse color' ).onChange( (value) => { this.contents.updateDiffusePlaneColor(value) } );
-        planeFolder.addColor( data, 'specular color' ).onChange( (value) => { this.contents.updateSpecularPlaneColor(value) } );
-        planeFolder.add(this.contents, 'planeShininess', 0, 1000).name("shininess").onChange( (value) => { this.contents.updatePlaneShininess(value) } );
-        planeFolder.open();
+        planeFolder.addColor( data, 'Diffuse color' ).onChange( (value) => { this.contents.updateDiffusePlaneColor(value) } );
+        planeFolder.addColor( data, 'Specular color' ).onChange( (value) => { this.contents.updateSpecularPlaneColor(value) } );
+        planeFolder.add(this.contents, 'planeShininess', 0, 1000).name("Shininess").onChange( (value) => { this.contents.updatePlaneShininess(value) } );
+        planeFolder.close();
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
-        cameraFolder.add(this.app, 'activeCameraName', [ 'Perspective', 'Perspective 2', 'Left', 'Right', 'Top', 'Front', 'Back' ] ).name("active camera");
+        cameraFolder.add(this.app, 'activeCameraName', [ 'Perspective', 'Perspective 2', 'Left', 'Right', 'Top', 'Front', 'Back' ] ).name("Active camera");
         // note that we are using a property from the app 
-        cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
-        cameraFolder.open()
+        cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("X coord")
+        cameraFolder.open();
     }
 }
 
