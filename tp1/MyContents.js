@@ -326,7 +326,7 @@ class MyContents  {
         })
         const legOffsX = this.chairWidth/2 - this.chairLegTopRad
         const legOffsZ = this.chairLength/2 - this.chairLegTopRad
-        const legHeight = -this.chairLegHeight / 2
+        const legHeight = - this.chairLegHeight / 2
         const legPos = [
             [ legOffsX, legHeight, legOffsZ],
             [-legOffsX, legHeight, legOffsZ],
@@ -353,7 +353,7 @@ class MyContents  {
         )
 
         let seatMesh = new THREE.Mesh(seat, chairMaterial)
-        seatMesh.position.y = this.chairLegHeight + (this.chairSeatThick / 2)
+        seatMesh.position.y = this.chairLegHeight
 
         for( let i=0; i < 4; i++ ) {
             let legMesh = new THREE.Mesh(leg, chairMaterial)
@@ -398,7 +398,7 @@ class MyContents  {
         const ambientLight = new THREE.AmbientLight( 0x555555 );
         this.app.scene.add( ambientLight );
 
-        this.buildBox()
+        //this.buildBox()
 
         // create the overall scene
         this.buildRoom();
@@ -417,13 +417,14 @@ class MyContents  {
         this.buildChair()
         this.app.scene.add( this.chair )
         
+        /*
         // Create a Plane Mesh with basic material
-        
         let plane = new THREE.PlaneGeometry( 10, 10 );
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
-        //this.app.scene.add( this.planeMesh );
+        this.app.scene.add( this.planeMesh );
+        */
     }
     
     /**
@@ -525,14 +526,14 @@ class MyContents  {
     update() {
         // check if elements need to be updated
         this.updateAxisIfRequired()
-        this.updateBoxIfRequired()
+        //this.updateBoxIfRequired()
         this.updateTableIfRequired()
         this.updateChairIfRequired()
 
         // sets the box mesh position based on the displacement vector
-        this.boxMesh.position.x = this.boxDisplacement.x
-        this.boxMesh.position.y = this.boxDisplacement.y
-        this.boxMesh.position.z = this.boxDisplacement.z
+        //this.boxMesh.position.x = this.boxDisplacement.x
+        //this.boxMesh.position.y = this.boxDisplacement.y
+        //this.boxMesh.position.z = this.boxDisplacement.z
         
     }
 
