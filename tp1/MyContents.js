@@ -27,6 +27,58 @@ class MyContents  {
         this.planeShininess = 30
         this.planeMaterial = new THREE.MeshPhongMaterial({ color: this.diffusePlaneColor, 
             specular: this.diffusePlaneColor, emissive: "#000000", shininess: this.planeShininess })
+
+        // room related attributes
+
+        this.floorMesh = null;
+        this.wallMeshes = null;
+        this.roomWidth = 20;
+        this.roomDepth = 15;
+        this.roomHeight = 10;
+        
+        // table related attributes
+        this.table = new THREE.Group();
+        this.tableEnable = true;
+        this.tableHeight = 4
+        this.tableWidth = 7
+        this.tableDepth = 5
+        this.tabletopThickness = 0.5
+        this.tableLegTopRadius = 0.5
+        this.tableLegBottomRadius = 0.3
+
+        // plate related attributes
+        this.plate = null
+        this.plateRadiusTop = 1.2
+        this.plateRadiusBottom = 1.0
+        this.plateThickness = 0.1
+
+        // cake related attributes
+        this.cake = new THREE.Group()
+        //this.cakesideMeshes = [];
+        this.cakeRadius = 1.0
+        this.cakeHeight = 0.7
+        this.cakeLeft = 7/8
+
+        // candle related attributes
+        this.candle = null
+        this.flame = null
+        this.candleRadius = 0.05
+        this.candleHeight = 0.3
+
+        // flame related attributes
+        this.flameRadius = 0.06
+        this.flameHeight = 0.12
+
+        // chair related attributes
+        this.chair = new THREE.Group()
+        this.chairWidth = 2.5
+        this.chairLength = 2.5
+        this.chairLegHeight = 2.2
+        this.chairLegTopRad = 0.3
+        this.chairLegBottomRad = 0.2
+        this.chairSeatThick = 0.25
+        this.chairBackHeight = 3
+        this.chairBackThick = 0.2
     }
 
     /**
@@ -41,6 +93,277 @@ class MyContents  {
         this.boxMesh = new THREE.Mesh( box, boxMaterial );
         this.boxMesh.rotation.x = -Math.PI / 2;
         this.boxMesh.position.y = this.boxDisplacement.y;
+    }
+
+    /**
+     * builds the planes representing the walls and floor
+     */
+
+    buildRoom() {
+        const floorMaterial = new THREE.MeshPhongMaterial({
+            color: "#d9a066",
+            specular: "#7f7f7f",
+            emissive: "#000000",
+            shininess: 70
+        })
+        const wallMaterial = new THREE.MeshPhongMaterial({
+            color: "#cbdbfc",
+            specular: "#7f7f7f",
+            emissive: "#000000",
+            shininess: 35
+        })
+
+        const floor = new THREE.PlaneGeometry(this.roomWidth, this.roomDepth)
+        const xwall = new THREE.PlaneGeometry(this.roomDepth, this.roomHeight)
+        const zwall = new THREE.PlaneGeometry(this.roomWidth, this.roomHeight)
+
+        this.floorMesh = new THREE.Mesh(floor, floorMaterial);
+        this.wallMeshes = [
+            new THREE.Mesh(xwall, wallMaterial),
+            new THREE.Mesh(zwall, wallMaterial),
+            new THREE.Mesh(xwall, wallMaterial),
+            new THREE.Mesh(zwall, wallMaterial)
+        ]
+
+        this.floorMesh.rotation.x = -Math.PI / 2;
+
+        for(let wall of this.wallMeshes) {
+            wall.position.y = this.roomHeight / 2;
+        }
+
+        this.wallMeshes[0].rotation.y = -Math.PI / 2;        // front wall
+        this.wallMeshes[0].position.x = this.roomWidth / 2;
+        this.wallMeshes[1].rotation.y = Math.PI;        // left wall
+        this.wallMeshes[1].position.z = this.roomDepth / 2;
+        this.wallMeshes[2].rotation.y = Math.PI / 2          // back wall
+        this.wallMeshes[2].position.x = -this.roomWidth / 2;
+        this.wallMeshes[3].rotation.y = 0;         // right wall
+        this.wallMeshes[3].position.z = -this.roomDepth / 2;
+    }
+
+    /**
+     * builds a table with round legs
+     */
+    buildTable() {
+        const tableMaterial = new THREE.MeshPhongMaterial({
+            color: "#8f563b",
+            specular: "#bf866b",
+            emissive: "#000000",
+            shininess: 10
+        })
+        const legOffsX = this.tableWidth/2 - this.tableLegTopRadius
+        const legOffsZ = this.tableDepth/2 - this.tableLegTopRadius
+        const legHeight = -this.tableHeight / 2
+        const legPos = [
+            [ legOffsX, legHeight, legOffsZ],
+            [-legOffsX, legHeight, legOffsZ],
+            [-legOffsX, legHeight,-legOffsZ],
+            [ legOffsX, legHeight,-legOffsZ],
+        ]
+
+        let tabletop = new THREE.BoxGeometry( 
+            this.tableWidth, 
+            this.tabletopThickness,
+            this.tableDepth 
+        )
+        let leg = new THREE.CylinderGeometry( 
+            this.tableLegTopRadius, 
+            this.tableLegBottomRadius, 
+            this.tableHeight - this.tabletopThickness,
+            6 
+        )
+
+        let tabletopMesh = new THREE.Mesh(tabletop, tableMaterial)
+        tabletopMesh.position.y = this.tableHeight - (this.tabletopThickness / 2)
+
+        for( let i=0; i < 4; i++ ) {
+            let tableLeg = new THREE.Mesh(leg, tableMaterial)
+            tableLeg.position.x = legPos[i][0]
+            tableLeg.position.y = legPos[i][1]
+            tableLeg.position.z = legPos[i][2]
+            tabletopMesh.add(tableLeg)
+        }
+
+        this.table.add(tabletopMesh);
+    }
+
+    /**
+     * builds a plate.
+     */
+    buildPlate() {
+        const plateMaterial = new THREE.MeshPhongMaterial({
+            color: "#efefef",
+            specular: "#ffffff",
+            emissive: "#000000",
+            shininess: 50
+        })
+
+        const plate = new THREE.CylinderGeometry(
+            this.plateRadiusTop,
+            this.plateRadiusBottom,
+            this.plateThickness
+        )
+
+        this.plate = new THREE.Mesh( plate, plateMaterial )
+        this.plate.position.y = this.tableHeight + this.plateThickness / 2
+
+        this.table.add( this.plate )
+    }
+
+    /**
+     * builds a cake.
+     */
+
+    buildCake() {
+        const cakeMaterial = new THREE.MeshPhongMaterial({
+            color: "#663931",
+            specular: "#3f3f3f",
+            emissive: "#000000",
+            shininess: 60
+        })
+
+        const cake = new THREE.CylinderGeometry(
+            this.cakeRadius,
+            this.cakeRadius,
+            this.cakeHeight,
+            32,
+            1,
+            false,
+            0,
+            2 * Math.PI * this.cakeLeft
+        )
+        const cakeside = new THREE.PlaneGeometry(
+            this.cakeRadius,
+            this.cakeHeight
+        )
+
+        let cakeMesh = new THREE.Mesh( cake, cakeMaterial )
+        cakeMesh.position.y = this.cakeHeight / 2
+
+        let cakesideMeshes = [
+            new THREE.Mesh( cakeside, cakeMaterial ),
+            new THREE.Mesh( cakeside, cakeMaterial )
+        ]
+        for(let mesh of cakesideMeshes) {
+            mesh.position.y = cakeMesh.position.y
+        }
+        cakesideMeshes[0].rotation.y = -Math.PI / 2
+        cakesideMeshes[0].position.z = this.cakeRadius / 2
+
+        let sideAngle = (Math.PI / 2) + (2 * Math.PI) * this.cakeLeft
+        cakesideMeshes[1].rotation.y = sideAngle
+        cakesideMeshes[1].position.x = -Math.sin(sideAngle) * this.cakeRadius / 2
+        cakesideMeshes[1].position.z = Math.cos(sideAngle) * this.cakeRadius / 2
+
+        this.cake.add( cakeMesh )
+        this.cake.add( cakesideMeshes[0] )
+        this.cake.add( cakesideMeshes[1] )
+
+        this.plate.add( this.cake )
+    }
+
+    /**
+     * builds a candle and flame
+     */
+    buildCandle() {
+        const candleMaterial = new THREE.MeshPhongMaterial({
+            color: "#ffffff",
+            specular: "#9f9f9f",
+            emissive: "#000000",
+            shininess: 60
+        })
+
+        const candle = new THREE.CylinderGeometry( 
+            this.candleRadius, 
+            this.candleRadius,
+            this.candleHeight,
+            6
+        )
+
+        this.candle = new THREE.Mesh(candle, candleMaterial)
+        this.candle.position.y = this.cakeHeight + this.candleHeight/2
+        
+        this.cake.add( this.candle )
+    }
+
+    /**
+     * builds the candle's flame
+     */
+    buildFlame() {
+        const flameMaterial = new THREE.MeshPhongMaterial({
+            color: "#ffaf00",
+            specular: "#000000",
+            emissive: "#ff0000",
+            shininess: 60
+        })
+        const flame = new THREE.ConeGeometry(
+            this.flameRadius,
+            this.flameHeight,
+            3
+        )
+
+        this.flame = new THREE.Mesh(flame, flameMaterial)
+        this.flame.position.y = this.candleHeight/2 + this.flameHeight/2
+
+        this.candle.add( this.flame )
+    }
+
+    /**
+     * builds a basic chair
+     */
+    buildChair() {
+        const chairMaterial = new THREE.MeshPhongMaterial({
+            color: "#8f563b",
+            specular: "#bf866b",
+            emissive: "#000000",
+            shininess: 10
+        })
+        const legOffsX = this.chairWidth/2 - this.chairLegTopRad
+        const legOffsZ = this.chairLength/2 - this.chairLegTopRad
+        const legHeight = -this.chairLegHeight / 2
+        const legPos = [
+            [ legOffsX, legHeight, legOffsZ],
+            [-legOffsX, legHeight, legOffsZ],
+            [-legOffsX, legHeight,-legOffsZ],
+            [ legOffsX, legHeight,-legOffsZ],
+        ]
+
+        let seat = new THREE.BoxGeometry( 
+            this.chairWidth, 
+            this.chairSeatThick,
+            this.chairLength 
+        )
+        let leg = new THREE.CylinderGeometry( 
+            this.chairLegTopRad, 
+            this.chairLegBottomRad, 
+            this.chairLegHeight,
+            6 
+        )
+
+        let back = new THREE.BoxGeometry(
+            this.chairWidth,
+            this.chairBackHeight,
+            this.chairBackThick
+        )
+
+        let seatMesh = new THREE.Mesh(seat, chairMaterial)
+        seatMesh.position.y = this.chairLegHeight + (this.chairSeatThick / 2)
+
+        for( let i=0; i < 4; i++ ) {
+            let legMesh = new THREE.Mesh(leg, chairMaterial)
+            legMesh.position.x = legPos[i][0]
+            legMesh.position.y = legPos[i][1]
+            legMesh.position.z = legPos[i][2]
+            seatMesh.add(legMesh)
+        }
+
+        let backMesh = new THREE.Mesh(back, chairMaterial)
+        backMesh.position.y = (this.chairBackHeight + this.chairSeatThick)/2
+        backMesh.position.z = (this.chairLength - this.chairBackThick) / 2
+        seatMesh.add(backMesh)
+
+        this.chair.add(seatMesh);
+        this.chair.position.z = this.tableDepth / 2
     }
 
     /**
@@ -70,6 +393,23 @@ class MyContents  {
         this.app.scene.add( ambientLight );
 
         this.buildBox()
+
+        // create the overall scene
+        this.buildRoom();
+        this.app.scene.add( this.floorMesh )
+        for( const mesh of this.wallMeshes ) {
+            this.app.scene.add( mesh )
+        }
+
+        this.buildTable()
+        this.buildPlate()
+        this.buildCake()
+        this.buildCandle()
+        this.buildFlame()
+        this.app.scene.add( this.table )
+
+        this.buildChair()
+        this.app.scene.add( this.chair )
         
         // Create a Plane Mesh with basic material
         
@@ -77,7 +417,7 @@ class MyContents  {
         this.planeMesh = new THREE.Mesh( plane, this.planeMaterial );
         this.planeMesh.rotation.x = -Math.PI / 2;
         this.planeMesh.position.y = -0;
-        this.app.scene.add( this.planeMesh );
+        //this.app.scene.add( this.planeMesh );
     }
     
     /**
