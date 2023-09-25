@@ -261,9 +261,53 @@ class MyContents  {
         cakesideMeshes[1].position.x = -Math.sin(sideAngle) * this.cakeRadius / 2
         cakesideMeshes[1].position.z = Math.cos(sideAngle) * this.cakeRadius / 2
 
-        this.cake.add( cakeMesh )
-        this.cake.add( cakesideMeshes[0] )
-        this.cake.add( cakesideMeshes[1] )
+        // cake slice
+        const sliceGeometry = new THREE.CylinderGeometry(
+            this.cakeRadius * 0.8, 
+            this.cakeRadius * 0.8,
+            this.cakeHeight,
+            32,
+            1,
+            false,
+            0,
+            Math.PI / 4 
+        )
+
+        let sliceMesh = new THREE.Mesh(sliceGeometry, cakeMaterial)
+        sliceMesh.position.y = this.cakeHeight / 2
+        sliceMesh.rotation.y = - Math.PI / 4
+        const sliceOffset = 0.25
+        sliceMesh.position.z = sliceOffset 
+        sliceMesh.position.x = - sliceOffset / 2
+
+        const sliceSide = new THREE.PlaneGeometry(
+            this.cakeRadius * 0.8,
+            this.cakeHeight
+        )
+
+        let sliceSideMeshes = [
+            new THREE.Mesh( sliceSide, cakeMaterial ),
+            new THREE.Mesh( sliceSide, cakeMaterial )
+        ]
+        for (let mesh of sliceSideMeshes) {
+            mesh.position.y = cakeMesh.position.y
+        }
+        sliceSideMeshes[0].rotation.y = Math.PI / 2
+        sliceSideMeshes[0].position.z = this.cakeRadius / 2 + sliceOffset
+        sliceSideMeshes[0].position.x = - sliceOffset / 2
+
+        let sliceSideAngle = - (Math.PI / 2) - (Math.PI / 4)
+        sliceSideMeshes[1].rotation.y = sliceSideAngle
+        sliceSideMeshes[1].position.z = - Math.cos(sliceSideAngle) * this.cakeRadius / 2 + sliceOffset
+        sliceSideMeshes[1].position.x = Math.sin(sliceSideAngle) * this.cakeRadius / 2 - sliceOffset / 2
+
+        //this.cake.add( cakeMesh )
+        //this.cake.add( cakesideMeshes[0] )
+        //this.cake.add( cakesideMeshes[1] )
+
+        this.cake.add( sliceMesh )
+        this.cake.add( sliceSideMeshes[0] )
+        this.cake.add( sliceSideMeshes[1] )
 
         this.plate.add( this.cake )
     }

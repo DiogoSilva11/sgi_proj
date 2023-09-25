@@ -63,6 +63,8 @@ class MyGuiInterface  {
         cameraFolder.add(this.app, 'activeCameraName', [ 'Perspective', 'Perspective 2', 'Left', 'Right', 'Top', 'Front', 'Back' ] ).name("Active camera");
         // note that we are using a property from the app 
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("X coord")
+        cameraFolder.add(this.app.activeCamera.position, 'y', 0, 10).name("Y coord")
+        cameraFolder.add(this.app.activeCamera.position, 'z', 0, 10).name("Z coord")
         cameraFolder.open();
     }
 }
