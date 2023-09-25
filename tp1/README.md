@@ -4,8 +4,8 @@
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| Diogo Silva         | 202004288 | up202004288@up.pt  |
-| Tomás Pires         | 202008319 | up202008319@up.pt  |
+| Diogo Silva         | 202004288 | up202004288@up.pt   |
+| Tomás Pires         | 202008319 | up202008319@up.pt   |
 
 ----
 ## Project information
