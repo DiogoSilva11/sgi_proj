@@ -1,11 +1,11 @@
 # SGI 2023/2024 - TP1
 
-## Group: T0xG0y
+## Group: T08G09
 
 | Name             | Number    | E-Mail             |
 | ---------------- | --------- | ------------------ |
-| John Doe         | 201901010 | ...                |
-| Jane Doe         | 201901011 | ...                |
+| Diogo Silva         | 202004288 | up202004288@up.pt  |
+| Tomás Pires         | 202008319 | up202008319@up.pt  |
 
 ----
 ## Project information
