@@ -22,9 +22,9 @@ class MyTable extends THREE.Object3D {
         const tableMaterial = new THREE.MeshPhongMaterial({
             color: "#8f563b",
             specular: "#bf866b",
-            emissive: "#000000",
-            shininess: 10
-        })
+            shininess: 50,
+            emissive: "#000000"
+        });
         const legOffsX = this.tableWidth/2 - this.tableLegTopRadius
         const legOffsZ = this.tableDepth/2 - this.tableLegTopRadius
         const legHeight = this.tableHeight / 2 - this.tabletopThickness / 2
