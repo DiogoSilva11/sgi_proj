@@ -30,6 +30,12 @@ class MyGuiInterface  {
      */
     init() {
         this.datgui.add(this.contents, 'axisEnabled', false).name("Axis");
+        this.datgui.add(this.contents, 'roomEnabled', true).name("Room");
+        this.datgui.add(this.contents, 'tableEnabled', true).name("Table");
+        this.datgui.add(this.contents, 'plateEnabled', true).name("Plate");
+        this.datgui.add(this.contents, 'cakeEnabled', true).name("Cake");
+        this.datgui.add(this.contents, 'candleEnabled', true).name("Candle");
+        this.datgui.add(this.contents, 'chairEnabled', true).name("Chair");
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')

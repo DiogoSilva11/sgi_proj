@@ -24,11 +24,28 @@ class MyContents  {
         this.lastAxisEnabled = null
 
         this.room = null
+        this.roomEnabled = true
+        this.lastRoomEnabled = null
+
         this.table = null
+        this.tableEnabled = true
+        this.lastTableEnabled = null
+
         this.plate = null
+        this.plateEnabled = true
+        this.lastPlateEnabled = null
+
         this.cake = null
+        this.cakeEnabled = true
+        this.lastCakeEnabled = null
+
         this.candle = null
+        this.candleEnabled = true
+        this.lastCandleEnabled = null
+
         this.chair = null
+        this.chairEnabled = true
+        this.lastChairEnabled = null
     }
 
     /**
@@ -95,14 +112,62 @@ class MyContents  {
         }
     }
 
+    updateRoomIfRequired() {
+        if (this.roomEnabled !== this.lastRoomEnabled) {
+            this.lastRoomEnabled = this.roomEnabled
+            if (this.roomEnabled) {
+                this.app.scene.add(this.room)
+            }
+            else {
+                this.app.scene.remove(this.room)
+            }
+        }
+    }
+
     updateTableIfRequired() {
         if (this.tableEnabled !== this.lastTableEnabled) {
             this.lastTableEnabled = this.tableEnabled
             if (this.tableEnabled) {
-                this.app.scene.add(this.table)
+                this.room.add(this.table)
             }
             else {
-                this.app.scene.remove(this.table)
+                this.room.remove(this.table)
+            }
+        }
+    }
+
+    updatePlateIfRequired() {
+        if (this.plateEnabled !== this.lastPlateEnabled) {
+            this.lastPlateEnabled = this.plateEnabled
+            if (this.plateEnabled) {
+                this.table.add(this.plate)
+            }
+            else {
+                this.table.remove(this.plate)
+            }
+        }
+    }
+
+    updateCakeIfRequired() {
+        if (this.cakeEnabled !== this.lastCakeEnabled) {
+            this.lastCakeEnabled = this.cakeEnabled
+            if (this.cakeEnabled) {
+                this.plate.add(this.cake)
+            }
+            else {
+                this.plate.remove(this.cake)
+            }
+        }
+    }
+
+    updateCandleIfRequired() {
+        if (this.candleEnabled !== this.lastCandleEnabled) {
+            this.lastCandleEnabled = this.candleEnabled
+            if (this.candleEnabled) {
+                this.cake.add(this.candle)
+            }
+            else {
+                this.cake.remove(this.candle)
             }
         }
     }
@@ -111,10 +176,10 @@ class MyContents  {
         if (this.chairEnabled !== this.lastChairEnabled) {
             this.lastChairEnabled = this.chairEnabled
             if (this.chairEnabled) {
-                this.app.scene.add(this.chair)
+                this.room.add(this.chair)
             }
             else {
-                this.app.scene.remove(this.chair)
+                this.room.remove(this.chair)
             }
         }
     }
@@ -127,6 +192,12 @@ class MyContents  {
     update() {
         // check if elements need to be updated
         this.updateAxisIfRequired()
+        this.updateRoomIfRequired()
+        this.updateTableIfRequired()
+        this.updatePlateIfRequired()
+        this.updateCakeIfRequired()
+        this.updateCandleIfRequired()
+        this.updateChairIfRequired()
     }
 
 }
