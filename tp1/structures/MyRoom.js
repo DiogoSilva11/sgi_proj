@@ -16,18 +16,13 @@ class MyRoom extends THREE.Object3D {
      * builds the planes representing the walls and floor
      */
     buildRoom() {
-        const floorMaterial = new THREE.MeshPhongMaterial({
+        const floorMaterial = new THREE.MeshLambertMaterial({
             color: "#d9a066",
-            specular: "#7f7f7f",
-            emissive: "#000000",
-            shininess: 70
-        })
-        const wallMaterial = new THREE.MeshPhongMaterial({
+        });
+
+        const wallMaterial = new THREE.MeshLambertMaterial({
             color: "#cbdbfc",
-            specular: "#7f7f7f",
-            emissive: "#000000",
-            shininess: 35
-        })
+        });
 
         const floor = new THREE.PlaneGeometry(this.roomWidth, this.roomDepth)
         const xwall = new THREE.PlaneGeometry(this.roomDepth, this.roomHeight)

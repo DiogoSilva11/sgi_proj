@@ -46,6 +46,11 @@ class MyContents  {
         this.chair = null
         this.chairEnabled = true
         this.lastChairEnabled = null
+
+        this.pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
+        this.pointLightPositionX = 0
+        this.pointLightPositionY = 20
+        this.pointLightPositionZ = 0
     }
 
     /**
@@ -59,14 +64,13 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        // add a point light on top of the model
-        const pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
-        pointLight.position.set( 0, 20, 0 );
-        this.app.scene.add( pointLight );
+        // point light on top of the model
+        this.pointLight.position.set( this.pointLightPositionX, this.pointLightPositionY, this.pointLightPositionZ );
+        this.app.scene.add( this.pointLight );
 
         // add a point light helper for the previous point light
         const sphereSize = 0.5;
-        const pointLightHelper = new THREE.PointLightHelper( pointLight, sphereSize );
+        const pointLightHelper = new THREE.PointLightHelper( this.pointLight, sphereSize );
         this.app.scene.add( pointLightHelper );
 
         // add an ambient light
@@ -200,6 +204,20 @@ class MyContents  {
         this.updateChairIfRequired()
     }
 
+    updatePointLightPositionX(value) {
+        this.pointLightPositionX = value
+        this.pointLight.position.setX(value)
+    }
+
+    updatePointLightPositionY(value) {
+        this.pointLightPositionY = value
+        this.pointLight.position.setY(value)
+    }
+
+    updatePointLightPositionZ(value) {
+        this.pointLightPositionZ = value
+        this.pointLight.position.setZ(value)
+    }
 }
 
 export { MyContents };
