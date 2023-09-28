@@ -19,12 +19,39 @@ class MyTable extends THREE.Object3D {
      * builds a table with round legs
      */
     buildTable() {
-        const tableMaterial = new THREE.MeshPhongMaterial({
+        const textureLoader = new THREE.TextureLoader();
+        const woodTexture = textureLoader.load('textures/wood.jpg');
+        woodTexture.wrapS = THREE.RepeatWrapping;
+        woodTexture.wrapT = THREE.RepeatWrapping;
+
+        let tabletop = new THREE.BoxGeometry( 
+            this.tableWidth, 
+            this.tabletopThickness,
+            this.tableDepth 
+        )
+        const tableTopMaterial = new THREE.MeshPhongMaterial({
+            color: "#8f563b",
+            map: woodTexture,
+            shininess: 50,
+            emissive: "#000000"
+        });
+
+        let leg = new THREE.CylinderGeometry( 
+            this.tableLegTopRadius, 
+            this.tableLegBottomRadius, 
+            this.tableHeight - this.tabletopThickness,
+            6 
+        )
+        const tableLegMaterial = new THREE.MeshPhongMaterial({
             color: "#8f563b",
             specular: "#bf866b",
             shininess: 50,
             emissive: "#000000"
         });
+
+        let tabletopMesh = new THREE.Mesh(tabletop, tableTopMaterial)
+        tabletopMesh.position.y = this.tableHeight - (this.tabletopThickness / 2)
+
         const legOffsX = this.tableWidth/2 - this.tableLegTopRadius
         const legOffsZ = this.tableDepth/2 - this.tableLegTopRadius
         const legHeight = this.tableHeight / 2 - this.tabletopThickness / 2
@@ -35,23 +62,8 @@ class MyTable extends THREE.Object3D {
             [ legOffsX, legHeight,-legOffsZ],
         ]
 
-        let tabletop = new THREE.BoxGeometry( 
-            this.tableWidth, 
-            this.tabletopThickness,
-            this.tableDepth 
-        )
-        let leg = new THREE.CylinderGeometry( 
-            this.tableLegTopRadius, 
-            this.tableLegBottomRadius, 
-            this.tableHeight - this.tabletopThickness,
-            6 
-        )
-
-        let tabletopMesh = new THREE.Mesh(tabletop, tableMaterial)
-        tabletopMesh.position.y = this.tableHeight - (this.tabletopThickness / 2)
-
         for( let i=0; i < 4; i++ ) {
-            let tableLeg = new THREE.Mesh(leg, tableMaterial)
+            let tableLeg = new THREE.Mesh(leg, tableLegMaterial)
             tableLeg.position.x = legPos[i][0]
             tableLeg.position.y = legPos[i][1]
             tableLeg.position.z = legPos[i][2]
