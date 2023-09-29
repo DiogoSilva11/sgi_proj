@@ -7,6 +7,7 @@ import { MyCake } from './structures/MyCake.js';
 import { MyCandle } from './structures/MyCandle.js';
 import { MyChair } from './structures/MyChair.js';
 import { MyFrame } from './structures/MyFrame.js';
+import { MyPicture } from './structures/MyPicture.js';
 
 /**
  *  This class contains the contents of out application
@@ -48,9 +49,15 @@ class MyContents  {
         this.chairEnabled = true
         this.lastChairEnabled = null
 
-        this.frame = null
-        this.frameEnabled = true
-        this.lastFrameEnabled = null
+        this.frame1 = null
+        this.picture1 = null
+        this.frame1Enabled = true
+        this.lastFrame1Enabled = null
+
+        this.frame2 = null
+        this.picture2 = null
+        this.frame2Enabled = true
+        this.lastFrame2Enabled = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -140,9 +147,29 @@ class MyContents  {
             this.chair = new MyChair(this.table.tableDepth)
             this.room.add(this.chair)
         }
-        if (this.frame === null) {
-            this.frame = new MyFrame(new THREE.Vector3(0, 3, 5), 4, 4, 0.5)
-            this.room.add(this.frame)
+        if (this.frame1 === null) {
+            this.frame1 = new MyFrame(new THREE.Vector3(
+                this.room.roomWidth * 0.2, 
+                this.room.roomHeight * 0.7, 
+                this.room.roomWidth * 0.3625), 
+                4, 4, 0.5)
+            this.room.add(this.frame1)
+        }
+        if (this.picture1 === null) {
+            this.picture1 = new MyPicture('textures/diogo_silva.jpg')
+            this.frame1.add(this.picture1)
+        }
+        if (this.frame2 === null) {
+            this.frame2 = new MyFrame(new THREE.Vector3(
+                - this.room.roomWidth * 0.2, 
+                this.room.roomHeight * 0.7, 
+                this.room.roomWidth * 0.3625), 
+                4, 4, 0.5)
+            this.room.add(this.frame2)
+        }
+        if (this.picture2 === null) {
+            this.picture2 = new MyPicture('textures/tomas_pires.jpg')
+            this.frame2.add(this.picture2)
         }
     }
 
@@ -266,6 +293,30 @@ class MyContents  {
         }
     }
 
+    updateFrame1IfRequired() {
+        if (this.frame1Enabled !== this.lastFrame1Enabled) {
+            this.lastFrame1Enabled = this.frame1Enabled
+            if (this.frame1Enabled) {
+                this.room.add(this.frame1)
+            }
+            else {
+                this.room.remove(this.frame1)
+            }
+        }
+    }
+
+    updateFrame2IfRequired() {
+        if (this.frame2Enabled !== this.lastFrame2Enabled) {
+            this.lastFrame2Enabled = this.frame2Enabled
+            if (this.frame2Enabled) {
+                this.room.add(this.frame2)
+            }
+            else {
+                this.room.remove(this.frame2)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -283,6 +334,8 @@ class MyContents  {
         this.updateFrameIfRequired()
         this.updatePointHelperIfRequired()
         this.updateSpotHelperIfRequired()
+        this.updateFrame1IfRequired()
+        this.updateFrame2IfRequired()
     }
 
     updatePointLightPositionX(value) {

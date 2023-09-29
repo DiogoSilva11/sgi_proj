@@ -36,7 +36,8 @@ class MyGuiInterface  {
         this.datgui.add(this.contents, 'cakeEnabled', true).name("Cake");
         this.datgui.add(this.contents, 'candleEnabled', true).name("Candle");
         this.datgui.add(this.contents, 'chairEnabled', true).name("Chair");
-        this.datgui.add(this.contents, 'frameEnabled', true).name("Frame");
+        this.datgui.add(this.contents, 'frame1Enabled', true).name("Frame 1");
+        this.datgui.add(this.contents, 'frame2Enabled', true).name("Frame 2");
 
         const pointLight = {
             'position x': this.contents.pointLightPositionX,
