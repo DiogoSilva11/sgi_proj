@@ -6,6 +6,7 @@ import { MyPlate } from './structures/MyPlate.js';
 import { MyCake } from './structures/MyCake.js';
 import { MyCandle } from './structures/MyCandle.js';
 import { MyChair } from './structures/MyChair.js';
+import { MyFrame } from './structures/MyFrame.js';
 
 /**
  *  This class contains the contents of out application
@@ -46,6 +47,10 @@ class MyContents  {
         this.chair = null
         this.chairEnabled = true
         this.lastChairEnabled = null
+
+        this.frame = null
+        this.frameEnabled = true
+        this.lastFrameEnabled = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -135,6 +140,10 @@ class MyContents  {
             this.chair = new MyChair(this.table.tableDepth)
             this.room.add(this.chair)
         }
+        if (this.frame === null) {
+            this.frame = new MyFrame(new THREE.Vector3(0, 3, 5), 4, 4, 0.5)
+            this.room.add(this.frame)
+        }
     }
 
     updateAxisIfRequired() {
@@ -221,6 +230,18 @@ class MyContents  {
         }
     }
 
+    updateFrameIfRequired() {
+        if (this.frameEnabled !== this.lastFrameEnabled) {
+            this.lastframeEnabled = this.frameEnabled
+            if (this.frameEnabled) {
+                this.room.add(this.frame)
+            }
+            else {
+                this.room.remove(this.frame)
+            }
+        }
+    }
+
     updatePointHelperIfRequired() {
         if (this.pointHelperEnabled !== this.lastPointHelperEnabled) {
             this.lastPointHelperEnabled = this.pointHelperEnabled
@@ -259,6 +280,7 @@ class MyContents  {
         this.updateCakeIfRequired()
         this.updateCandleIfRequired()
         this.updateChairIfRequired()
+        this.updateFrameIfRequired()
         this.updatePointHelperIfRequired()
         this.updateSpotHelperIfRequired()
     }
