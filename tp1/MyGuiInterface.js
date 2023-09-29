@@ -43,13 +43,44 @@ class MyGuiInterface  {
             'position z': this.contents.pointLightPositionZ
         }
 
-        // light folder
-        const lightFolder = this.datgui.addFolder('Point Light');
-        lightFolder.add( pointLight, 'position x', -20, 20 ).name("Position X").onChange( (value) => { this.contents.updatePointLightPositionX(value) } );
-        lightFolder.add( pointLight, 'position y', -20, 20 ).name("Position Y").onChange( (value) => { this.contents.updatePointLightPositionY(value) } );
-        lightFolder.add( pointLight, 'position z', -20, 20 ).name("Position Z").onChange( (value) => { this.contents.updatePointLightPositionZ(value) } );
-        lightFolder.open();
+        const pointLightFolder = this.datgui.addFolder('Point light');
+        pointLightFolder.add( this.contents, 'pointHelperEnabled', false ).name("Helper");
+        pointLightFolder.add( pointLight, 'position x', -20, 20 ).name("Position X").onChange( (value) => { this.contents.updatePointLightPositionX(value) } );
+        pointLightFolder.add( pointLight, 'position y', -20, 20 ).name("Position Y").onChange( (value) => { this.contents.updatePointLightPositionY(value) } );
+        pointLightFolder.add( pointLight, 'position z', -20, 20 ).name("Position Z").onChange( (value) => { this.contents.updatePointLightPositionZ(value) } );
+        pointLightFolder.close();
 
+        const spotLight = {
+            'color': this.contents.spotLightColor,
+            'intensity': this.contents.spotLightIntensity,
+            'distance': this.contents.spotLightDistance,
+            'angle': this.contents.spotLightAngle,
+            'penumbra': this.contents.spotLightPenumbra,
+            'decay': this.contents.spotLightDecay,
+            'position x': this.contents.spotLightPositionX,
+            'position y': this.contents.spotLightPositionY,
+            'position z': this.contents.spotLightPositionZ,
+            'target x': this.contents.spotLightTargetX,
+            'target y': this.contents.spotLightTargetY,
+            'target z': this.contents.spotLightTargetZ
+        }
+
+        // light folder
+        const spotLightFolder = this.datgui.addFolder('Spot light');
+        spotLightFolder.add( this.contents, 'spotHelperEnabled', false ).name("Helper");
+        spotLightFolder.addColor( spotLight, 'color' ).name("Color").onChange( (value) => { this.contents.updateSpotLightColor(value) } );
+        spotLightFolder.add( spotLight, 'intensity', 0, 100 ).name("Intensity").onChange( (value) => { this.contents.updateSpotLightIntensity(value) } );
+        spotLightFolder.add( spotLight, 'distance', 0, 100 ).name("Distance").onChange( (value) => { this.contents.updateSpotLightDistance(value) } );
+        spotLightFolder.add( spotLight, 'angle', 0, 360 ).name("Angle").onChange( (value) => { this.contents.updateSpotLightAngle(value) } );
+        spotLightFolder.add( spotLight, 'penumbra', 0, 1 ).name("Penumbra").onChange( (value) => { this.contents.updateSpotLightPenumbra(value) } );
+        spotLightFolder.add( spotLight, 'decay', 0, 2 ).name("Decay").onChange( (value) => { this.contents.updateSpotLightDecay(value) } );
+        spotLightFolder.add( spotLight, 'position x', -10, 10 ).name("Position X").onChange( (value) => { this.contents.updateSpotLightPositionX(value) } );
+        spotLightFolder.add( spotLight, 'position y', -10, 10 ).name("Position Y").onChange( (value) => { this.contents.updateSpotLightPositionY(value) } );
+        spotLightFolder.add( spotLight, 'position z', -10, 10 ).name("Position Z").onChange( (value) => { this.contents.updateSpotLightPositionZ(value) } );
+        spotLightFolder.add( spotLight, 'target x', -10, 10 ).name("Target X").onChange( (value) => { this.contents.updateSpotLightTargetX(value) } );
+        spotLightFolder.add( spotLight, 'target y', -10, 10 ).name("Target Y").onChange( (value) => { this.contents.updateSpotLightTargetY(value) } );
+        spotLightFolder.add( spotLight, 'target z', -10, 10 ).name("Target Z").onChange( (value) => { this.contents.updateSpotLightTargetZ(value) } );
+        spotLightFolder.close();
 
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')

@@ -47,10 +47,40 @@ class MyContents  {
         this.chairEnabled = true
         this.lastChairEnabled = null
 
+        // point light related attributes
+        this.pointHelperEnabled = false
+        this.lastPointHelperEnabled = null
         this.pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
         this.pointLightPositionX = 0
         this.pointLightPositionY = 20
         this.pointLightPositionZ = 0
+        this.pointLight.position.set(this.pointLightPositionX, this.pointLightPositionY, this.pointLightPositionZ);
+        this.pointLightHelper = new THREE.PointLightHelper(this.pointLight);
+
+        // spot light related attributes
+        this.spotHelperEnabled = false
+        this.lastSpotHelperEnabled = null
+        this.spotLightColor = "#ffffff"
+        this.spotLightIntensity = 15
+        this.spotLightDistance = 8
+        this.spotLightAngle = Math.PI / 180 * 15
+        this.spotLightPenumbra = 0
+        this.spotLightDecay = 0
+        this.spotLightPositionX = 0
+        this.spotLightPositionY = 10
+        this.spotLightPositionZ = 0
+        this.spotLightTargetX = 0
+        this.spotLightTargetY = 0
+        this.spotLightTargetZ = 0
+        this.spotLight = new THREE.SpotLight(this.spotLightColor, 
+            this.spotLightIntensity, 
+            this.spotLightDistance, 
+            this.spotLightAngle, 
+            this.spotLightPenumbra, 
+            this.spotLightDecay);
+        this.spotLight.position.set(this.spotLightPositionX, this.spotLightPositionY, this.spotLightPositionZ);
+        this.spotLightTarget = new THREE.Object3D();
+        this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
     }
 
     /**
@@ -64,14 +94,15 @@ class MyContents  {
             this.app.scene.add(this.axis)
         }
 
-        // point light on top of the model
-        this.pointLight.position.set( this.pointLightPositionX, this.pointLightPositionY, this.pointLightPositionZ );
-        this.app.scene.add( this.pointLight );
+        // point light
+        this.app.scene.add(this.pointLight);
+        this.app.scene.add(this.pointLightHelper);
 
-        // add a point light helper for the previous point light
-        const sphereSize = 0.5;
-        const pointLightHelper = new THREE.PointLightHelper( this.pointLight, sphereSize );
-        this.app.scene.add( pointLightHelper );
+        // spot light
+        this.app.scene.add(this.spotLightTarget); 
+        this.spotLight.target = this.spotLightTarget; 
+        this.app.scene.add(this.spotLight);
+        this.app.scene.add(this.spotLightHelper);
 
         // add an ambient light
         const ambientLight = new THREE.AmbientLight( 0x555555 );
@@ -93,6 +124,8 @@ class MyContents  {
         if (this.cake === null) {
             this.cake = new MyCake()
             this.plate.add(this.cake)
+            this.spotLightTarget = this.cake
+            this.spotLight.target = this.cake
         }
         if (this.candle === null) {
             this.candle = new MyCandle(this.cake.cakeHeight)
@@ -188,6 +221,30 @@ class MyContents  {
         }
     }
 
+    updatePointHelperIfRequired() {
+        if (this.pointHelperEnabled !== this.lastPointHelperEnabled) {
+            this.lastPointHelperEnabled = this.pointHelperEnabled
+            if (this.pointHelperEnabled) {
+                this.app.scene.add(this.pointLightHelper)
+            }
+            else {
+                this.app.scene.remove(this.pointLightHelper)
+            }
+        }
+    }
+
+    updateSpotHelperIfRequired() {
+        if (this.spotHelperEnabled !== this.lastSpotHelperEnabled) {
+            this.lastSpotHelperEnabled = this.spotHelperEnabled
+            if (this.spotHelperEnabled) {
+                this.app.scene.add(this.spotLightHelper)
+            }
+            else {
+                this.app.scene.remove(this.spotLightHelper)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -202,21 +259,83 @@ class MyContents  {
         this.updateCakeIfRequired()
         this.updateCandleIfRequired()
         this.updateChairIfRequired()
+        this.updatePointHelperIfRequired()
+        this.updateSpotHelperIfRequired()
     }
 
     updatePointLightPositionX(value) {
         this.pointLightPositionX = value
-        this.pointLight.position.setX(value)
+        this.pointLight.position.setX(this.pointLightPositionX)
     }
 
     updatePointLightPositionY(value) {
         this.pointLightPositionY = value
-        this.pointLight.position.setY(value)
+        this.pointLight.position.setY(this.pointLightPositionY)
     }
 
     updatePointLightPositionZ(value) {
         this.pointLightPositionZ = value
-        this.pointLight.position.setZ(value)
+        this.pointLight.position.setZ(this.pointLightPositionZ)
+    }
+
+    updateSpotLightColor(value) {
+        this.spotLightColor = value
+        this.spotLight.color.set(this.spotLightColor)
+    }
+
+    updateSpotLightIntensity(value) {
+        this.spotLightIntensity = value
+        this.spotLight.intensity = this.spotLightIntensity
+    }
+
+    updateSpotLightDistance(value) {
+        this.spotLightDistance = value
+        this.spotLight.distance = this.spotLightDistance
+    }
+
+    updateSpotLightAngle(value) {
+        this.spotLightAngle = Math.PI / 180 * value
+        this.spotLight.angle = this.spotLightAngle
+    }
+
+    updateSpotLightPenumbra(value) {
+        this.spotLightPenumbra = value
+        this.spotLight.penumbra = this.spotLightPenumbra
+    }
+
+    updateSpotLightDecay(value) {
+        this.spotLightDecay = value
+        this.spotLight.decay = this.spotLightDecay
+    }
+
+    updateSpotLightPositionX(value) {
+        this.spotLightPositionX = value
+        this.spotLight.position.setX(this.spotLightPositionX)
+    }
+
+    updateSpotLightPositionY(value) {
+        this.spotLightPositionY = value
+        this.spotLight.position.setY(this.spotLightPositionY)
+    }
+
+    updateSpotLightPositionZ(value) {
+        this.spotLightPositionZ = value
+        this.spotLight.position.setZ(this.spotLightPositionZ)
+    }
+
+    updateSpotLightTargetX(value) {
+        this.spotLightTargetX = value
+        this.spotLightTarget.position.setX(this.spotLightTargetX)
+    }
+
+    updateSpotLightTargetY(value) {
+        this.spotLightTargetY = value
+        this.spotLightTarget.position.setY(this.spotLightTargetY)
+    }
+
+    updateSpotLightTargetZ(value) {
+        this.spotLightTargetZ = value
+        this.spotLightTarget.position.setZ(this.spotLightTargetZ)
     }
 }
 
