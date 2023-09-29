@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 
 class MyFrame extends THREE.Object3D {
-    constructor(pos, h, w, d) {
+    constructor(texture, pos, h, w, d) {
         super();
         this.type = 'Group';
+        this.texture = texture
         this.frameEnabled = true
         this.lastframeEnabled = null
         this.frameHeight = h
@@ -17,9 +18,9 @@ class MyFrame extends THREE.Object3D {
      */
     buildFrame(pos) {
         const textureLoader = new THREE.TextureLoader();
-        const woodTexture = textureLoader.load('textures/wood.jpg');
-        woodTexture.wrapS = THREE.RepeatWrapping;
-        woodTexture.wrapT = THREE.RepeatWrapping;
+        const texture = textureLoader.load(this.texture);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
 
         let frameEnd = new THREE.BoxGeometry( 
             this.frameWidth - this.frameDepth, 
@@ -31,12 +32,7 @@ class MyFrame extends THREE.Object3D {
             this.frameHeight - this.frameDepth,
             this.frameDepth 
         )
-        const frameMaterial = new THREE.MeshPhongMaterial({
-            color: "#8f563b",
-            map: woodTexture,
-            shininess: 50,
-            emissive: "#000000"
-        });
+        const frameMaterial = new THREE.MeshLambertMaterial({ map: texture });
 
         let frameParts = [
             new THREE.Mesh(frameEnd,  frameMaterial),

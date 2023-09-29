@@ -59,13 +59,19 @@ class MyContents  {
         this.frame2Enabled = true
         this.lastFrame2Enabled = null
 
+        this.window = null
+        this.landscape = null
+        this.windowEnabled = true
+        this.lastWindowEnabled = null
+
         // point light related attributes
         this.pointHelperEnabled = false
         this.lastPointHelperEnabled = null
-        this.pointLight = new THREE.PointLight( 0xffffff, 500, 0 );
+        this.pointLightIntensity = 300
         this.pointLightPositionX = 0
         this.pointLightPositionY = 20
         this.pointLightPositionZ = 0
+        this.pointLight = new THREE.PointLight( 0xffffff, this.pointLightIntensity, 0 );
         this.pointLight.position.set(this.pointLightPositionX, this.pointLightPositionY, this.pointLightPositionZ);
         this.pointLightHelper = new THREE.PointLightHelper(this.pointLight);
 
@@ -148,28 +154,43 @@ class MyContents  {
             this.room.add(this.chair)
         }
         if (this.frame1 === null) {
-            this.frame1 = new MyFrame(new THREE.Vector3(
-                this.room.roomWidth * 0.2, 
-                this.room.roomHeight * 0.7, 
-                this.room.roomWidth * 0.3625), 
+            this.frame1 = new MyFrame('textures/wood.jpg', 
+                new THREE.Vector3(
+                    this.room.roomWidth * 0.2, 
+                    this.room.roomHeight * 0.7, 
+                    this.room.roomWidth * 0.3625), 
                 4, 4, 0.5)
             this.room.add(this.frame1)
         }
         if (this.picture1 === null) {
-            this.picture1 = new MyPicture('textures/diogo_silva.jpg')
+            this.picture1 = new MyPicture(true, 'textures/diogo_silva.jpg')
             this.frame1.add(this.picture1)
         }
         if (this.frame2 === null) {
-            this.frame2 = new MyFrame(new THREE.Vector3(
-                - this.room.roomWidth * 0.2, 
-                this.room.roomHeight * 0.7, 
-                this.room.roomWidth * 0.3625), 
+            this.frame2 = new MyFrame('textures/wood.jpg', 
+                new THREE.Vector3(
+                    - this.room.roomWidth * 0.2, 
+                    this.room.roomHeight * 0.7, 
+                    this.room.roomWidth * 0.3625), 
                 4, 4, 0.5)
             this.room.add(this.frame2)
         }
         if (this.picture2 === null) {
-            this.picture2 = new MyPicture('textures/tomas_pires.jpg')
+            this.picture2 = new MyPicture(true, 'textures/tomas_pires.jpg')
             this.frame2.add(this.picture2)
+        }
+        if (this.window === null) {
+            this.window = new MyFrame('textures/metal.jpg', 
+                new THREE.Vector3(
+                    0, 
+                    this.room.roomHeight * 0.7, 
+                    - this.room.roomWidth * 0.3625), 
+                    4, 7, 0.5)
+            this.room.add(this.window)
+        }
+        if (this.landscape === null) {
+            this.landscape = new MyPicture(false, 'textures/landscape.png')
+            this.window.add(this.landscape)
         }
     }
 
@@ -317,6 +338,18 @@ class MyContents  {
         }
     }
 
+    updateWindowIfRequired() {
+        if (this.windowEnabled !== this.lastWindowEnabled) {
+            this.lastWindowEnabled = this.windowEnabled
+            if (this.windowEnabled) {
+                this.room.add(this.window)
+            }
+            else {
+                this.room.remove(this.window)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -336,6 +369,12 @@ class MyContents  {
         this.updateSpotHelperIfRequired()
         this.updateFrame1IfRequired()
         this.updateFrame2IfRequired()
+        this.updateWindowIfRequired()
+    }
+
+    updatePointLightIntensity(value) {
+        this.pointLightIntensity = value
+        this.pointLight.intensity = this.pointLightIntensity
     }
 
     updatePointLightPositionX(value) {

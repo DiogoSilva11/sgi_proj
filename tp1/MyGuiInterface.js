@@ -38,8 +38,10 @@ class MyGuiInterface  {
         this.datgui.add(this.contents, 'chairEnabled', true).name("Chair");
         this.datgui.add(this.contents, 'frame1Enabled', true).name("Frame 1");
         this.datgui.add(this.contents, 'frame2Enabled', true).name("Frame 2");
+        this.datgui.add(this.contents, 'windowEnabled', true).name("Window");
 
         const pointLight = {
+            'intensity': this.contents.pointLightIntensity,
             'position x': this.contents.pointLightPositionX,
             'position y': this.contents.pointLightPositionY,
             'position z': this.contents.pointLightPositionZ
@@ -47,6 +49,7 @@ class MyGuiInterface  {
 
         const pointLightFolder = this.datgui.addFolder('Point light');
         pointLightFolder.add( this.contents, 'pointHelperEnabled', false ).name("Helper");
+        pointLightFolder.add( pointLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updatePointLightIntensity(value) } );
         pointLightFolder.add( pointLight, 'position x', -20, 20 ).name("Position X").onChange( (value) => { this.contents.updatePointLightPositionX(value) } );
         pointLightFolder.add( pointLight, 'position y', -20, 20 ).name("Position Y").onChange( (value) => { this.contents.updatePointLightPositionY(value) } );
         pointLightFolder.add( pointLight, 'position z', -20, 20 ).name("Position Z").onChange( (value) => { this.contents.updatePointLightPositionZ(value) } );
