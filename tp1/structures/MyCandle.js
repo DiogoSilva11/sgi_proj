@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyCandle extends THREE.Object3D {
-    constructor(cakeHeight) {
-        super();
+class MyCandle extends MyStructure {
+    constructor(parent, cakeHeight) {
+        super(parent);
         this.type = 'Group';
         this.cakeHeight = cakeHeight
         
@@ -18,6 +19,8 @@ class MyCandle extends THREE.Object3D {
 
         this.buildCandle()
         this.buildFlame()
+
+        parent.add(this);
     }
 
     /**

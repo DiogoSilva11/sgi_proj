@@ -27,47 +27,27 @@ class MyContents  {
         this.lastAxisEnabled = null
 
         this.room = null
-        this.roomEnabled = true
-        this.lastRoomEnabled = null
 
         this.table = null
-        this.tableEnabled = true
-        this.lastTableEnabled = null
-
+        
         this.plate = null
-        this.plateEnabled = true
-        this.lastPlateEnabled = null
 
         this.cake = null
-        this.cakeEnabled = true
-        this.lastCakeEnabled = null
 
         this.candle = null
-        this.candleEnabled = true
-        this.lastCandleEnabled = null
 
         this.chair = null
-        this.chairEnabled = true
-        this.lastChairEnabled = null
 
         this.frame1 = null
         this.picture1 = null
-        this.frame1Enabled = true
-        this.lastFrame1Enabled = null
 
         this.frame2 = null
         this.picture2 = null
-        this.frame2Enabled = true
-        this.lastFrame2Enabled = null
 
         this.window = null
         this.landscape = null
-        this.windowEnabled = true
-        this.lastWindowEnabled = null
 
         this.drawing = null
-        this.drawingEnabled = true
-        this.lastDrawingEnabled = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -133,81 +113,66 @@ class MyContents  {
 
         // create the overall scene
         if (this.room === null) {
-            this.room = new MyRoom()
-            this.app.scene.add(this.room)
+            this.room = new MyRoom(this.app.scene)
         }
         if (this.table === null) {
-            this.table = new MyTable()
-            this.room.add(this.table)
+            this.table = new MyTable(this.room)
         }
         if (this.plate === null) {
-            this.plate = new MyPlate(this.table.tableHeight)
-            this.table.add(this.plate)
+            this.plate = new MyPlate(this.table, this.table.tableHeight)
         }
         if (this.cake === null) {
-            this.cake = new MyCake()
-            this.plate.add(this.cake)
+            this.cake = new MyCake(this.plate)
             this.spotLightTarget = this.cake
             this.spotLight.target = this.cake
         }
         if (this.candle === null) {
-            this.candle = new MyCandle(this.cake.cakeHeight)
-            this.cake.add(this.candle)
+            this.candle = new MyCandle(this.cake, this.cake.cakeHeight)
         }
         if (this.chair === null) {
-            this.chair = new MyChair(this.table.tableDepth)
-            this.room.add(this.chair)
+            this.chair = new MyChair(this.room, this.table.tableDepth)
         }
         if (this.frame1 === null) {
-            this.frame1 = new MyFrame('textures/wood.jpg', 
+            this.frame1 = new MyFrame(this.room, 'textures/wood.jpg', 
                 new THREE.Vector3(
                     this.room.roomWidth * 0.2, 
                     this.room.roomHeight * 0.7, 
                     this.room.roomWidth * 0.3625), 
                 4, 4, 0.5)
-            this.room.add(this.frame1)
         }
         if (this.picture1 === null) {
-            this.picture1 = new MyPicture(true, 'textures/diogo_silva.jpg')
-            this.frame1.add(this.picture1)
+            this.picture1 = new MyPicture(this.frame1, true, 'textures/diogo_silva.jpg')
         }
         if (this.frame2 === null) {
-            this.frame2 = new MyFrame('textures/wood.jpg', 
+            this.frame2 = new MyFrame(this.room, 'textures/wood.jpg', 
                 new THREE.Vector3(
                     - this.room.roomWidth * 0.2, 
                     this.room.roomHeight * 0.7, 
                     this.room.roomWidth * 0.3625), 
                 4, 4, 0.5)
-            this.room.add(this.frame2)
         }
         if (this.picture2 === null) {
-            this.picture2 = new MyPicture(true, 'textures/tomas_pires.jpg')
-            this.frame2.add(this.picture2)
+            this.picture2 = new MyPicture(this.frame2, true, 'textures/tomas_pires.jpg')
         }
         if (this.window === null) {
-            this.window = new MyFrame('textures/metal.jpg', 
+            this.window = new MyFrame(this.room, 'textures/metal.jpg', 
                 new THREE.Vector3(
                     0, 
                     this.room.roomHeight * 0.7, 
                     - this.room.roomWidth * 0.3625), 
                     4, 7, 0.5)
-            this.room.add(this.window)
         }
         if (this.landscape === null) {
-            this.landscape = new MyPicture(false, 'textures/landscape.png')
-            this.window.add(this.landscape)
+            this.landscape = new MyPicture(this.window, false, 'textures/landscape.png')
         }
         if (this.drawing === null) {
-            this.drawing = new MyFrame('textures/wood.jpg',
+            this.drawing = new MyFrame(this.room, 'textures/wood.jpg',
                 new THREE.Vector3(
                     0, 
                     this.room.roomHeight * 0.7, 
                     this.room.roomWidth * 0.3630), 
                 2.5, 2.5, 0.3)
-            let beetle = new MyBeetle(0.3, 2.5, 2.5)
-
-            this.room.add(this.drawing)
-            this.drawing.add(beetle)
+            let beetle = new MyBeetle(this.drawing, 0.3, 2.5, 2.5)
         }
     }
 
@@ -219,90 +184,6 @@ class MyContents  {
             }
             else {
                 this.app.scene.remove(this.axis)
-            }
-        }
-    }
-
-    updateRoomIfRequired() {
-        if (this.roomEnabled !== this.lastRoomEnabled) {
-            this.lastRoomEnabled = this.roomEnabled
-            if (this.roomEnabled) {
-                this.app.scene.add(this.room)
-            }
-            else {
-                this.app.scene.remove(this.room)
-            }
-        }
-    }
-
-    updateTableIfRequired() {
-        if (this.tableEnabled !== this.lastTableEnabled) {
-            this.lastTableEnabled = this.tableEnabled
-            if (this.tableEnabled) {
-                this.room.add(this.table)
-            }
-            else {
-                this.room.remove(this.table)
-            }
-        }
-    }
-
-    updatePlateIfRequired() {
-        if (this.plateEnabled !== this.lastPlateEnabled) {
-            this.lastPlateEnabled = this.plateEnabled
-            if (this.plateEnabled) {
-                this.table.add(this.plate)
-            }
-            else {
-                this.table.remove(this.plate)
-            }
-        }
-    }
-
-    updateCakeIfRequired() {
-        if (this.cakeEnabled !== this.lastCakeEnabled) {
-            this.lastCakeEnabled = this.cakeEnabled
-            if (this.cakeEnabled) {
-                this.plate.add(this.cake)
-            }
-            else {
-                this.plate.remove(this.cake)
-            }
-        }
-    }
-
-    updateCandleIfRequired() {
-        if (this.candleEnabled !== this.lastCandleEnabled) {
-            this.lastCandleEnabled = this.candleEnabled
-            if (this.candleEnabled) {
-                this.cake.add(this.candle)
-            }
-            else {
-                this.cake.remove(this.candle)
-            }
-        }
-    }
-
-    updateChairIfRequired() {
-        if (this.chairEnabled !== this.lastChairEnabled) {
-            this.lastChairEnabled = this.chairEnabled
-            if (this.chairEnabled) {
-                this.room.add(this.chair)
-            }
-            else {
-                this.room.remove(this.chair)
-            }
-        }
-    }
-
-    updateFrameIfRequired() {
-        if (this.frameEnabled !== this.lastFrameEnabled) {
-            this.lastframeEnabled = this.frameEnabled
-            if (this.frameEnabled) {
-                this.room.add(this.frame)
-            }
-            else {
-                this.room.remove(this.frame)
             }
         }
     }
@@ -331,54 +212,6 @@ class MyContents  {
         }
     }
 
-    updateFrame1IfRequired() {
-        if (this.frame1Enabled !== this.lastFrame1Enabled) {
-            this.lastFrame1Enabled = this.frame1Enabled
-            if (this.frame1Enabled) {
-                this.room.add(this.frame1)
-            }
-            else {
-                this.room.remove(this.frame1)
-            }
-        }
-    }
-
-    updateFrame2IfRequired() {
-        if (this.frame2Enabled !== this.lastFrame2Enabled) {
-            this.lastFrame2Enabled = this.frame2Enabled
-            if (this.frame2Enabled) {
-                this.room.add(this.frame2)
-            }
-            else {
-                this.room.remove(this.frame2)
-            }
-        }
-    }
-
-    updateWindowIfRequired() {
-        if (this.windowEnabled !== this.lastWindowEnabled) {
-            this.lastWindowEnabled = this.windowEnabled
-            if (this.windowEnabled) {
-                this.room.add(this.window)
-            }
-            else {
-                this.room.remove(this.window)
-            }
-        }
-    }
-
-    updateDrawingIfRequired() {
-        if (this.drawingEnabled !== this.lastdrawingEnabled) {
-            this.lastdrawingEnabled = this.drawingEnabled
-            if (this.drawingEnabled) {
-                this.room.add(this.drawing)
-            }
-            else {
-                this.room.remove(this.drawing)
-            }
-        }
-    }
-
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -387,19 +220,19 @@ class MyContents  {
     update() {
         // check if elements need to be updated
         this.updateAxisIfRequired()
-        this.updateRoomIfRequired()
-        this.updateTableIfRequired()
-        this.updatePlateIfRequired()
-        this.updateCakeIfRequired()
-        this.updateCandleIfRequired()
-        this.updateChairIfRequired()
-        this.updateFrameIfRequired()
+        this.room.updateIfRequired()
+        this.table.updateIfRequired()
+        this.plate.updateIfRequired()
+        this.cake.updateIfRequired()
+        this.candle.updateIfRequired()
+        this.chair.updateIfRequired()
+        //this.frame.updateIfRequired()
         this.updatePointHelperIfRequired()
         this.updateSpotHelperIfRequired()
-        this.updateFrame1IfRequired()
-        this.updateFrame2IfRequired()
-        this.updateWindowIfRequired()
-        this.updateDrawingIfRequired()
+        this.frame1.updateIfRequired()
+        this.frame2.updateIfRequired()
+        this.window.updateIfRequired()
+        this.drawing.updateIfRequired()
     }
 
     updatePointLightIntensity(value) {

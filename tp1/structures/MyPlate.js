@@ -1,7 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyPlate extends THREE.Mesh {
-    constructor(tableHeight) {
+class MyPlate extends MyStructure {
+    constructor(parent, tableHeight) {
+        super(parent)
         let plateRadiusTop = 1.2
         let plateRadiusBottom = 1.0
         let plateThickness = 0.1
@@ -17,9 +19,11 @@ class MyPlate extends THREE.Mesh {
             plateRadiusBottom,
             plateThickness
         )
-        super(plateGeometry, plateMaterial);
+        //super(plateGeometry, plateMaterial);
         this.type = 'MyPlate'
         this.position.y = tableHeight + plateThickness / 2
+
+        parent.add(this);
     }
 }
 

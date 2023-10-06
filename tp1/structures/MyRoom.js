@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyRoom extends THREE.Object3D {
-    constructor() {
-        super();
+class MyRoom extends MyStructure {
+    constructor(parent) {
+        super(parent);
         this.type = 'Group';
         this.floorMesh = null;
         this.wallMeshes = null;
@@ -10,6 +11,7 @@ class MyRoom extends THREE.Object3D {
         this.roomDepth = 15;
         this.roomHeight = 10;
         this.buildRoom();
+        parent.add(this);
     }
 
     /**

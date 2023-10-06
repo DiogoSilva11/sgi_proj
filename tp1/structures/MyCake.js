@@ -1,13 +1,15 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyCake extends THREE.Object3D {
-    constructor() {
-        super();
+class MyCake extends MyStructure {
+    constructor(parent) {
+        super(parent);
         this.type = 'Group';
         this.cakeRadius = 1.0
         this.cakeHeight = 0.7
         this.cakeLeft = 7/8
         this.buildCake();
+        parent.add(this);
     }
 
     /**

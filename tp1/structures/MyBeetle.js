@@ -1,14 +1,16 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyBeetle extends THREE.Object3D {
-    constructor(rad, cnvX, cnvY) {
-        super();
+class MyBeetle extends MyStructure {
+    constructor(parent, rad, cnvX, cnvY) {
+        super(parent);
         this.type = 'Group';
         this.samples = 32
         this.tireRadius = rad;
         this.canvasX = cnvX;
         this.canvasY = cnvY;
         this.buildBeetle();
+        parent.add(this);
     }
 
     /**

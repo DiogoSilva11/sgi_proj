@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyTable extends THREE.Object3D {
-    constructor() {
-        super();
+class MyTable extends MyStructure {
+    constructor(parent) {
+        super(parent);
         this.type = 'Group';
         this.tableEnabled = true
         this.lastTableEnabled = null
@@ -13,6 +14,8 @@ class MyTable extends THREE.Object3D {
         this.tableLegTopRadius = 0.5
         this.tableLegBottomRadius = 0.3
         this.buildTable();
+
+        parent.add(this);
     }
 
     /**

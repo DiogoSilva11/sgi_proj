@@ -1,7 +1,10 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyPicture extends THREE.Mesh {
-    constructor(isPicture, picture) {
+class MyPicture extends MyStructure {
+    constructor(parent, isPicture, picture) {
+        super(parent);
+        this.type = "Group";
         const pictureTexture = new THREE.TextureLoader().load(picture);
         pictureTexture.wrapS = THREE.RepeatWrapping;
         pictureTexture.wrapT = THREE.RepeatWrapping;
@@ -21,9 +24,11 @@ class MyPicture extends THREE.Mesh {
         }
         const geometry = new THREE.PlaneGeometry(width, height);
         const material = new THREE.MeshLambertMaterial({ map: pictureTexture });
-        super(geometry, material);
-        this.type = 'MyPicture';
-        if (isPicture) this.rotation.y = Math.PI;
+        const mesh = new THREE.Mesh(geometry, material)
+        if (isPicture) mesh.rotation.y = Math.PI;
+
+        this.add(mesh)
+        parent.add(this);
     }
 }
 

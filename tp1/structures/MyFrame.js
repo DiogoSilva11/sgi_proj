@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyFrame extends THREE.Object3D {
-    constructor(texture, pos, h, w, d) {
-        super();
+class MyFrame extends MyStructure {
+    constructor(parent, texture, pos, h, w, d) {
+        super(parent);
         this.type = 'Group';
         this.texture = texture
         this.frameEnabled = true
@@ -11,6 +12,8 @@ class MyFrame extends THREE.Object3D {
         this.frameWidth = w
         this.frameDepth = d
         this.buildFrame(pos);
+
+        parent.add(this);
     }
 
     /**

@@ -30,16 +30,16 @@ class MyGuiInterface  {
      */
     init() {
         this.datgui.add(this.contents, 'axisEnabled', false).name("Axis");
-        this.datgui.add(this.contents, 'roomEnabled', true).name("Room");
-        this.datgui.add(this.contents, 'tableEnabled', true).name("Table");
-        this.datgui.add(this.contents, 'plateEnabled', true).name("Plate");
-        this.datgui.add(this.contents, 'cakeEnabled', true).name("Cake");
-        this.datgui.add(this.contents, 'candleEnabled', true).name("Candle");
-        this.datgui.add(this.contents, 'chairEnabled', true).name("Chair");
-        this.datgui.add(this.contents, 'frame1Enabled', true).name("Frame 1");
-        this.datgui.add(this.contents, 'frame2Enabled', true).name("Frame 2");
-        this.datgui.add(this.contents, 'windowEnabled', true).name("Window");
-        this.datgui.add(this.contents, 'drawingEnabled', true).name("Beetle Drawing");
+        this.datgui.add(this.contents.room, 'enabled', true).name("Room");
+        this.datgui.add(this.contents.table, 'enabled', true).name("Table");
+        this.datgui.add(this.contents.plate, 'enabled', true).name("Plate");
+        this.datgui.add(this.contents.cake, 'enabled', true).name("Cake");
+        this.datgui.add(this.contents.candle, 'enabled', true).name("Candle");
+        this.datgui.add(this.contents.chair, 'enabled', true).name("Chair");
+        this.datgui.add(this.contents.frame1, 'enabled', true).name("Frame 1");
+        this.datgui.add(this.contents.frame2, 'enabled', true).name("Frame 2");
+        this.datgui.add(this.contents.window, 'enabled', true).name("Window");
+        this.datgui.add(this.contents.drawing, 'enabled', true).name("Beetle Drawing");
 
         const pointLight = {
             'intensity': this.contents.pointLightIntensity,

@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 
-class MyChair extends THREE.Object3D {
-    constructor(tableDepth) {
-        super();
+class MyChair extends MyStructure {
+    constructor(parent, tableDepth) {
+        super(parent);
         this.type = 'Group';
         this.tableDepth = tableDepth
         this.chairEnabled = true
@@ -16,6 +17,8 @@ class MyChair extends THREE.Object3D {
         this.chairBackHeight = 3
         this.chairBackThick = 0.2
         this.buildChair();
+
+        parent.add(this);
     }
 
     /**
