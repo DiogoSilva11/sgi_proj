@@ -8,6 +8,7 @@ import { MyCandle } from './structures/MyCandle.js';
 import { MyChair } from './structures/MyChair.js';
 import { MyFrame } from './structures/MyFrame.js';
 import { MyPicture } from './structures/MyPicture.js';
+import { MyBeetle } from './structures/MyBeetle.js';
 
 /**
  *  This class contains the contents of out application
@@ -63,6 +64,10 @@ class MyContents  {
         this.landscape = null
         this.windowEnabled = true
         this.lastWindowEnabled = null
+
+        this.drawing = null
+        this.drawingEnabled = true
+        this.lastDrawingEnabled = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -191,6 +196,18 @@ class MyContents  {
         if (this.landscape === null) {
             this.landscape = new MyPicture(false, 'textures/landscape.png')
             this.window.add(this.landscape)
+        }
+        if (this.drawing === null) {
+            this.drawing = new MyFrame('textures/wood.jpg',
+                new THREE.Vector3(
+                    0, 
+                    this.room.roomHeight * 0.7, 
+                    this.room.roomWidth * 0.3630), 
+                2.5, 2.5, 0.3)
+            let beetle = new MyBeetle(0.3, 2.5, 2.5)
+
+            this.room.add(this.drawing)
+            this.drawing.add(beetle)
         }
     }
 
@@ -350,6 +367,18 @@ class MyContents  {
         }
     }
 
+    updateDrawingIfRequired() {
+        if (this.drawingEnabled !== this.lastdrawingEnabled) {
+            this.lastdrawingEnabled = this.drawingEnabled
+            if (this.drawingEnabled) {
+                this.room.add(this.drawing)
+            }
+            else {
+                this.room.remove(this.drawing)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -370,6 +399,7 @@ class MyContents  {
         this.updateFrame1IfRequired()
         this.updateFrame2IfRequired()
         this.updateWindowIfRequired()
+        this.updateDrawingIfRequired()
     }
 
     updatePointLightIntensity(value) {

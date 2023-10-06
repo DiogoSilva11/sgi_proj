@@ -32,6 +32,7 @@ class MyFrame extends THREE.Object3D {
             this.frameHeight - this.frameDepth,
             this.frameDepth 
         )
+            
         const frameMaterial = new THREE.MeshLambertMaterial({ map: texture });
 
         let frameParts = [
