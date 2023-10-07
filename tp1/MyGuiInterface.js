@@ -40,6 +40,7 @@ class MyGuiInterface  {
         this.datgui.add(this.contents.frame2, 'enabled', true).name("Frame 2");
         this.datgui.add(this.contents.window, 'enabled', true).name("Window");
         this.datgui.add(this.contents.drawing, 'enabled', true).name("Beetle Drawing");
+        this.datgui.add(this.contents.spring, 'enabled', true).name("Spring");
 
         const pointLight = {
             'intensity': this.contents.pointLightIntensity,

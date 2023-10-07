@@ -9,6 +9,7 @@ import { MyChair } from './structures/MyChair.js';
 import { MyFrame } from './structures/MyFrame.js';
 import { MyPicture } from './structures/MyPicture.js';
 import { MyBeetle } from './structures/MyBeetle.js';
+import { MySpring } from './structures/MySpring.js';
 
 /**
  *  This class contains the contents of out application
@@ -48,6 +49,8 @@ class MyContents  {
         this.landscape = null
 
         this.drawing = null
+
+        this.spring = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -173,6 +176,13 @@ class MyContents  {
                     this.room.roomWidth * 0.3630), 
                 2.5, 2.5, 0.3)
             let beetle = new MyBeetle(this.drawing, 0.3, 2.5, 2.5)
+        }
+
+        if (this.spring === null) {
+            this.spring = new MySpring(this.room, 0.1, 7)
+            this.spring.position.y = this.table.tableHeight
+            this.spring.position.x = 3
+            this.spring.position.z = -2
         }
     }
 
