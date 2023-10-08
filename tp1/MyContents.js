@@ -49,6 +49,7 @@ class MyContents  {
         this.landscape = null
 
         this.drawing = null
+        this.beetle = null
 
         this.spring = null
 
@@ -70,7 +71,7 @@ class MyContents  {
         this.spotLightIntensity = 15
         this.spotLightDistance = 8
         this.spotLightAngle = Math.PI / 180 * 15
-        this.spotLightPenumbra = 0
+        this.spotLightPenumbra = 0.2
         this.spotLightDecay = 0
         this.spotLightPositionX = 0
         this.spotLightPositionY = 10
@@ -112,7 +113,7 @@ class MyContents  {
 
         // add an ambient light
         const ambientLight = new THREE.AmbientLight( 0x555555 );
-        this.app.scene.add( ambientLight );
+        this.app.scene.add(ambientLight);
 
         // create the overall scene
         if (this.room === null) {
@@ -175,11 +176,11 @@ class MyContents  {
                     this.room.roomHeight * 0.7, 
                     this.room.roomWidth * 0.3630), 
                 2.5, 2.5, 0.3)
-            let beetle = new MyBeetle(this.drawing, 0.3, 2.5, 2.5)
+            this.beetle = new MyBeetle(this.drawing, 0.3, 2.5, 2.5)
         }
 
         if (this.spring === null) {
-            this.spring = new MySpring(this.room, 0.1, 7)
+            this.spring = new MySpring(this.table, 0.1, 7)
             this.spring.position.y = this.table.tableHeight
             this.spring.position.x = 3
             this.spring.position.z = -2
@@ -243,6 +244,7 @@ class MyContents  {
         this.frame2.updateIfRequired()
         this.window.updateIfRequired()
         this.drawing.updateIfRequired()
+        this.spring.updateIfRequired()
     }
 
     updatePointLightIntensity(value) {

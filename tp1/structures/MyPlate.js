@@ -19,8 +19,11 @@ class MyPlate extends MyStructure {
             plateRadiusBottom,
             plateThickness
         )
-        //super(plateGeometry, plateMaterial);
+        
+        this.geometry = plateGeometry
+        this.material = plateMaterial
         this.type = 'MyPlate'
+
         this.position.y = tableHeight + plateThickness / 2
 
         parent.add(this);
