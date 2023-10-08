@@ -10,6 +10,7 @@ import { MyFrame } from './structures/MyFrame.js';
 import { MyPicture } from './structures/MyPicture.js';
 import { MyBeetle } from './structures/MyBeetle.js';
 import { MySpring } from './structures/MySpring.js';
+import { MyJar } from './structures/MyJar.js';
 
 /**
  *  This class contains the contents of out application
@@ -22,36 +23,26 @@ class MyContents  {
     */ 
     constructor(app) {
         this.app = app
-
         this.axis = null
         this.axisEnabled = false
         this.lastAxisEnabled = null
 
         this.room = null
-
         this.table = null
-        
         this.plate = null
-
         this.cake = null
-
         this.candle = null
-
         this.chair = null
-
         this.frame1 = null
         this.picture1 = null
-
         this.frame2 = null
         this.picture2 = null
-
         this.window = null
         this.landscape = null
-
         this.drawing = null
         this.beetle = null
-
         this.spring = null
+        this.jar = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -178,12 +169,11 @@ class MyContents  {
                 2.5, 2.5, 0.3)
             this.beetle = new MyBeetle(this.drawing, 0.3, 2.5, 2.5)
         }
-
         if (this.spring === null) {
-            this.spring = new MySpring(this.table, 0.1, 7)
-            this.spring.position.y = this.table.tableHeight
-            this.spring.position.x = 3
-            this.spring.position.z = -2
+            this.spring = new MySpring(this.table, 0.1, 7, 3, this.table.tableHeight, -2)
+        }
+        if (this.jar === null) {
+            this.jar = new MyJar(this.room, this.room.roomWidth * 0.35, 0, - this.room.roomDepth * 0.35)
         }
     }
 
@@ -237,7 +227,6 @@ class MyContents  {
         this.cake.updateIfRequired()
         this.candle.updateIfRequired()
         this.chair.updateIfRequired()
-        //this.frame.updateIfRequired()
         this.updatePointHelperIfRequired()
         this.updateSpotHelperIfRequired()
         this.frame1.updateIfRequired()
@@ -245,6 +234,7 @@ class MyContents  {
         this.window.updateIfRequired()
         this.drawing.updateIfRequired()
         this.spring.updateIfRequired()
+        this.jar.updateIfRequired()
     }
 
     updatePointLightIntensity(value) {

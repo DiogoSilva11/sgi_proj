@@ -1,9 +1,10 @@
 import * as THREE from 'three';
+import { MyStructure } from '../MyStructure.js';
 import { MyNurbsBuilder } from './../MyNurbsBuilder.js';
 
-class MyJar extends THREE.Object3D {
-    constructor() {
-        super();
+class MyJar extends MyStructure {
+    constructor(parent, x, y, z) {
+        super(parent);
         this.type = 'Group';
  
         this.samplesU = 24
@@ -12,7 +13,12 @@ class MyJar extends THREE.Object3D {
         this.builder = new MyNurbsBuilder()
         this.meshes = []
 
+        this.x = x;
+        this.y = y;
+        this.z = z;
+
         this.buildJar();
+        parent.add(this);
     }
 
     buildJar() {
@@ -37,6 +43,10 @@ class MyJar extends THREE.Object3D {
         }
         
         this.buildJarNurb(material);
+
+        this.position.x = this.x;
+        this.position.y = this.y;
+        this.position.z = this.z;
     }
 
     buildJarNurb(material) {

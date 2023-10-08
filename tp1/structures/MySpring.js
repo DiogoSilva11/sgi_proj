@@ -2,13 +2,16 @@ import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
 class MySpring extends MyStructure {
-    constructor(parent, rad, loops) {
+    constructor(parent, rad, loops, x, y, z) {
         super(parent);
         this.type = 'Group';
         this.samples = 8
         this.radius = rad;
         this.loops = loops;
         this.rise = 0.03;
+        this.x = x;
+        this.y = y;
+        this.z = z;
         this.buildSpring();
         parent.add(this);
     }
@@ -40,6 +43,10 @@ class MySpring extends MyStructure {
 
             this.add(m1, m2);
         }
+
+        this.position.x = this.x;
+        this.position.y = this.y;
+        this.position.z = this.z;
 
         this.parent.add(this)
     }
