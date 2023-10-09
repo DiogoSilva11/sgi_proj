@@ -11,6 +11,7 @@ import { MyPicture } from './structures/MyPicture.js';
 import { MyBeetle } from './structures/MyBeetle.js';
 import { MySpring } from './structures/MySpring.js';
 import { MyJar } from './structures/MyJar.js';
+import { MyNewspaper } from './structures/MyNewspaper.js';
 
 /**
  *  This class contains the contents of out application
@@ -43,6 +44,7 @@ class MyContents  {
         this.beetle = null
         this.spring = null
         this.jar = null
+        this.newspaper = null
 
         // point light related attributes
         this.pointHelperEnabled = false
@@ -175,6 +177,9 @@ class MyContents  {
         if (this.jar === null) {
             this.jar = new MyJar(this.room, this.room.roomWidth * 0.35, 0, - this.room.roomDepth * 0.35)
         }
+        if (this.newspaper === null) {
+            this.newspaper = new MyNewspaper(this.table, - this.table.tableWidth * 0.45, this.table.tableHeight * 1.03, this.table.tableDepth * 0.45)
+        }
     }
 
     updateAxisIfRequired() {
@@ -235,6 +240,7 @@ class MyContents  {
         this.drawing.updateIfRequired()
         this.spring.updateIfRequired()
         this.jar.updateIfRequired()
+        this.newspaper.updateIfRequired()
     }
 
     updatePointLightIntensity(value) {
