@@ -18,12 +18,23 @@ class MyRoom extends MyStructure {
      * builds the planes representing the walls and floor
      */
     buildRoom() {
+        const textureLoader = new THREE.TextureLoader();
+        const woodTexture = textureLoader.load('textures/floor.jpg');
+        woodTexture.wrapS = THREE.RepeatWrapping;
+        woodTexture.wrapT = THREE.RepeatWrapping;
+
         const floorMaterial = new THREE.MeshLambertMaterial({
-            color: "#d9a066",
+            map: woodTexture,
+            color: "#d9a066"
         });
 
+        const wallTexture = textureLoader.load('textures/wall.jpg');
+        wallTexture.wrapS = THREE.RepeatWrapping;
+        wallTexture.wrapT = THREE.RepeatWrapping;
+
         const wallMaterial = new THREE.MeshLambertMaterial({
-            color: "#cbdbfc",
+            map: wallTexture,
+            color: "#cbdbfc"
         });
 
         const floor = new THREE.PlaneGeometry(this.roomWidth, this.roomDepth)

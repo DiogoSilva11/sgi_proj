@@ -25,12 +25,16 @@ class MyChair extends MyStructure {
      * builds a basic chair
      */
     buildChair() {
+        const textureLoader = new THREE.TextureLoader();
+        const chairTexture = textureLoader.load('textures/chair.jpg');
+        chairTexture.wrapS = THREE.RepeatWrapping;
+        chairTexture.wrapT = THREE.RepeatWrapping;
+
         const chairMaterial = new THREE.MeshPhongMaterial({
-            color: "#8f563b",
-            specular: "#bf866b",
-            emissive: "#000000",
-            shininess: 10
+            map: chairTexture,
+            color: "#8f563b"
         })
+
         const legOffsX = this.chairWidth/2 - this.chairLegTopRad
         const legOffsZ = this.chairLength/2 - this.chairLegTopRad
         const legHeight = - this.chairLegHeight / 2
@@ -64,8 +68,9 @@ class MyChair extends MyStructure {
         seatMesh.receiveShadow = true;
         seatMesh.castShadow = true;
 
+        const legMaterial = new THREE.MeshPhongMaterial({ color: "#8f563b" })
         for( let i=0; i < 4; i++ ) {
-            let legMesh = new THREE.Mesh(leg, chairMaterial)
+            let legMesh = new THREE.Mesh(leg, legMaterial)
             legMesh.position.x = legPos[i][0]
             legMesh.position.y = legPos[i][1]
             legMesh.position.z = legPos[i][2]

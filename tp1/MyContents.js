@@ -94,6 +94,11 @@ class MyContents  {
 
         this.spotLightTarget = new THREE.Object3D();
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
+
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, 0, 1); // 0 intensity for now
+        this.directionalLight.position.set(0, 10, -10);
+        this.directionalLightTarget = new THREE.Object3D();
+        this.directionalLightHelper = new THREE.DirectionalLightHelper(this.directionalLight, 0.5);
     }
 
     /**
@@ -116,6 +121,11 @@ class MyContents  {
         this.spotLight.target = this.spotLightTarget; 
         this.app.scene.add(this.spotLight);
         this.app.scene.add(this.spotLightHelper);
+
+        // directional light
+        this.app.scene.add(this.directionalLight);
+        this.directionalLight.target = this.directionalLightTarget;
+        this.app.scene.add(this.directionalLightHelper);
 
         // add an ambient light
         const ambientLight = new THREE.AmbientLight( 0x555555 );
@@ -174,6 +184,8 @@ class MyContents  {
         }
         if (this.landscape === null) {
             this.landscape = new MyPicture(this.window, false, 'textures/landscape.png')
+            this.directionalLightTarget = this.landscape;
+            this.directionalLight.target = this.landscape;
         }
         if (this.drawing === null) {
             this.drawing = new MyFrame(this.room, 'textures/wood.jpg',
