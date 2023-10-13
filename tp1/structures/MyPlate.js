@@ -27,6 +27,9 @@ class MyPlate extends MyStructure {
         this.position.y = tableHeight + plateThickness / 2
 
         parent.add(this);
+
+        this.receiveShadow = true;
+        this.castShadow = true;
     }
 }
 

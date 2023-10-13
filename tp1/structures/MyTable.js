@@ -54,6 +54,8 @@ class MyTable extends MyStructure {
 
         let tabletopMesh = new THREE.Mesh(tabletop, tableTopMaterial)
         tabletopMesh.position.y = this.tableHeight - (this.tabletopThickness / 2)
+        tabletopMesh.receiveShadow = true;
+        tabletopMesh.castShadow = true;
 
         const legOffsX = this.tableWidth/2 - this.tableLegTopRadius
         const legOffsZ = this.tableDepth/2 - this.tableLegTopRadius
@@ -70,10 +72,15 @@ class MyTable extends MyStructure {
             tableLeg.position.x = legPos[i][0]
             tableLeg.position.y = legPos[i][1]
             tableLeg.position.z = legPos[i][2]
+            tableLeg.receiveShadow = true;
+            tableLeg.castShadow = true;
             this.add(tableLeg)
         }
 
         this.add(tabletopMesh);
+
+        this.receiveShadow = true;
+        this.castShadow = true;
     }
 }
 

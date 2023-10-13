@@ -43,6 +43,8 @@ class MyCandle extends MyStructure {
 
         this.candle = new THREE.Mesh(candle, candleMaterial)
         this.candle.position.y = this.cakeHeight + this.candleHeight/2
+        this.candle.receiveShadow = true;
+        this.candle.castShadow = true;
 
         this.add( this.candle )
     }

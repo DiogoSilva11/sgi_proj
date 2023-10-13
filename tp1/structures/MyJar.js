@@ -109,6 +109,8 @@ class MyJar extends MyStructure {
         mesh.rotation.z = 0
         mesh.scale.set(1, 1, 1)
         mesh.position.set(0, 0, 0)
+        mesh.receiveShadow = true;
+        mesh.castShadow = true;
         this.add(mesh)
         this.meshes.push(mesh)
 
@@ -164,6 +166,8 @@ class MyJar extends MyStructure {
         mesh.rotation.z = 0
         mesh.scale.set(1, 1, 1)
         mesh.position.set(0, 0, 0)
+        mesh.receiveShadow = true;
+        mesh.castShadow = true;
         this.add(mesh)
         this.meshes.push(mesh)
     }

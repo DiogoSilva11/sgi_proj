@@ -62,8 +62,8 @@ class MyContents  {
         this.lastSpotHelperEnabled = null
         this.spotLightColor = "#ffffff"
         this.spotLightIntensity = 15
-        this.spotLightDistance = 8
-        this.spotLightAngle = Math.PI / 180 * 15
+        this.spotLightDistance = 16
+        this.spotLightAngle = Math.PI / 180 * 45
         this.spotLightPenumbra = 0.2
         this.spotLightDecay = 0
         this.spotLightPositionX = 0
@@ -79,6 +79,17 @@ class MyContents  {
             this.spotLightPenumbra, 
             this.spotLightDecay);
         this.spotLight.position.set(this.spotLightPositionX, this.spotLightPositionY, this.spotLightPositionZ);
+
+        this.spotLight.castShadow = true;
+        this.spotLight.shadow.mapSize.width = 4096
+        this.spotLight.shadow.mapSize.length = 4096
+        this.spotLight.shadow.camera.near = 0.5;
+        this.spotLight.shadow.camera.far = 100;
+        this.spotLight.shadow.camera.left = -15;
+        this.spotLight.shadow.camera.right = 15;
+        this.spotLight.shadow.camera.bottom = -15;
+        this.spotLight.shadow.camera.top = 15;
+
         this.spotLightTarget = new THREE.Object3D();
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
     }
@@ -120,8 +131,8 @@ class MyContents  {
         }
         if (this.cake === null) {
             this.cake = new MyCake(this.plate)
-            this.spotLightTarget = this.cake
-            this.spotLight.target = this.cake
+            this.spotLightTarget = this.cake;
+            this.spotLight.target = this.cake;
         }
         if (this.candle === null) {
             this.candle = new MyCandle(this.cake, this.cake.cakeHeight)

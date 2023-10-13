@@ -22,6 +22,12 @@ class MyCake extends MyStructure {
             emissive: "#000000",
             shininess: 60
         })
+        const cakesideMaterial = new THREE.MeshPhongMaterial({
+            color: "#b68931",
+            specular: "#4f4f4f",
+            emissive: "#000000",
+            shininess: 60
+        })
 
         const cake = new THREE.CylinderGeometry(
             this.cakeRadius,
@@ -40,13 +46,17 @@ class MyCake extends MyStructure {
 
         let cakeMesh = new THREE.Mesh( cake, cakeMaterial )
         cakeMesh.position.y = this.cakeHeight / 2
+        cakeMesh.receiveShadow = true;
+        cakeMesh.castShadow = true;
 
         let cakesideMeshes = [
-            new THREE.Mesh( cakeside, cakeMaterial ),
-            new THREE.Mesh( cakeside, cakeMaterial )
+            new THREE.Mesh( cakeside, cakesideMaterial ),
+            new THREE.Mesh( cakeside, cakesideMaterial )
         ]
         for(let mesh of cakesideMeshes) {
             mesh.position.y = cakeMesh.position.y
+            mesh.receiveShadow = true;
+            mesh.castShadow = true;
         }
         cakesideMeshes[0].rotation.y = -Math.PI / 2
         cakesideMeshes[0].position.z = this.cakeRadius / 2
@@ -71,6 +81,8 @@ class MyCake extends MyStructure {
         let sliceMesh = new THREE.Mesh(sliceGeometry, cakeMaterial)
         sliceMesh.position.y = this.cakeHeight / 2
         sliceMesh.rotation.y = - Math.PI / 4
+        sliceMesh.receiveShadow = true;
+        sliceMesh.castShadow = true;
         const sliceOffset = 0.25
         sliceMesh.position.z = sliceOffset 
         sliceMesh.position.x = - sliceOffset / (sliceOffset * 10)
@@ -82,11 +94,13 @@ class MyCake extends MyStructure {
         )
 
         let sliceSideMeshes = [
-            new THREE.Mesh( sliceSide, cakeMaterial ),
-            new THREE.Mesh( sliceSide, cakeMaterial )
+            new THREE.Mesh( sliceSide, cakesideMaterial ),
+            new THREE.Mesh( sliceSide, cakesideMaterial )
         ]
         for (let mesh of sliceSideMeshes) {
             mesh.position.y = cakeMesh.position.y
+            mesh.receiveShadow = true;
+            mesh.castShadow = true;
         }
         sliceSideMeshes[0].rotation.y = Math.PI / 2
         sliceSideMeshes[0].position.z = sliceRadius / 2 + sliceOffset

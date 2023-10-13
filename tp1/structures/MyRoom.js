@@ -39,9 +39,11 @@ class MyRoom extends MyStructure {
         ]
 
         this.floorMesh.rotation.x = -Math.PI / 2;
+        this.floorMesh.receiveShadow = true;
 
         for(let wall of this.wallMeshes) {
             wall.position.y = this.roomHeight / 2;
+            wall.receiveShadow = true;
         }
 
         this.wallMeshes[0].rotation.y = -Math.PI / 2;        // front wall
@@ -56,6 +58,7 @@ class MyRoom extends MyStructure {
         this.add(this.floorMesh)
         for (const wall of this.wallMeshes) this.add(wall)
     }
+    
 }
 
 export { MyRoom };

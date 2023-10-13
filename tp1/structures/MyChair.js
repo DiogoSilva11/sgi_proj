@@ -61,22 +61,31 @@ class MyChair extends MyStructure {
 
         let seatMesh = new THREE.Mesh(seat, chairMaterial)
         seatMesh.position.y = this.chairLegHeight
+        seatMesh.receiveShadow = true;
+        seatMesh.castShadow = true;
 
         for( let i=0; i < 4; i++ ) {
             let legMesh = new THREE.Mesh(leg, chairMaterial)
             legMesh.position.x = legPos[i][0]
             legMesh.position.y = legPos[i][1]
             legMesh.position.z = legPos[i][2]
+            legMesh.receiveShadow = true;
+            legMesh.castShadow = true;
             seatMesh.add(legMesh)
         }
 
         let backMesh = new THREE.Mesh(back, chairMaterial)
         backMesh.position.y = (this.chairBackHeight + this.chairSeatThick)/2
         backMesh.position.z = (this.chairLength - this.chairBackThick) / 2
+        backMesh.receiveShadow = true;
+        backMesh.castShadow = true;
         seatMesh.add(backMesh)
 
         this.add(seatMesh);
         this.position.z = this.tableDepth / 2
+
+        this.receiveShadow = true;
+        this.castShadow = true;
     }
 }
 
