@@ -43,6 +43,7 @@ class MyGuiInterface  {
         this.datgui.add(this.contents.spring, 'enabled', true).name("Spring");
         this.datgui.add(this.contents.jar, 'enabled', true).name("Jar");
         this.datgui.add(this.contents.newspaper, 'enabled', true).name("Newspaper");
+        this.datgui.add(this.contents.flower, 'enabled', true).name("Flower");
 
         const pointLight = {
             'intensity': this.contents.pointLightIntensity,
