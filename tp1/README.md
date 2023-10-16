@@ -10,11 +10,12 @@
 ----
 ## Project information
 
-- (items describing main strong points)
+- All items in the scene can be toggled on or off, with parent items being disabled as well.
+- A chair is included as an extra element in the scene.
 - Scene
-  - (Brief description of the created scene)
-  - (relative link to the scene)
+  - A simple depiction of a room, containing a birthday cake sitting atop a table, a chair, two framed photos and a framed drawing of a Beetle car, a window, a jar with a flower inside and a light source sitting above the cake.
+  - [Main page for this scene lies here.](index.html)
 ----
 ## Issues/Problems
 
-- (items describing unimplemented features, bugs, problems, etc.)
+- So far we have not encountered any problems in this release.
