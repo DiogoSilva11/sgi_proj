@@ -92,6 +92,21 @@ class MyGuiInterface  {
         spotLightFolder.add( spotLight, 'target z', -10, 10 ).name("Target Z").onChange( (value) => { this.contents.updateSpotLightTargetZ(value) } );
         spotLightFolder.close();
 
+        const directionalLight = {
+            'intensity': this.contents.directionalLightIntensity,
+            'position x': this.contents.directionalLightPositionX,
+            'position y': this.contents.directionalLightPositionY,
+            'position z': this.contents.directionalLightPositionZ
+        }
+
+        const directionalLightFolder = this.datgui.addFolder('Directional light');
+        directionalLightFolder.add( this.contents, 'directionalHelperEnabled', false ).name("Helper");
+        directionalLightFolder.add( directionalLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updateDirectionalLightIntensity(value) } );
+        directionalLightFolder.add( directionalLight, 'position x', -20, 20 ).name("Position X").onChange( (value) => { this.contents.updateDirectionalLightPositionX(value) } );
+        directionalLightFolder.add( directionalLight, 'position y', -20, 20 ).name("Position Y").onChange( (value) => { this.contents.updateDirectionalLightPositionY(value) } );
+        directionalLightFolder.add( directionalLight, 'position z', -20, 20 ).name("Position Z").onChange( (value) => { this.contents.updateDirectionalLightPositionZ(value) } );
+        directionalLightFolder.close();
+
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
         cameraFolder.add(this.app, 'activeCameraName', [ 'Perspective', 'Perspective 2', 'Left', 'Right', 'Top', 'Front', 'Back' ] ).name("Active camera");

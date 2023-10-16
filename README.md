@@ -12,8 +12,12 @@
 
 ### [TP1 - ThreeJS Basics](tp1)
 
+![img](/images/tp1_scene.png)
+
 - All items in the scene can be toggled on or off, with parent items being disabled as well.
 - A chair is included as an extra element in the scene.
+- Some extra textures were added as well.
+- The flower stem was initially just a curved line, but in order to improve even more its realistic aspect, the THREE.TubeGeometry was used together with the CatmullRom curve definition.
 - Scene
   - A simple depiction of a room, containing a birthday cake sitting atop a table, a chair, two framed photos and a framed drawing of a Beetle car, a window, a jar with a flower inside and a light source sitting above the cake.
   - [Main page for this scene lies here.](tp1/index.html)

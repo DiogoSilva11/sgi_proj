@@ -29,6 +29,7 @@ class MyContents  {
         this.axisEnabled = false
         this.lastAxisEnabled = null
 
+        // structures
         this.room = null
         this.table = null
         this.plate = null
@@ -95,8 +96,15 @@ class MyContents  {
         this.spotLightTarget = new THREE.Object3D();
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
 
-        this.directionalLight = new THREE.DirectionalLight(0xffffff, 0, 1); // 0 intensity for now
-        this.directionalLight.position.set(0, 10, -10);
+        // directional light related attributes
+        this.directionalHelperEnabled = false
+        this.lastDirectionalHelperEnabled = null
+        this.directionalLightIntensity = 0
+        this.directionalLightPositionX = 0
+        this.directionalLightPositionY = 10
+        this.directionalLightPositionZ = -10
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, this.directionalLightIntensity, 1);
+        this.directionalLight.position.set(this.directionalLightPositionX, this.directionalLightPositionY, this.directionalLightPositionZ);
         this.directionalLightTarget = new THREE.Object3D();
         this.directionalLightHelper = new THREE.DirectionalLightHelper(this.directionalLight, 0.5);
     }
@@ -246,6 +254,18 @@ class MyContents  {
         }
     }
 
+    updateDirectionalHelperIfRequired() {
+        if (this.directionalHelperEnabled !== this.lastDirectionalHelperEnabled) {
+            this.lastDirectionalHelperEnabled = this.directionalHelperEnabled
+            if (this.directionalHelperEnabled) {
+                this.app.scene.add(this.directionalLightHelper)
+            }
+            else {
+                this.app.scene.remove(this.directionalLightHelper)
+            }
+        }
+    }
+
     /**
      * updates the contents
      * this method is called from the render method of the app
@@ -254,14 +274,15 @@ class MyContents  {
     update() {
         // check if elements need to be updated
         this.updateAxisIfRequired()
+        this.updatePointHelperIfRequired()
+        this.updateSpotHelperIfRequired()
+        this.updateDirectionalHelperIfRequired()
         this.room.updateIfRequired()
         this.table.updateIfRequired()
         this.plate.updateIfRequired()
         this.cake.updateIfRequired()
         this.candle.updateIfRequired()
         this.chair.updateIfRequired()
-        this.updatePointHelperIfRequired()
-        this.updateSpotHelperIfRequired()
         this.frame1.updateIfRequired()
         this.frame2.updateIfRequired()
         this.window.updateIfRequired()
@@ -350,6 +371,26 @@ class MyContents  {
     updateSpotLightTargetZ(value) {
         this.spotLightTargetZ = value
         this.spotLightTarget.position.setZ(this.spotLightTargetZ)
+    }
+
+    updateDirectionalLightIntensity(value) {
+        this.directionalLightIntensity = value
+        this.directionalLight.intensity = this.directionalLightIntensity
+    }
+
+    updateDirectionalLightPositionX(value) {
+        this.directionalLightPositionX = value
+        this.directionalLight.position.setX(this.directionalLightPositionX)
+    }
+
+    updateDirectionalLightPositionY(value) {
+        this.directionalLightPositionY = value
+        this.directionalLight.position.setY(this.directionalLightPositionY)
+    }
+
+    updateDirectionalLightPositionZ(value) {
+        this.directionalLightPositionZ = value
+        this.directionalLight.position.setZ(this.directionalLightPositionZ)
     }
 }
 
