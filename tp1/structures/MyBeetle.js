@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a Beetle drawing representation
+ */
 class MyBeetle extends MyStructure {
     constructor(parent, rad, cnvX, cnvY) {
         super(parent);

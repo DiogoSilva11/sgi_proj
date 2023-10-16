@@ -1,7 +1,17 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D flower representation
+ */
 class MyFlower extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} x the x position of the flower
+     * @param {number} y the y position of the flower
+     * @param {number} z the z position of the flower
+     */
     constructor(parent, x, y, z) {
         super(parent);
         this.type = 'Group';
@@ -15,12 +25,18 @@ class MyFlower extends MyStructure {
         parent.add(this);
     }
 
+    /**
+     * builds a flower.
+     */
     buildFlower() {
         this.buildStem();
         this.buildSeeds();
         this.buildPetals();
     }
 
+    /**
+     * builds a stem.
+     */
     buildStem() {
         const textureLoader = new THREE.TextureLoader();
         const stemTexture = textureLoader.load('textures/stem.jpg');
@@ -46,6 +62,9 @@ class MyFlower extends MyStructure {
         this.add(curveMesh);
     }
 
+    /**
+     * builds the seeds.
+     */
     buildSeeds() {
         const textureLoader = new THREE.TextureLoader();
         const seedsTexture = textureLoader.load('textures/seeds.jpg');
@@ -63,6 +82,9 @@ class MyFlower extends MyStructure {
         this.add(seedsMesh);
     }
 
+    /**
+     * builds the petals.
+     */
     buildPetals() {
         const textureLoader = new THREE.TextureLoader();
         const petalTexture = textureLoader.load('textures/petal.png');

@@ -5,7 +5,6 @@ import { MyApp } from './MyApp.js';
  * This class contains a 3D axis representation
  */
 class MyAxis extends THREE.Object3D {
-
     /**
      * 
      * @param {MyApp} app the application object

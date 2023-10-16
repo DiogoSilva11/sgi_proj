@@ -2,7 +2,17 @@ import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 import { MyNurbsBuilder } from './../MyNurbsBuilder.js';
 
+/**
+ * This class contains a 3D newspaper representation
+ */
 class MyNewspaper extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} x the x position of the newspaper
+     * @param {number} y the y position of the newspaper
+     * @param {number} z the z position of the newspaper
+     */
     constructor(parent, x, y, z) {
         super(parent);
         this.type = 'Group';
@@ -21,6 +31,9 @@ class MyNewspaper extends MyStructure {
         parent.add(this);
     }
 
+    /**
+     * builds a newspaper.
+     */
     buildNewspaper() {
         const map = new THREE.TextureLoader().load('textures/newspaper.jpg');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
@@ -49,6 +62,9 @@ class MyNewspaper extends MyStructure {
         this.position.z = this.z;
     }
 
+    /**
+     * builds a newspaper nurb.
+     */
     buildNewspaperNurb(material) {
         // declare local variables
         let controlPoints;

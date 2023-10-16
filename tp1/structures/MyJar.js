@@ -2,7 +2,17 @@ import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 import { MyNurbsBuilder } from './../MyNurbsBuilder.js';
 
+/**
+ * This class contains a 3D jar representation
+ */
 class MyJar extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} x the x position of the jar
+     * @param {number} y the y position of the jar
+     * @param {number} z the z position of the jar
+     */
     constructor(parent, x, y, z) {
         super(parent);
         this.type = 'Group';
@@ -21,6 +31,9 @@ class MyJar extends MyStructure {
         parent.add(this);
     }
 
+    /**
+     * builds a jar.
+     */
     buildJar() {
         const map = new THREE.TextureLoader().load('textures/jar.jpg');
         map.wrapS = map.wrapT = THREE.RepeatWrapping;
@@ -42,14 +55,17 @@ class MyJar extends MyStructure {
             this.meshes = [] // empty the array  
         }
         
-        this.buildJarNurb(material);
+        this.buildJarNurbs(material);
 
         this.position.x = this.x;
         this.position.y = this.y;
         this.position.z = this.z;
     }
 
-    buildJarNurb(material) {
+    /**
+     * builds the jar nurbs.
+     */
+    buildJarNurbs(material) {
         // declare local variables
         let controlPoints;
         let surfaceData;

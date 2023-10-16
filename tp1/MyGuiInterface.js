@@ -5,8 +5,7 @@ import { MyContents } from './MyContents.js';
 /**
     This class customizes the gui interface for the app
 */
-class MyGuiInterface  {
-
+class MyGuiInterface {
     /**
      * 
      * @param {MyApp} app The application object 
@@ -52,6 +51,7 @@ class MyGuiInterface  {
             'position z': this.contents.pointLightPositionZ
         }
 
+        // point light folder
         const pointLightFolder = this.datgui.addFolder('Point light');
         pointLightFolder.add( this.contents, 'pointHelperEnabled', false ).name("Helper");
         pointLightFolder.add( pointLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updatePointLightIntensity(value) } );
@@ -75,7 +75,7 @@ class MyGuiInterface  {
             'target z': this.contents.spotLightTargetZ
         }
 
-        // light folder
+        // spot light folder
         const spotLightFolder = this.datgui.addFolder('Spot light');
         spotLightFolder.add( this.contents, 'spotHelperEnabled', false ).name("Helper");
         spotLightFolder.addColor( spotLight, 'color' ).name("Color").onChange( (value) => { this.contents.updateSpotLightColor(value) } );
@@ -99,6 +99,7 @@ class MyGuiInterface  {
             'position z': this.contents.directionalLightPositionZ
         }
 
+        // directional light folder
         const directionalLightFolder = this.datgui.addFolder('Directional light');
         directionalLightFolder.add( this.contents, 'directionalHelperEnabled', false ).name("Helper");
         directionalLightFolder.add( directionalLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updateDirectionalLightIntensity(value) } );
