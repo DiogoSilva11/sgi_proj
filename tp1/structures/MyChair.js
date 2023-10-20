@@ -1,7 +1,15 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D chair representation
+ */
 class MyChair extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} tableDepth the depth of the table
+     */
     constructor(parent, tableDepth) {
         super(parent);
         this.type = 'Group';

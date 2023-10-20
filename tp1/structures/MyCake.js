@@ -1,7 +1,14 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D cake representation
+ */
 class MyCake extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     */
     constructor(parent) {
         super(parent);
         this.type = 'Group';

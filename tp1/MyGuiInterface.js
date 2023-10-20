@@ -5,8 +5,7 @@ import { MyContents } from './MyContents.js';
 /**
     This class customizes the gui interface for the app
 */
-class MyGuiInterface  {
-
+class MyGuiInterface {
     /**
      * 
      * @param {MyApp} app The application object 
@@ -52,6 +51,7 @@ class MyGuiInterface  {
             'position z': this.contents.pointLightPositionZ
         }
 
+        // point light folder
         const pointLightFolder = this.datgui.addFolder('Point light');
         pointLightFolder.add( this.contents, 'pointHelperEnabled', false ).name("Helper");
         pointLightFolder.add( pointLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updatePointLightIntensity(value) } );
@@ -75,7 +75,7 @@ class MyGuiInterface  {
             'target z': this.contents.spotLightTargetZ
         }
 
-        // light folder
+        // spot light folder
         const spotLightFolder = this.datgui.addFolder('Spot light');
         spotLightFolder.add( this.contents, 'spotHelperEnabled', false ).name("Helper");
         spotLightFolder.addColor( spotLight, 'color' ).name("Color").onChange( (value) => { this.contents.updateSpotLightColor(value) } );
@@ -92,9 +92,37 @@ class MyGuiInterface  {
         spotLightFolder.add( spotLight, 'target z', -10, 10 ).name("Target Z").onChange( (value) => { this.contents.updateSpotLightTargetZ(value) } );
         spotLightFolder.close();
 
+        const directionalLight = {
+            'intensity': this.contents.directionalLightIntensity,
+            'position x': this.contents.directionalLightPositionX,
+            'position y': this.contents.directionalLightPositionY,
+            'position z': this.contents.directionalLightPositionZ
+        }
+
+        // directional light folder
+        const directionalLightFolder = this.datgui.addFolder('Directional light');
+        directionalLightFolder.add( this.contents, 'directionalHelperEnabled', false ).name("Helper");
+        directionalLightFolder.add( directionalLight, 'intensity', 0, 500 ).name("Intensity").onChange( (value) => { this.contents.updateDirectionalLightIntensity(value) } );
+        directionalLightFolder.add( directionalLight, 'position x', -20, 20 ).name("Position X").onChange( (value) => { this.contents.updateDirectionalLightPositionX(value) } );
+        directionalLightFolder.add( directionalLight, 'position y', -20, 20 ).name("Position Y").onChange( (value) => { this.contents.updateDirectionalLightPositionY(value) } );
+        directionalLightFolder.add( directionalLight, 'position z', -20, 20 ).name("Position Z").onChange( (value) => { this.contents.updateDirectionalLightPositionZ(value) } );
+        directionalLightFolder.close();
+
         // adds a folder to the gui interface for the camera
         const cameraFolder = this.datgui.addFolder('Camera')
-        cameraFolder.add(this.app, 'activeCameraName', [ 'Perspective', 'Perspective 2', 'Left', 'Right', 'Top', 'Front', 'Back' ] ).name("Active camera");
+        cameraFolder.add(this.app, 'activeCameraName', [
+            'Perspective',
+            'Perspective 2',
+            'Left',
+            'Right',
+            'Top',
+            'Front',
+            'Back',
+            'Table',
+            'Plate',
+            'Cake',
+            'Candle'
+        ]).name("Active camera");
         // note that we are using a property from the app 
         cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("X Coord")
         cameraFolder.add(this.app.activeCamera.position, 'y', 0, 10).name("Y Coord")

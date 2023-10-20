@@ -1,7 +1,19 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D frame representation
+ */
 class MyFrame extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {string} texture the path to the texture
+     * @param {THREE.Vector3} pos the position of the frame
+     * @param {number} h the height of the frame
+     * @param {number} w the width of the frame
+     * @param {number} d the depth of the frame
+     */
     constructor(parent, texture, pos, h, w, d) {
         super(parent);
         this.type = 'Group';

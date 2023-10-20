@@ -1,7 +1,15 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D plate representation
+ */
 class MyPlate extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} tableHeight the height of the table
+     */
     constructor(parent, tableHeight) {
         super(parent)
         let plateRadiusTop = 1.2

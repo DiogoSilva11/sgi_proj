@@ -17,8 +17,7 @@ import { MyFlower } from './structures/MyFlower.js';
 /**
  *  This class contains the contents of out application
  */
-class MyContents  {
-
+class MyContents {
     /**
        constructs the object
        @param {MyApp} app The application object
@@ -29,6 +28,7 @@ class MyContents  {
         this.axisEnabled = false
         this.lastAxisEnabled = null
 
+        // structures
         this.room = null
         this.table = null
         this.plate = null
@@ -95,8 +95,15 @@ class MyContents  {
         this.spotLightTarget = new THREE.Object3D();
         this.spotLightHelper = new THREE.SpotLightHelper(this.spotLight);
 
-        this.directionalLight = new THREE.DirectionalLight(0xffffff, 0, 1); // 0 intensity for now
-        this.directionalLight.position.set(0, 10, -10);
+        // directional light related attributes
+        this.directionalHelperEnabled = false
+        this.lastDirectionalHelperEnabled = null
+        this.directionalLightIntensity = 0
+        this.directionalLightPositionX = 0
+        this.directionalLightPositionY = 10
+        this.directionalLightPositionZ = -10
+        this.directionalLight = new THREE.DirectionalLight(0xffffff, this.directionalLightIntensity, 1);
+        this.directionalLight.position.set(this.directionalLightPositionX, this.directionalLightPositionY, this.directionalLightPositionZ);
         this.directionalLightTarget = new THREE.Object3D();
         this.directionalLightHelper = new THREE.DirectionalLightHelper(this.directionalLight, 0.5);
     }
@@ -210,6 +217,10 @@ class MyContents  {
         }
     }
 
+    /**
+     * updates the axis if required
+     * this method is called from the render method of the app
+     */
     updateAxisIfRequired() {
         if (this.axisEnabled !== this.lastAxisEnabled) {
             this.lastAxisEnabled = this.axisEnabled
@@ -222,6 +233,9 @@ class MyContents  {
         }
     }
 
+    /**
+     * updates the point light helper if required
+     */
     updatePointHelperIfRequired() {
         if (this.pointHelperEnabled !== this.lastPointHelperEnabled) {
             this.lastPointHelperEnabled = this.pointHelperEnabled
@@ -234,6 +248,9 @@ class MyContents  {
         }
     }
 
+    /**
+     * updates the spot light helper if required
+     */
     updateSpotHelperIfRequired() {
         if (this.spotHelperEnabled !== this.lastSpotHelperEnabled) {
             this.lastSpotHelperEnabled = this.spotHelperEnabled
@@ -247,6 +264,21 @@ class MyContents  {
     }
 
     /**
+     * updates the directional light helper if required
+     */
+    updateDirectionalHelperIfRequired() {
+        if (this.directionalHelperEnabled !== this.lastDirectionalHelperEnabled) {
+            this.lastDirectionalHelperEnabled = this.directionalHelperEnabled
+            if (this.directionalHelperEnabled) {
+                this.app.scene.add(this.directionalLightHelper)
+            }
+            else {
+                this.app.scene.remove(this.directionalLightHelper)
+            }
+        }
+    }
+
+    /**
      * updates the contents
      * this method is called from the render method of the app
      * 
@@ -254,14 +286,15 @@ class MyContents  {
     update() {
         // check if elements need to be updated
         this.updateAxisIfRequired()
+        this.updatePointHelperIfRequired()
+        this.updateSpotHelperIfRequired()
+        this.updateDirectionalHelperIfRequired()
         this.room.updateIfRequired()
         this.table.updateIfRequired()
         this.plate.updateIfRequired()
         this.cake.updateIfRequired()
         this.candle.updateIfRequired()
         this.chair.updateIfRequired()
-        this.updatePointHelperIfRequired()
-        this.updateSpotHelperIfRequired()
         this.frame1.updateIfRequired()
         this.frame2.updateIfRequired()
         this.window.updateIfRequired()
@@ -272,84 +305,184 @@ class MyContents  {
         this.flower.updateIfRequired()
     }
 
+    /**
+     * Updates the point light's intensity.
+     * @param {number} value The new intensity value.
+     */
     updatePointLightIntensity(value) {
         this.pointLightIntensity = value
         this.pointLight.intensity = this.pointLightIntensity
     }
 
+    /**
+     * Updates the point light's X position.
+     * @param {number} value The new X position value.
+     */
     updatePointLightPositionX(value) {
         this.pointLightPositionX = value
         this.pointLight.position.setX(this.pointLightPositionX)
     }
 
+    /**
+     * Updates the point light's Y position.
+     * @param {number} value The new Y position value.
+     */
     updatePointLightPositionY(value) {
         this.pointLightPositionY = value
         this.pointLight.position.setY(this.pointLightPositionY)
     }
 
+    /**
+     * Updates the point light's Z position.
+     * @param {number} value The new Z position value.
+     */
     updatePointLightPositionZ(value) {
         this.pointLightPositionZ = value
         this.pointLight.position.setZ(this.pointLightPositionZ)
     }
 
+    /**
+     * Updates the spot light's color.
+     * @param {string} value The new color value.
+     */
     updateSpotLightColor(value) {
         this.spotLightColor = value
         this.spotLight.color.set(this.spotLightColor)
     }
 
+    /**
+     * Updates the spot light's intensity.
+     * @param {number} value The new intensity value.
+     */
     updateSpotLightIntensity(value) {
         this.spotLightIntensity = value
         this.spotLight.intensity = this.spotLightIntensity
     }
 
+    /**
+     * Updates the spot light's distance.
+     * @param {number} value The new distance value.
+     */
     updateSpotLightDistance(value) {
         this.spotLightDistance = value
         this.spotLight.distance = this.spotLightDistance
     }
 
+    /**
+     * Updates the spot light's angle.
+     * @param {number} value The new angle value.
+     */
     updateSpotLightAngle(value) {
         this.spotLightAngle = Math.PI / 180 * value
         this.spotLight.angle = this.spotLightAngle
     }
 
+    /**
+     * Updates the spot light's penumbra.
+     * @param {number} value The new penumbra value.
+     */
     updateSpotLightPenumbra(value) {
         this.spotLightPenumbra = value
         this.spotLight.penumbra = this.spotLightPenumbra
     }
 
+    /**
+     * Updates the spot light's decay.
+     * @param {number} value The new decay value.
+     */
     updateSpotLightDecay(value) {
         this.spotLightDecay = value
         this.spotLight.decay = this.spotLightDecay
     }
 
+    /**
+     * Updates the spot light's X position.
+     * @param {number} value The new X position value.
+     */
     updateSpotLightPositionX(value) {
         this.spotLightPositionX = value
         this.spotLight.position.setX(this.spotLightPositionX)
     }
 
+    /**
+     * Updates the spot light's Y position.
+     * @param {number} value The new Y position value.
+     */
     updateSpotLightPositionY(value) {
         this.spotLightPositionY = value
         this.spotLight.position.setY(this.spotLightPositionY)
     }
 
+    /**
+     * Updates the spot light's Z position.
+     * @param {number} value The new Z position value.
+     */
     updateSpotLightPositionZ(value) {
         this.spotLightPositionZ = value
         this.spotLight.position.setZ(this.spotLightPositionZ)
     }
 
+    /**
+     * Updates the spot light target's X position.
+     * @param {number} value The new X position value.
+     */
     updateSpotLightTargetX(value) {
         this.spotLightTargetX = value
         this.spotLightTarget.position.setX(this.spotLightTargetX)
     }
 
+    /**
+     * Updates the spot light target's Y position.
+     * @param {number} value The new Y position value.
+     */
     updateSpotLightTargetY(value) {
         this.spotLightTargetY = value
         this.spotLightTarget.position.setY(this.spotLightTargetY)
     }
 
+    /**
+     * Updates the spot light target's Z position.
+     * @param {number} value The new Z position value.
+     */
     updateSpotLightTargetZ(value) {
         this.spotLightTargetZ = value
         this.spotLightTarget.position.setZ(this.spotLightTargetZ)
+    }
+
+    /**
+     * Updates the directional light's intensity.
+     * @param {number} value The new intensity value.
+     */
+    updateDirectionalLightIntensity(value) {
+        this.directionalLightIntensity = value
+        this.directionalLight.intensity = this.directionalLightIntensity
+    }
+
+    /**
+     * Updates the directional light's X position.
+     * @param {number} value The new X position value.
+     */
+    updateDirectionalLightPositionX(value) {
+        this.directionalLightPositionX = value
+        this.directionalLight.position.setX(this.directionalLightPositionX)
+    }
+
+    /**
+     * Updates the directional light's Y position.
+     * @param {number} value The new Y position value.
+     */
+    updateDirectionalLightPositionY(value) {
+        this.directionalLightPositionY = value
+        this.directionalLight.position.setY(this.directionalLightPositionY)
+    }
+
+    /**
+     * Updates the directional light's Z position.
+     * @param {number} value The new Z position value.
+     */
+    updateDirectionalLightPositionZ(value) {
+        this.directionalLightPositionZ = value
+        this.directionalLight.position.setZ(this.directionalLightPositionZ)
     }
 }
 

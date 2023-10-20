@@ -1,7 +1,15 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D candle representation
+ */
 class MyCandle extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} cakeHeight the height of the cake
+     */
     constructor(parent, cakeHeight) {
         super(parent);
         this.type = 'Group';
@@ -24,7 +32,7 @@ class MyCandle extends MyStructure {
     }
 
     /**
-     * builds a candle and flame
+     * builds a candle
      */
     buildCandle() {
         const candleMaterial = new THREE.MeshPhongMaterial({

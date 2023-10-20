@@ -1,7 +1,19 @@
 import * as THREE from 'three';
 import { MyStructure } from '../MyStructure.js';
 
+/**
+ * This class contains a 3D spring representation
+ */
 class MySpring extends MyStructure {
+    /**
+     * 
+     * @param {THREE.Object3D} parent the parent object
+     * @param {number} rad the radius of the spring
+     * @param {number} loops the number of loops of the spring
+     * @param {number} x the x position of the spring
+     * @param {number} y the y position of the spring
+     * @param {number} z the z position of the spring
+     */
     constructor(parent, rad, loops, x, y, z) {
         super(parent);
         this.type = 'Group';

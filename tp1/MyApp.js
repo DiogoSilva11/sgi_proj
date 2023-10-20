@@ -79,12 +79,12 @@ class MyApp  {
         this.cameras['Perspective 2'] = perspective2
 
         // defines the frustum size for the orthographic cameras
-        const left = -this.frustumSize / 2 * aspect
-        const right = this.frustumSize /2 * aspect 
-        const top = this.frustumSize / 2 
-        const bottom = -this.frustumSize / 2
-        const near = -this.frustumSize /2
-        const far =  this.frustumSize
+        let left = -this.frustumSize / 2 * aspect
+        let right = this.frustumSize /2 * aspect 
+        let top = this.frustumSize / 2 
+        let bottom = -this.frustumSize / 2
+        let near = -this.frustumSize /2
+        let far =  this.frustumSize
 
         // create a left view orthographic camera
         const orthoLeft = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
@@ -120,6 +120,26 @@ class MyApp  {
         orthoBack.position.set(0,0, -this.frustumSize /4) 
         orthoBack.lookAt( new THREE.Vector3(0,0,0) );
         this.cameras['Back'] = orthoBack
+
+        // create a table view perspective camera
+        const tablePerspective = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
+        tablePerspective.position.set(-7, 6, -5)
+        this.cameras['Table'] = tablePerspective
+
+        // create a plate view perspective camera
+        const platePerspective = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
+        platePerspective.position.set(-2, 7, -2)
+        this.cameras['Plate'] = platePerspective
+
+        // create a cake view perspective camera
+        const cakePerspective = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
+        cakePerspective.position.set(1, 7, -1)
+        this.cameras['Cake'] = cakePerspective
+
+        // create a candle view perspective camera
+        const candlePerspective = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000)
+        candlePerspective.position.set(2, 7, 0)
+        this.cameras['Candle'] = candlePerspective
     }
 
     /**
