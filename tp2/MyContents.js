@@ -3,6 +3,7 @@ import { MyAxis } from './MyAxis.js';
 import { MyFileReader } from './parser/MyFileReader.js';
 import { configGlobals } from './config/GlobalsConf.js';
 import { configCameras } from './config/CameraConf.js';
+import { configTextures } from './config/TextureConf.js';
 /**
  *  This class contains the contents of out application
  */
@@ -42,6 +43,8 @@ class MyContents  {
 
         configGlobals(data, this.app.scene)
         configCameras(data, this.app)
+
+        this.textures = configTextures(data)
     }
 
     output(obj, indent = 0) {
