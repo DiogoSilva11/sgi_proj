@@ -4,7 +4,7 @@ import { MyFileReader } from './parser/MyFileReader.js';
 import { configGlobals } from './config/GlobalsConf.js';
 import { configCameras } from './config/CameraConf.js';
 import { configTextures } from './config/TextureConf.js';
-import { configGraph } from './config/GraphConf.js';
+import { MySceneGraph } from './config/MySceneGraph.js';
 
 /**
  *  This class contains the contents of out application
@@ -48,7 +48,7 @@ class MyContents  {
 
         this.textures = configTextures(data)
 
-        configGraph(data, this.app.scene)
+        this.graph = new MySceneGraph(data, this.app.scene)
     }
 
     output(obj, indent = 0) {
