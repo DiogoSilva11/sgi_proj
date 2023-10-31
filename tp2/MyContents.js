@@ -4,7 +4,7 @@ import { MyFileReader } from './parser/MyFileReader.js';
 import { configGlobals } from './config/GlobalsConf.js';
 import { configCameras } from './config/CameraConf.js';
 import { configTextures } from './config/TextureConf.js';
-import { MySceneGraph } from './config/MySceneGraph.js';
+import { MySceneConf } from './config/MySceneConf.js';
 
 /**
  *  This class contains the contents of out application
@@ -42,13 +42,10 @@ class MyContents  {
     onSceneLoaded(data) {
         console.info("scene data loaded " + data + ". visit MySceneData javascript class to check contents for each data item.")
         this.onAfterSceneLoadedAndBeforeRender(data);
-
-        configGlobals(data, this.app.scene)
+        
         configCameras(data, this.app)
 
-        this.textures = configTextures(data)
-
-        this.graph = new MySceneGraph(data, this.app.scene)
+        this.sceneConf = new MySceneConf(data, this.app.scene)
     }
 
     output(obj, indent = 0) {
