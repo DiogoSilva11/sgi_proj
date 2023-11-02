@@ -49,13 +49,32 @@ class MySceneConf {
                 shininess: mat.shininess
             })
 
+            if (mat.wireframe !== undefined) this.materials[mat.id].wireframe = mat.wireframe
+            if (mat.shading !== undefined) {
+                if (mat.shading === "none") {
+                    this.materials[mat.id].flatShading = false
+                    this.materials[mat.id].lights = false
+                }
+                else if (mat.shading === "flat") {
+                    this.materials[mat.id].flatShading = true
+                }
+            }
             if (mat.textureref !== undefined) {
                 const file = "../" + this.data.textures[mat.textureref].filepath
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].map = texture
             }
-
-            // to do
+            /*
+            if (mat.texlength_s !== undefined) {
+                this.materials[mat.id].map.wrapS = THREE.RepeatWrapping
+                this.materials[mat.id].map.repeat.x = mat.texlength_s
+            }
+            if (mat.texlength_t !== undefined) {
+                this.materials[mat.id].map.wrapT = THREE.RepeatWrapping
+                this.materials[mat.id].map.repeat.y = mat.texlength_t
+            }
+            */
+            if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
         }
     }
 

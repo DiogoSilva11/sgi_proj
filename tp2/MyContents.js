@@ -1,9 +1,6 @@
-import * as THREE from 'three';
 import { MyAxis } from './MyAxis.js';
 import { MyFileReader } from './parser/MyFileReader.js';
-import { configGlobals } from './config/GlobalsConf.js';
 import { configCameras } from './config/CameraConf.js';
-import { configTextures } from './config/TextureConf.js';
 import { MySceneConf } from './config/MySceneConf.js';
 
 /**
