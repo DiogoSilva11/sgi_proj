@@ -8,7 +8,9 @@ class MySceneConf {
 
         this.configGlobals()
         this.configMaterials()
-        this.configNode(this.data.rootId)
+
+        let baseNode = this.configNode(this.data.rootId)
+        this.scene.add(baseNode)
     }
 
     configGlobals() {
@@ -47,68 +49,49 @@ class MySceneConf {
         }
     }
 
-    configNode(key, parent = this.scene, material = null) {
+    configNode(key, material = null) {
         let node = this.data.nodes[key]
         let group = new THREE.Group()
 
-        if (node.transformations !== undefined) {
-            for (var t in node.transformations) {
-                t = node.transformations[t]
-                switch (t.type) {
-                    case "T":
-                        group.position.set(t.translate[0], t.translate[1], t.translate[2])
-                        break;
-                    case "R":
-                        group.rotation.set(
-                            t.rotation[0] * (Math.PI / 180),
-                            t.rotation[1] * (Math.PI / 180),
-                            t.rotation[2] * (Math.PI / 180)
-                        )
-                        break;
-                    case "S":
-                        group.scale.set(t.scale[0], t.scale[1], t.scale[2])
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        if (node.materialIds !== undefined) {
-            material = this.materials[node.materialIds[0]]
-        }
+        if (node.transformations !== undefined) this.transformNode(node, group)
+        if (node.materialIds.length != 0) material = this.materials[node.materialIds[0]]
 
         for (let i = 0; i < node.children.length; i++) {
             let child = node.children[i]
             switch (child.type) {
                 case "node":
-                    this.configNode(child.id, group, material)
+                    let newNode = this.configNode(child.id, material)
+                    group.add(newNode)
                     break;
                 case "pointlight":
-                    this.configPointLight(child, group)
+                    let pointLight = this.configPointLight(child)
+                    group.add(pointLight)
                     break;
                 case "spotlight":
-                    this.configSpotLight(child, group)
+                    let spotLight = this.configSpotLight(child)
+                    group.add(spotLight)
                     break;
                 case "directionallight":
-                    this.configDirectionalLight(child, group)
+                    let directionalLight = this.configDirectionalLight(child)
+                    group.add(directionalLight)
                     break;
                 case "primitive":
                     switch (child.subtype) {
                         case "cylinder":
-                            this.configCylinder(child, group, material)
+                            let cylinder = this.configCylinder(child, material)
+                            group.add(cylinder)
                             break;
                         case "rectangle":
-                            this.configRectangle(child, group, material)
-                            break;
-                        case "triangle":
-                            //this.configTriangle(child, group, material)
+                            let rectangle = this.configRectangle(child, material)
+                            group.add(rectangle)
                             break;
                         case "sphere":
-                            this.configSphere(child, group, material)
+                            let sphere = this.configSphere(child, material)
+                            group.add(sphere)
                             break;
                         case "box":
-                            this.configBox(child, group, material)
+                            let box = this.configBox(child, material)
+                            group.add(box)
                             break;
                         default:
                             break;
@@ -118,10 +101,38 @@ class MySceneConf {
             }
         }
 
-        parent.add(group)
+        return group
     }
 
-    configPointLight(child, parent = this.scene) {
+    transformNode(node, group) {
+        for (var t in node.transformations) {
+            t = node.transformations[t]
+            switch (t.type) {
+                case "T":
+                    const tx = group.position.x + t.translate[0]
+                    const ty = group.position.y + t.translate[1]
+                    const tz = group.position.z + t.translate[2]
+                    group.position.set(tx, ty, tz)
+                    break;
+                case "R":
+                    const rx = group.rotation.x + t.rotation[0] * (Math.PI / 180)
+                    const ry = group.rotation.y + t.rotation[1] * (Math.PI / 180)
+                    const rz = group.rotation.z + t.rotation[2] * (Math.PI / 180)
+                    group.rotation.set(rx, ry, rz)
+                    break;
+                case "S":
+                    const sx = group.scale.x * t.scale[0]
+                    const sy = group.scale.y * t.scale[1]
+                    const sz = group.scale.z * t.scale[2]
+                    group.scale.set(sx, sy, sz)
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    configPointLight(child) {
         let light = new THREE.PointLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
         )
@@ -129,10 +140,10 @@ class MySceneConf {
 
         // to do: optional parameters
 
-        parent.add(light)
+        return light
     }
 
-    configSpotLight(child, parent = this.scene) {
+    configSpotLight(child) {
         let light = new THREE.SpotLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b),
         )
@@ -142,13 +153,10 @@ class MySceneConf {
 
         // to do: optional parameters
 
-        parent.add(light)
-        parent.add(light.target)
+        return light
     }
 
-    configDirectionalLight(child, parent = this.scene) {
-        console.log(child)
-
+    configDirectionalLight(child) {
         let light = new THREE.DirectionalLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
         )
@@ -156,13 +164,13 @@ class MySceneConf {
 
         // to do: optional parameters
 
-        parent.add(light)
+        return light
     }
 
-    configCylinder(child, parent = this.scene, material = null) {
+    configCylinder(child, material = null) {
         let geometry = new THREE.CylinderGeometry(
-            child.representations[0].base,
             child.representations[0].top,
+            child.representations[0].base,
             child.representations[0].height,
             child.representations[0].slices,
             child.representations[0].stacks
@@ -173,10 +181,10 @@ class MySceneConf {
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let cylinder = new THREE.Mesh(geometry, material)
 
-        parent.add(cylinder)
+        return cylinder
     }
     
-    configRectangle(child, parent = this.scene, material = null) {
+    configRectangle(child, material = null) {
         const x1 = child.representations[0].xy1[0]
         const y1 = child.representations[0].xy1[1]
         const x2 = child.representations[0].xy2[0]
@@ -187,11 +195,12 @@ class MySceneConf {
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let rectangle = new THREE.Mesh(geometry, material)
+        rectangle.position.set((x2 + x1) / 2, (y2 + y1) / 2)
 
-        parent.add(rectangle)
+        return rectangle
     }
     
-    configSphere(child, parent = this.scene, material = null) {
+    configSphere(child, material = null) {
         let geometry = new THREE.SphereGeometry(
             child.representations[0].radius,
             child.representations[0].slices,
@@ -203,10 +212,10 @@ class MySceneConf {
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let sphere = new THREE.Mesh(geometry, material)
 
-        parent.add(sphere)
+        return sphere
     }
     
-    configBox(child, parent = this.scene, material = null) {
+    configBox(child, material = null) {
         const x1 = child.representations[0].xyz1[0]
         const y1 = child.representations[0].xyz1[1]
         const z1 = child.representations[0].xyz1[2]
@@ -219,8 +228,9 @@ class MySceneConf {
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let box = new THREE.Mesh(geometry, material)
+        box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
 
-        parent.add(box)
+        return box
     }
 }
 
