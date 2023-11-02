@@ -7,6 +7,7 @@ class MySceneConf {
         this.materials = {}
 
         this.configGlobals()
+        this.configFog()
         this.configMaterials()
 
         let baseNode = this.configNode(this.data.rootId)
@@ -26,6 +27,15 @@ class MySceneConf {
                 this.scene.add(new THREE.AmbientLight(ambientColor))
             }
         }
+    }
+
+    configFog() {
+        let fog = new THREE.Fog(
+            new THREE.Color(this.data.fog.color.r, this.data.fog.color.g, this.data.fog.color.b),
+            this.data.fog.near,
+            this.data.fog.far
+        )
+        this.scene.fog = fog
     }
 
     configMaterials() {
@@ -66,14 +76,18 @@ class MySceneConf {
                 case "pointlight":
                     let pointLight = this.configPointLight(child)
                     group.add(pointLight)
+                    //group.add(new THREE.PointLightHelper(pointLight))
                     break;
                 case "spotlight":
                     let spotLight = this.configSpotLight(child)
                     group.add(spotLight)
+                    group.add(spotLight.target)
+                    //group.add(new THREE.SpotLightHelper(spotLight))
                     break;
                 case "directionallight":
                     let directionalLight = this.configDirectionalLight(child)
                     group.add(directionalLight)
+                    //group.add(new THREE.DirectionalLightHelper(directionalLight))
                     break;
                 case "primitive":
                     switch (child.subtype) {
@@ -138,7 +152,16 @@ class MySceneConf {
         )
         light.position.set(child.position[0], child.position[0], child.position[0])
 
-        // to do: optional parameters
+        if (child.enabled !== undefined) light.visible = child.enabled
+        if (child.intensity !== undefined) light.intensity = child.intensity
+        if (child.distance !== undefined) light.distance = child.distance
+        if (child.decay !== undefined) light.decay = child.decay
+        if (child.castshadow !== undefined) light.castShadow = child.castshadow
+        if (child.shadowfar !== undefined) light.shadow.camera.far = child.shadowFar
+        if (child.shadowmapsize !== undefined) {
+            light.shadow.mapSize.width = child.shadowmapsize
+            light.shadow.mapSize.height = child.shadowmapsize
+        }
 
         return light
     }
@@ -151,7 +174,17 @@ class MySceneConf {
         light.target.position.set(child.target[0], child.target[1], child.target[2])
         light.angle = child.angle * (Math.PI / 180)
 
-        // to do: optional parameters
+        if (child.enabled !== undefined) light.visible = child.enabled
+        if (child.intensity !== undefined) light.intensity = child.intensity
+        if (child.distance !== undefined) light.distance = child.distance
+        if (child.decay !== undefined) light.decay = child.decay
+        if (child.penumbra !== undefined) light.penumbra = child.penumbra
+        if (child.castshadow !== undefined) light.castShadow = child.castshadow
+        if (child.shadowfar !== undefined) light.shadow.camera.far = child.shadowFar
+        if (child.shadowmapsize !== undefined) {
+            light.shadow.mapSize.width = child.shadowmapsize
+            light.shadow.mapSize.height = child.shadowmapsize
+        }
 
         return light
     }
@@ -162,7 +195,18 @@ class MySceneConf {
         )
         light.position.set(child.position[0], child.position[0], child.position[0])
 
-        // to do: optional parameters
+        if (child.enabled !== undefined) light.visible = child.enabled
+        if (child.intensity !== undefined) light.intensity = child.intensity
+        if (child.castshadow !== undefined) light.castShadow = child.castshadow
+        if (child.shadowleft !== undefined) light.shadow.camera.left = child.shadowleft
+        if (child.shadowright !== undefined) light.shadow.camera.right = child.shadowright
+        if (child.shadowbottom !== undefined) light.shadow.camera.bottom = child.shadowbottom
+        if (child.shadowtop !== undefined) light.shadow.camera.top = child.shadowtop
+        if (child.shadowfar !== undefined) light.shadow.camera.far = child.shadowFar
+        if (child.shadowmapsize !== undefined) {
+            light.shadow.mapSize.width = child.shadowmapsize
+            light.shadow.mapSize.height = child.shadowmapsize
+        }
 
         return light
     }
@@ -176,7 +220,9 @@ class MySceneConf {
             child.representations[0].stacks
         )
 
-        // to do: optional parameters
+        if (child.representations[0].capsclose !== undefined) geometry.parameters.openEnded = !child.representations[0].capsclose
+        if (child.representations[0].thetastart !== undefined) geometry.parameters.thetaStart = child.representations[0].thetastart * (Math.PI / 180)
+        if (child.representations[0].thetalength !== undefined) geometry.parameters.thetaLength = child.representations[0].thetalength * (Math.PI / 180)
     
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let cylinder = new THREE.Mesh(geometry, material)
@@ -191,7 +237,8 @@ class MySceneConf {
         const y2 = child.representations[0].xy2[1]
         let geometry = new THREE.PlaneGeometry(x2 - x1, y2 - y1)
 
-        // to do: optional parameters
+        if (child.representations[0].parts_x !== undefined) geometry.parameters.widthSegments = child.representations[0].parts_x
+        if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let rectangle = new THREE.Mesh(geometry, material)
@@ -207,7 +254,10 @@ class MySceneConf {
             child.representations[0].stacks
         )
 
-        // to do: optional parameters
+        if (child.representations[0].thetastart !== undefined) geometry.parameters.thetaStart = child.representations[0].thetastart * (Math.PI / 180)
+        if (child.representations[0].thetalength !== undefined) geometry.parameters.thetaLength = child.representations[0].thetalength * (Math.PI / 180)
+        if (child.representations[0].phistart !== undefined) geometry.parameters.phiStart = child.representations[0].phistart * (Math.PI / 180)
+        if (child.representations[0].philength !== undefined) geometry.parameters.phiLength = child.representations[0].philength * (Math.PI / 180)
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let sphere = new THREE.Mesh(geometry, material)
@@ -224,7 +274,9 @@ class MySceneConf {
         const z2 = child.representations[0].xyz2[2]
         let geometry = new THREE.BoxGeometry(x2 - x1, y2 - y1, z2 - z1)
 
-        // to do: optional parameters
+        if (child.representations[0].parts_x !== undefined) geometry.parameters.widthSegments = child.representations[0].parts_x
+        if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
+        if (child.representations[0].parts_z !== undefined) geometry.parameters.depthSegments = child.representations[0].parts_z
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
         let box = new THREE.Mesh(geometry, material)

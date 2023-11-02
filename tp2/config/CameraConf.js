@@ -8,8 +8,6 @@ import { MyApp } from '../MyApp.js';
  * @param {MyApp} app 
  */
 function configCameras(data, app) {
-    let ret = []
-
     for(const k in data.cameras) {
         const camData = data.cameras[k]
         let camera = null
