@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MyNurbsBuilder } from './MyNurbsBuilder.js';
 
 class MySceneConf {
     constructor(data, scene) {
@@ -125,6 +126,10 @@ class MySceneConf {
                         case "box":
                             let box = this.configBox(child, material)
                             group.add(box)
+                            break;
+                        case "nurbs":
+                            let nurbs = this.configNurbs(child, material)
+                            group.add(nurbs)
                             break;
                         default:
                             break;
@@ -302,6 +307,34 @@ class MySceneConf {
         box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
 
         return box
+    }
+
+    configNurbs(child, material = null) {
+        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
+        let orderU = child.representations[0].degree_u + 1
+        let orderV = child.representations[0].degree_v + 1
+        
+        console.log(child.representations[0].controlpoints)
+        let controlPoints = [
+            [0, 0, 0, 1],
+            [0, 0, 1, 1],
+            [1, 0, 0, 1],
+            [1, 0, 1, 1]
+        ]
+
+        let builder = new MyNurbsBuilder()
+        let surface = builder.build(
+            controlPoints,
+            orderU,
+            orderV,
+            child.representations[0].parts_u,
+            child.representations[0].parts_v,
+            material
+        )
+
+        let nurbs = new THREE.Mesh(surface, material)
+        return nurbs
     }
 }
 
