@@ -131,6 +131,10 @@ class MySceneConf {
                             let nurbs = this.configNurbs(child, material)
                             group.add(nurbs)
                             break;
+                        case "skybox":
+                            //let skybox = this.configSkybox(child)
+                            //group.add(skybox)
+                            break;
                         default:
                             break;
                     }
@@ -312,22 +316,23 @@ class MySceneConf {
     configNurbs(child, material = null) {
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
-        let orderU = child.representations[0].degree_u + 1
-        let orderV = child.representations[0].degree_v + 1
-        
-        console.log(child.representations[0].controlpoints)
-        let controlPoints = [
-            [0, 0, 0, 1],
-            [0, 0, 1, 1],
-            [1, 0, 0, 1],
-            [1, 0, 1, 1]
-        ]
+        const orderU = child.representations[0].degree_u + 1
+        const orderV = child.representations[0].degree_v + 1
+        let controlPoints = []
+
+        for (let u = 0; u < orderU; u++) {
+            controlPoints.push([])
+            for(let v = 0; v < orderV; v++) {
+                const point = child.representations[0].controlpoints[u * orderV + v]
+                controlPoints[u].push(new THREE.Vector4(point.xx, point.yy, point.zz, 1))
+            }
+        }
 
         let builder = new MyNurbsBuilder()
         let surface = builder.build(
             controlPoints,
-            orderU,
-            orderV,
+            child.representations[0].degree_u,
+            child.representations[0].degree_v,
             child.representations[0].parts_u,
             child.representations[0].parts_v,
             material
@@ -335,6 +340,24 @@ class MySceneConf {
 
         let nurbs = new THREE.Mesh(surface, material)
         return nurbs
+    }
+
+    configSkybox(child) {
+        // to do
+
+        let geometry = new THREE.BoxGeometry(
+            child.representations[0].width,
+            child.representations[0].height,
+            child.representations[0].depth
+        )
+
+        let material = new THREE.MeshBasicMaterial({
+            envMap: new THREE.CubeTextureLoader(),
+            side: THREE.BackSide
+        })
+
+        let skybox = new THREE.Mesh(geometry, material)
+        return skybox
     }
 }
 
