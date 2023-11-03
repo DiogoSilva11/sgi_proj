@@ -61,7 +61,7 @@ class MySceneConf {
                 }
             }
             if (mat.textureref !== undefined) {
-                const file = "../" + this.data.textures[mat.textureref].filepath
+                const file = "./" + this.data.textures[mat.textureref].filepath
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].map = texture
             }
@@ -324,7 +324,7 @@ class MySceneConf {
             controlPoints.push([])
             for(let v = 0; v < orderV; v++) {
                 const point = child.representations[0].controlpoints[u * orderV + v]
-                controlPoints[u].push(new THREE.Vector4(point.xx, point.yy, point.zz, 1))
+                controlPoints[u].push([point.xx, point.yy, point.zz, 1])
             }
         }
 

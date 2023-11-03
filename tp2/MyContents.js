@@ -41,7 +41,6 @@ class MyContents  {
         this.onAfterSceneLoadedAndBeforeRender(data);
         
         configCameras(data, this.app)
-
         this.sceneConf = new MySceneConf(data, this.app.scene)
     }
 
