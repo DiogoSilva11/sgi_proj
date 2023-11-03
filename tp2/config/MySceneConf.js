@@ -60,8 +60,8 @@ class MySceneConf {
                     this.materials[mat.id].flatShading = true
                 }
             }
-            if (mat.textureref !== undefined) {
-                const file = "./" + this.data.textures[mat.textureref].filepath
+            if (mat.textureref !== null) {
+                const file = "../" + this.data.textures[mat.textureref].filepath
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].map = texture
             }
@@ -178,7 +178,7 @@ class MySceneConf {
         let light = new THREE.PointLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
         )
-        light.position.set(child.position[0], child.position[0], child.position[0])
+        light.position.set(child.position[0], child.position[1], child.position[2])
 
         if (child.enabled !== undefined) light.visible = child.enabled
         if (child.intensity !== undefined) light.intensity = child.intensity
@@ -198,7 +198,7 @@ class MySceneConf {
         let light = new THREE.SpotLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b),
         )
-        light.position.set(child.position[0], child.position[0], child.position[0])
+        light.position.set(child.position[0], child.position[1], child.position[2])
         light.target.position.set(child.target[0], child.target[1], child.target[2])
         light.angle = child.angle * (Math.PI / 180)
 
@@ -221,7 +221,7 @@ class MySceneConf {
         let light = new THREE.DirectionalLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
         )
-        light.position.set(child.position[0], child.position[0], child.position[0])
+        light.position.set(child.position[0], child.position[1], child.position[2])
 
         if (child.enabled !== undefined) light.visible = child.enabled
         if (child.intensity !== undefined) light.intensity = child.intensity
@@ -320,13 +320,15 @@ class MySceneConf {
         const orderV = child.representations[0].degree_v + 1
         let controlPoints = []
 
-        for (let u = 0; u < orderU; u++) {
+        for (let u = 0; u <= orderU; u++) {
             controlPoints.push([])
-            for(let v = 0; v < orderV; v++) {
+            for(let v = 0; v <= orderV; v++) {
                 const point = child.representations[0].controlpoints[u * orderV + v]
                 controlPoints[u].push([point.xx, point.yy, point.zz, 1])
             }
         }
+
+        console.log(controlPoints)
 
         let builder = new MyNurbsBuilder()
         let surface = builder.build(
