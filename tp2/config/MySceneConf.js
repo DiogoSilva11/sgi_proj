@@ -63,7 +63,27 @@ class MySceneConf {
             if (mat.textureref !== null) {
                 const file = "../" + this.data.textures[mat.textureref].filepath
                 const texture = new THREE.TextureLoader().load(file)
+                texture.generateMipmaps = false
                 this.materials[mat.id].map = texture
+
+                for (let i=0; i<=7; i++) {
+                    if (this.data.textures[mat.textureref]["mipmap" + i] != null) {
+                        const file = "../" + this.data.textures[mat.textureref]["mipmap" + i]
+                        const mipmap = new THREE.TextureLoader().load(file,
+                            function(mipTex){
+                                const canvas = document.createElement("canvas")
+                                const ctx = canvas.getContext("2d")
+                                const img = mipTex.image
+
+                                canvas.width = img.width
+                                canvas.height = canvas.height
+
+                                ctx.drawImage(img, 0, 0)
+                                texture.mipmaps[i] = canvas
+                            }
+                        )
+                    } else { break }
+                }
             }
             /*
             if (mat.texlength_s !== undefined) {
@@ -76,6 +96,20 @@ class MySceneConf {
             }
             */
             if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
+
+            if (mat.bumpref != null) {
+                const file = "../" + this.data.textures[mat.bumpref].filepath
+                const texture = new THREE.TextureLoader().load(file)
+                this.materials[mat.id].bumpMap = texture
+                this.materials[mat.id].bumpScale =
+                        (mat.bumpscale != null) ? mat.bumpscale : 1.0
+            }
+
+            if (mat.specularref != null) {
+                const file = "../" + this.data.textures[mat.specularref].filepath
+                const texture = new THREE.TextureLoader().load(file)
+                this.materials[mat.id].specularMap = texture
+            }
         }
     }
 

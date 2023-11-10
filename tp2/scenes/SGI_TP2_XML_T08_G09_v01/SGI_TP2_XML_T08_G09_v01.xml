@@ -4,6 +4,19 @@
 
     <fog color="1.0 1.0 1.0 1.0" near="0.0" far="300.0" />
 
+    <skybox
+       size="30 30 30"
+       center="0 0 0"
+       emissive="1.0 1.0 1.0 1.0"
+       intensity="1.0"
+       front="wallTex"
+       back="wallTex"
+       up="wallTex"
+       down="wallTex"
+       left="wallTex"
+       right="wallTex"
+    />
+
     <cameras initial="cam1" > 
         <perspective id="cam1" 
             angle="60" 
@@ -31,6 +44,7 @@
         <texture id="tableTex" filepath="scenes/SGI_TP2_XML_T08_G09_v01/textures/table.jpg" />
         <texture id="paintingTex" filepath="scenes/SGI_TP2_XML_T08_G09_v01/textures/painting.jpg" />
         <texture id="clockTex" filepath="scenes/SGI_TP2_XML_T08_G09_v01/textures/clock.jpg" />
+        <texture id="bumpTex" filepath="scenes/SGI_TP2_XML_T08_G09_v01/textures/elev_bump_16k.jpg" />
     </textures> 
 
     <materials> 
@@ -62,7 +76,9 @@
             textureref="bookshelfTex"
             texlength_s="1" 
             texlength_t="1"
-            twosided = "true" />
+            twosided = "true"
+            bumpref = "bumpTex"
+            bumpscale = "3.0" />
 
         <material id="bookshelfTopApp" 
             emissive="0.0 0.0 0.0 1" 
