@@ -10,6 +10,7 @@ class MySceneConf {
         this.configGlobals()
         this.configFog()
         this.configMaterials()
+        this.configSkyboxes()
 
         let baseNode = this.configNode(this.data.rootId)
         this.scene.add(baseNode)
@@ -26,11 +27,6 @@ class MySceneConf {
             if (ambient !== undefined) {
                 const ambientColor = new THREE.Color(ambient.r, ambient.g, ambient.b)
                 this.scene.add(new THREE.AmbientLight(ambientColor))
-            }
-
-            console.log(this.data)
-            for (const skybox of this.data.skyboxes) {
-                this.scene.add(this.configSkybox(skybox))
             }
         }
     }
@@ -90,19 +86,8 @@ class MySceneConf {
                     } else { break }
                 }
             }
-            /*
-            if (mat.texlength_s !== undefined) {
-                this.materials[mat.id].map.wrapS = THREE.RepeatWrapping
-                this.materials[mat.id].map.repeat.x = mat.texlength_s
-            }
-            if (mat.texlength_t !== undefined) {
-                this.materials[mat.id].map.wrapT = THREE.RepeatWrapping
-                this.materials[mat.id].map.repeat.y = mat.texlength_t
-            }
-            */
-            if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
-
             if (mat.bumpref != null) {
+                console.log(this.data.textures[mat.bumpref])
                 const file = "../" + this.data.textures[mat.bumpref].filepath
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].bumpMap = texture
@@ -115,6 +100,45 @@ class MySceneConf {
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].specularMap = texture
             }
+            /*
+            if (mat.texlength_s !== undefined) {
+                this.materials[mat.id].map.wrapS = THREE.RepeatWrapping
+                this.materials[mat.id].map.repeat.x = mat.texlength_s
+            }
+            if (mat.texlength_t !== undefined) {
+                this.materials[mat.id].map.wrapT = THREE.RepeatWrapping
+                this.materials[mat.id].map.repeat.y = mat.texlength_t
+            }
+            */
+            if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
+        }
+    }
+
+    configSkyboxes() {
+        for (var skybox in this.data.skyboxes) {
+            skybox = this.data.skyboxes[skybox]
+
+            const geometry = new THREE.BoxGeometry(skybox.size[0], skybox.size[1], skybox.size[2])
+
+            const texture = new THREE.CubeTextureLoader().load([
+                "../" + skybox.front,
+                "../" + skybox.back,
+                "../" + skybox.up,
+                "../" + skybox.down,
+                "../" + skybox.left,
+                "../" + skybox.right
+            ])
+
+            let material = new THREE.MeshPhongMaterial({
+                envMap: texture,
+                emissive: new THREE.Color(skybox.emissive.r, skybox.emissive.g, skybox.emissive.b),
+                emissiveIntensity: skybox.intensity,
+                side: THREE.BackSide
+            })
+
+            const mesh = new THREE.Mesh(geometry, material)
+            mesh.position.set(skybox.center[0], skybox.center[1], skybox.center[2])
+            this.scene.add(mesh)
         }
     }
 
@@ -169,10 +193,6 @@ class MySceneConf {
                         case "nurbs":
                             let nurbs = this.configNurbs(child, material)
                             group.add(nurbs)
-                            break;
-                        case "skybox":
-                            //let skybox = this.configSkybox(child)
-                            //group.add(skybox)
                             break;
                         default:
                             break;
@@ -355,25 +375,29 @@ class MySceneConf {
     configNurbs(child, material = null) {
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
-        const orderU = child.representations[0].degree_u + 1
-        const orderV = child.representations[0].degree_v + 1
-        let controlPoints = []
+        const degreeU = child.representations[0].degree_u
+        const degreeV = child.representations[0].degree_v
 
-        for (let u = 0; u <= orderU; u++) {
-            controlPoints.push([])
-            for(let v = 0; v <= orderV; v++) {
-                const point = child.representations[0].controlpoints[u * orderV + v]
-                controlPoints[u].push([point.xx, point.yy, point.zz, 1])
+        let controlPoints = [];
+        for (let i = 0; i <= degreeU; i++) {
+            let row = []
+            for (let j = 0; j <= degreeV; j++) {
+                let point = [
+                    child.representations[0].controlpoints[i * (degreeV + 1) + j].xx,
+                    child.representations[0].controlpoints[i * (degreeV + 1) + j].yy,
+                    child.representations[0].controlpoints[i * (degreeV + 1) + j].zz,
+                    1
+                ]
+                row.push(point)
             }
+            controlPoints.push(row)
         }
-
-        console.log(controlPoints)
 
         let builder = new MyNurbsBuilder()
         let surface = builder.build(
             controlPoints,
-            child.representations[0].degree_u,
-            child.representations[0].degree_v,
+            degreeU,
+            degreeV,
             child.representations[0].parts_u,
             child.representations[0].parts_v,
             material
@@ -381,39 +405,6 @@ class MySceneConf {
 
         let nurbs = new THREE.Mesh(surface, material)
         return nurbs
-    }
-
-    configSkybox(child) {
-        // to do
-
-        const geometry = new THREE.BoxGeometry(
-            child.size.x,
-            child.size.y,
-            child.size.z
-        )
-
-        const texture = new THREE.CubeTextureLoader().load([
-            "../" + this.data.textures[child.front].filepath,
-            "../" + this.data.textures[child.back].filepath,
-            "../" + this.data.textures[child.up].filepath,
-            "../" + this.data.textures[child.down].filepath,
-            "../" + this.data.textures[child.left].filepath,
-            "../" + this.data.textures[child.right].filepath
-        ])
-        const shader = THREE.ShaderLib["cube"]
-        shader.uniforms["tCube"].value = texture
-        let material = new THREE.ShaderMaterial({
-            vertexShader: shader.vertex,
-            fragmentShader: shader.fragment,
-            uniform: shader.uniforms,
-            emissive: child.emissive,
-            emissiveIntensity: child.intensity,
-            side: THREE.BackSide
-        })
-
-        let skybox = new THREE.Mesh(geometry, material)
-        skybox.position.set(child.center)
-        return skybox
     }
 }
 
