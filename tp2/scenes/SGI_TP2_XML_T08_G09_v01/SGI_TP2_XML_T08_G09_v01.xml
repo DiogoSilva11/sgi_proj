@@ -4,19 +4,6 @@
 
     <fog color="1.0 1.0 1.0 1.0" near="0.0" far="300.0" />
 
-    <skybox
-       size="30 30 30"
-       center="0 0 0"
-       emissive="1.0 1.0 1.0 1.0"
-       intensity="1.0"
-       front="wallTex"
-       back="wallTex"
-       up="wallTex"
-       down="wallTex"
-       left="wallTex"
-       right="wallTex"
-    />
-
     <cameras initial="cam1" > 
         <perspective id="cam1" 
             angle="60" 
@@ -35,6 +22,15 @@
             bottom="-5" 
             top="-5" /> 
     </cameras> 
+
+    <skybox
+       size="50 50 50"
+       center="0 0 0"
+       emissive="ff ff ff ff"  intensity="30"
+       front="wallTex" back="wallTex"
+       up="wallTex" down="wallTex"
+       left="wallTex" right="wallTex"
+    />
 
     <textures>        
         <texture id="wallTex" filepath="scenes/SGI_TP2_XML_T08_G09_v01/textures/wall.jpg" />

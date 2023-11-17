@@ -27,6 +27,11 @@ class MySceneConf {
                 const ambientColor = new THREE.Color(ambient.r, ambient.g, ambient.b)
                 this.scene.add(new THREE.AmbientLight(ambientColor))
             }
+
+            console.log(this.data)
+            for (const skybox of this.data.skyboxes) {
+                this.scene.add(this.configSkybox(skybox))
+            }
         }
     }
 
@@ -381,18 +386,33 @@ class MySceneConf {
     configSkybox(child) {
         // to do
 
-        let geometry = new THREE.BoxGeometry(
-            child.representations[0].width,
-            child.representations[0].height,
-            child.representations[0].depth
+        const geometry = new THREE.BoxGeometry(
+            child.size.x,
+            child.size.y,
+            child.size.z
         )
 
-        let material = new THREE.MeshBasicMaterial({
-            envMap: new THREE.CubeTextureLoader(),
+        const texture = new THREE.CubeTextureLoader().load([
+            "../" + this.data.textures[child.front].filepath,
+            "../" + this.data.textures[child.back].filepath,
+            "../" + this.data.textures[child.up].filepath,
+            "../" + this.data.textures[child.down].filepath,
+            "../" + this.data.textures[child.left].filepath,
+            "../" + this.data.textures[child.right].filepath
+        ])
+        const shader = THREE.ShaderLib["cube"]
+        shader.uniforms["tCube"].value = texture
+        let material = new THREE.ShaderMaterial({
+            vertexShader: shader.vertex,
+            fragmentShader: shader.fragment,
+            uniform: shader.uniforms,
+            emissive: child.emissive,
+            emissiveIntensity: child.intensity,
             side: THREE.BackSide
         })
 
         let skybox = new THREE.Mesh(geometry, material)
+        skybox.position.set(child.center)
         return skybox
     }
 }
