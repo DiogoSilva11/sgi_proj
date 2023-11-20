@@ -41,7 +41,7 @@ class MySceneConf {
     }
 
     configMaterials() {
-        for (var mat in this.data.materials) {
+        for (let mat in this.data.materials) {
             mat = this.data.materials[mat]
 
             this.materials[mat.id] = new THREE.MeshPhongMaterial({
@@ -64,40 +64,6 @@ class MySceneConf {
             if (mat.textureref !== null) {
                 let texture = this.configTexture(this.data.textures[mat.textureref])
                 this.materials[mat.id].map = texture
-                
-                /*
-                texture.generateMipmaps = false
-                for (let i=0; i<=7; i++) {
-                    if (this.data.textures[mat.textureref]["mipmap" + i] != null) {
-                        let file = "../" + this.data.textures[mat.textureref]["mipmap" + i]
-                        const mipmap = new THREE.TextureLoader().load(file,
-                            function(mipTex){
-                                const canvas = document.createElement("canvas")
-                                const ctx = canvas.getContext("2d")
-                                const img = mipTex.image
-
-                                canvas.width = img.width
-                                canvas.height = canvas.height
-
-                                ctx.drawImage(img, 0, 0)
-                                texture.mipmaps[i] = canvas
-                            }
-                        )
-                    } else { break }
-                }
-                */
-            }
-            if (mat.bumpref != null) {
-                let file = "../" + this.data.textures[mat.bumpref].filepath
-                let texture = new THREE.TextureLoader().load(file)
-                this.materials[mat.id].bumpMap = texture
-                this.materials[mat.id].bumpScale = (mat.bumpscale != null) ? mat.bumpscale : 1.0
-            }
-
-            if (mat.specularref != null) {
-                let file = "../" + this.data.textures[mat.specularref].filepath
-                let texture = new THREE.TextureLoader().load(file)
-                this.materials[mat.id].specularMap = texture
             }
             /*
             if (mat.texlength_s !== undefined) {
@@ -110,6 +76,17 @@ class MySceneConf {
             }
             */
             if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
+            if (mat.bumpref != null) {
+                let file = "../" + this.data.textures[mat.bumpref].filepath
+                let texture = new THREE.TextureLoader().load(file)
+                this.materials[mat.id].bumpMap = texture
+                this.materials[mat.id].bumpScale = (mat.bumpscale != null) ? mat.bumpscale : 1.0
+            }
+            if (mat.specularref != null) {
+                let file = "../" + this.data.textures[mat.specularref].filepath
+                let texture = new THREE.TextureLoader().load(file)
+                this.materials[mat.id].specularMap = texture
+            }
         }
     }
 
@@ -137,12 +114,35 @@ class MySceneConf {
             texture = new THREE.VideoTexture(videoElement)
             texture.colorSpace = THREE.SRGBColorSpace
         }
+        if (texData.mipmaps) {
+            texture.generateMipmaps = false
+            for (let level = 0; level <= 7; level++) {
+                if (texData["mipmap" + level] != null) this.configMipmap(texture, level, "../" + texData["mipmap" + level])
+                else break
+            }
+            texture.needsUpdate = true
+        }
 
         return texture
     }
 
+    configMipmap(parentTexture, level, path) {
+        new THREE.TextureLoader().load(path, 
+            function(mipmapTexture) {
+                const canvas = document.createElement('canvas')
+                const ctx = canvas.getContext('2d')
+                ctx.scale(1, 1)
+                const img = mipmapTexture.image         
+                canvas.width = img.width;
+                canvas.height = img.height
+                ctx.drawImage(img, 0, 0)
+                parentTexture.mipmaps[level] = canvas
+            }
+        )
+    }
+
     configSkyboxes() {
-        for (var skybox in this.data.skyboxes) {
+        for (let skybox in this.data.skyboxes) {
             skybox = this.data.skyboxes[skybox]
 
             const geometry = new THREE.BoxGeometry(skybox.size[0], skybox.size[1], skybox.size[2])
@@ -237,7 +237,7 @@ class MySceneConf {
     }
 
     transformNode(node, group) {
-        for (var t in node.transformations) {
+        for (let t in node.transformations) {
             t = node.transformations[t]
             switch (t.type) {
                 case "T":
