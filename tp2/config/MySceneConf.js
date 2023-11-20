@@ -62,14 +62,14 @@ class MySceneConf {
                 }
             }
             if (mat.textureref !== null) {
-                const file = "../" + this.data.textures[mat.textureref].filepath
-                const texture = new THREE.TextureLoader().load(file)
-                texture.generateMipmaps = false
+                let texture = this.configTexture(this.data.textures[mat.textureref])
                 this.materials[mat.id].map = texture
-
+                
+                /*
+                texture.generateMipmaps = false
                 for (let i=0; i<=7; i++) {
                     if (this.data.textures[mat.textureref]["mipmap" + i] != null) {
-                        const file = "../" + this.data.textures[mat.textureref]["mipmap" + i]
+                        let file = "../" + this.data.textures[mat.textureref]["mipmap" + i]
                         const mipmap = new THREE.TextureLoader().load(file,
                             function(mipTex){
                                 const canvas = document.createElement("canvas")
@@ -85,19 +85,18 @@ class MySceneConf {
                         )
                     } else { break }
                 }
+                */
             }
             if (mat.bumpref != null) {
-                //console.log(this.data.textures[mat.bumpref])
-                const file = "../" + this.data.textures[mat.bumpref].filepath
-                const texture = new THREE.TextureLoader().load(file)
+                let file = "../" + this.data.textures[mat.bumpref].filepath
+                let texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].bumpMap = texture
-                this.materials[mat.id].bumpScale =
-                        (mat.bumpscale != null) ? mat.bumpscale : 1.0
+                this.materials[mat.id].bumpScale = (mat.bumpscale != null) ? mat.bumpscale : 1.0
             }
 
             if (mat.specularref != null) {
-                const file = "../" + this.data.textures[mat.specularref].filepath
-                const texture = new THREE.TextureLoader().load(file)
+                let file = "../" + this.data.textures[mat.specularref].filepath
+                let texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].specularMap = texture
             }
             /*
@@ -114,12 +113,40 @@ class MySceneConf {
         }
     }
 
+    configTexture(texData) {
+        let texture = new THREE.TextureLoader().load("../" + texData.filepath)
+
+        if (texData.isVideo) {
+            let sourceElement = document.createElement('source')
+            sourceElement.src = "../" + texData.filepath
+            sourceElement.type = 'video/mp4'
+
+            let videoElement = document.createElement('video')
+            videoElement.style.display = 'none'
+            videoElement.id = 'some-video'
+            videoElement.autoplay = true
+            videoElement.muted = true
+            videoElement.preload = 'auto'
+            videoElement.width = 640
+            videoElement.height = 264
+            videoElement.loop = true
+
+            videoElement.appendChild(sourceElement)
+            document.body.appendChild(videoElement)
+
+            texture = new THREE.VideoTexture(videoElement)
+            texture.colorSpace = THREE.SRGBColorSpace
+        }
+
+        return texture
+    }
+
     configSkyboxes() {
         for (var skybox in this.data.skyboxes) {
             skybox = this.data.skyboxes[skybox]
 
             const geometry = new THREE.BoxGeometry(skybox.size[0], skybox.size[1], skybox.size[2])
-            const texture = new THREE.CubeTextureLoader().load([
+            let texture = new THREE.CubeTextureLoader().load([
                 "../" + skybox.front,
                 "../" + skybox.back,
                 "../" + skybox.up,

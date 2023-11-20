@@ -28,14 +28,15 @@
 
     <skybox size="100 100 100" 
         center="0 0 0" 
-        emissive="1 1 1 1" 
-        intensity="1" 
+        emissive="1.0 1.0 1.0 1.0" 
+        intensity="1.0" 
         up="scenes/demo/textures/pine.jpg" 
         down="scenes/demo/textures/pine.jpg" 
         left="scenes/demo/textures/pine.jpg" 
         right="scenes/demo/textures/pine.jpg" 
         front="scenes/demo/textures/pine.jpg" 
         back="scenes/demo/textures/pine.jpg"/>
+
     
     <!-- bloco de texturas. Este bloco tem de existir mas pode estar vazio, se nao forem usadas texturas --> 
     <textures>        
@@ -156,7 +157,7 @@
 
     <graph rootid="scene"> 
         <lod id="demo" near="0" far="1000" > 
-            <noderef id="rectangle2" mindist="5" />
+            <noderef id="rectangle3" mindist="5" />
             <noderef id="rectangle2" mindist="10"/>
             <noderef id="rectangle2" mindist="100"/>
             <noderef id="rectangle2" mindist="500"/>
