@@ -114,19 +114,61 @@ class MySceneConf {
             texture = new THREE.VideoTexture(videoElement)
             texture.colorSpace = THREE.SRGBColorSpace
         }
-        if (texData.mipmaps) {
-            texture.generateMipmaps = false
-            for (let level = 0; level <= 7; level++) {
-                if (texData["mipmap" + level] != null) this.configMipmap(texture, level, "../" + texData["mipmap" + level])
-                else break
-            }
-            texture.needsUpdate = true
-        }
+
+        this.configMipmap(texture, texData)
 
         return texture
     }
 
-    configMipmap(parentTexture, level, path) {
+    configMipmap(texture, texData) {
+        texture.generateMipmaps = texData.mipmaps
+        texture.anisotropy = texData.anisotropy
+
+        let magFilter = null
+        switch (texData.magfilter) {
+            case "NearestFilter":
+                magFilter = THREE.NearestFilter
+                break;
+            default:
+                magFilter = THREE.LinearFilter
+                break;
+        }
+        texture.magFilter = magFilter
+
+        let minFilter = null
+        switch (texData.minfilter) {
+            case "LinearFilter":
+                minFilter = THREE.LinearFilter
+                break;
+            case "NearestFilter":
+                minFilter = THREE.NearestFilter
+                break;
+            case "NearestMipMapNearestFilter":
+                minFilter = THREE.NearestMipmapNearestFilter
+                break;
+            case "NearestMipMapLinearFilter":
+                minFilter = THREE.NearestMipmapLinearFilter
+                break;
+            case "LinearMipMapNearestFilter":
+                minFilter = THREE.LinearMipmapNearestFilter
+                break;
+            default:
+                minFilter = THREE.LinearMipmapLinearFilter
+                break;
+        }
+        texture.minFilter = minFilter
+
+        if (texture.generateMipmaps) {
+            for (let level = 0; level <= 7; level++) {
+                if (texData["mipmap" + level] != null) this.loadMipmap(texture, level, "../" + texData["mipmap" + level])
+                else break
+            }
+        }
+
+        texture.needsUpdate = true
+    }
+
+    loadMipmap(parentTexture, level, path) {
         new THREE.TextureLoader().load(path, 
             function(mipmapTexture) {
                 const canvas = document.createElement('canvas')
