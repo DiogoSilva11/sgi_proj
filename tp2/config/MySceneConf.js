@@ -5,10 +5,12 @@ class MySceneConf {
     constructor(data, scene) {
         this.data = data
         this.scene = scene
+        this.textures = {}
         this.materials = {}
 
         this.configGlobals()
         this.configFog()
+        this.configTextures()
         this.configMaterials()
         this.configSkyboxes()
 
@@ -40,84 +42,37 @@ class MySceneConf {
         this.scene.fog = fog
     }
 
-    configMaterials() {
-        for (let mat in this.data.materials) {
-            mat = this.data.materials[mat]
+    configTextures() {
+        for (let tex in this.data.textures) {
+            const texData = this.data.textures[tex]
+            let texture = new THREE.TextureLoader().load("../" + texData.filepath)
 
-            this.materials[mat.id] = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(mat.color.r, mat.color.g, mat.color.b),
-                specular: new THREE.Color(mat.specular.r, mat.specular.g, mat.specular.b),
-                emissive: new THREE.Color(mat.emissive.r, mat.emissive.g, mat.emissive.b),
-                shininess: mat.shininess
-            })
+            if (texData.isVideo) {
+                let sourceElement = document.createElement('source')
+                sourceElement.src = "../" + texData.filepath
+                sourceElement.type = 'video/mp4'
+    
+                let videoElement = document.createElement('video')
+                videoElement.style.display = 'none'
+                videoElement.id = 'some-video'
+                videoElement.autoplay = true
+                videoElement.muted = true
+                videoElement.preload = 'auto'
+                videoElement.width = 640
+                videoElement.height = 264
+                videoElement.loop = true
+    
+                videoElement.appendChild(sourceElement)
+                document.body.appendChild(videoElement)
+    
+                texture = new THREE.VideoTexture(videoElement)
+                texture.colorSpace = THREE.SRGBColorSpace
+            }
+    
+            //this.configMipmap(texture, texData)
 
-            if (mat.wireframe !== undefined) this.materials[mat.id].wireframe = mat.wireframe
-            if (mat.shading !== undefined) {
-                if (mat.shading === "none") {
-                    this.materials[mat.id].flatShading = false
-                    this.materials[mat.id].lights = false
-                }
-                else if (mat.shading === "flat") {
-                    this.materials[mat.id].flatShading = true
-                }
-            }
-            if (mat.textureref !== null) {
-                let texture = this.configTexture(this.data.textures[mat.textureref])
-                this.materials[mat.id].map = texture
-            }
-            /*
-            if (mat.texlength_s !== undefined) {
-                this.materials[mat.id].map.wrapS = THREE.RepeatWrapping
-                this.materials[mat.id].map.repeat.x = mat.texlength_s
-            }
-            if (mat.texlength_t !== undefined) {
-                this.materials[mat.id].map.wrapT = THREE.RepeatWrapping
-                this.materials[mat.id].map.repeat.y = mat.texlength_t
-            }
-            */
-            if (mat.twosided !== undefined) this.materials[mat.id].side = mat.twosided ? THREE.DoubleSide : THREE.FrontSide
-            if (mat.bumpref != null) {
-                let file = "../" + this.data.textures[mat.bumpref].filepath
-                let texture = new THREE.TextureLoader().load(file)
-                this.materials[mat.id].bumpMap = texture
-                this.materials[mat.id].bumpScale = (mat.bumpscale != null) ? mat.bumpscale : 1.0
-            }
-            if (mat.specularref != null) {
-                let file = "../" + this.data.textures[mat.specularref].filepath
-                let texture = new THREE.TextureLoader().load(file)
-                this.materials[mat.id].specularMap = texture
-            }
+            this.textures[texData.id] = texture
         }
-    }
-
-    configTexture(texData) {
-        let texture = new THREE.TextureLoader().load("../" + texData.filepath)
-
-        if (texData.isVideo) {
-            let sourceElement = document.createElement('source')
-            sourceElement.src = "../" + texData.filepath
-            sourceElement.type = 'video/mp4'
-
-            let videoElement = document.createElement('video')
-            videoElement.style.display = 'none'
-            videoElement.id = 'some-video'
-            videoElement.autoplay = true
-            videoElement.muted = true
-            videoElement.preload = 'auto'
-            videoElement.width = 640
-            videoElement.height = 264
-            videoElement.loop = true
-
-            videoElement.appendChild(sourceElement)
-            document.body.appendChild(videoElement)
-
-            texture = new THREE.VideoTexture(videoElement)
-            texture.colorSpace = THREE.SRGBColorSpace
-        }
-
-        this.configMipmap(texture, texData)
-
-        return texture
     }
 
     configMipmap(texture, texData) {
@@ -166,6 +121,47 @@ class MySceneConf {
         }
 
         texture.needsUpdate = true
+    }
+
+    configMaterials() {
+        for (let mat in this.data.materials) {
+            const matData = this.data.materials[mat]
+
+            this.materials[matData.id] = new THREE.MeshPhongMaterial({
+                name: matData.id,
+                color: new THREE.Color(matData.color.r, matData.color.g, matData.color.b),
+                specular: new THREE.Color(matData.specular.r, matData.specular.g, matData.specular.b),
+                emissive: new THREE.Color(matData.emissive.r, matData.emissive.g, matData.emissive.b),
+                shininess: matData.shininess
+            })
+
+            if (matData.wireframe !== undefined) 
+                this.materials[matData.id].wireframe = matData.wireframe
+
+            if (matData.shading !== undefined) {
+                if (matData.shading === "none") {
+                    this.materials[matData.id].flatShading = false
+                    this.materials[matData.id].lights = false
+                }
+                else if (matData.shading === "flat") {
+                    this.materials[matData.id].flatShading = true
+                }
+            }
+
+            if (matData.textureref !== null) 
+                this.materials[matData.id].map = this.textures[matData.textureref]
+
+            if (matData.twosided !== undefined) 
+                this.materials[matData.id].side = matData.twosided ? THREE.DoubleSide : THREE.FrontSide
+
+            if (matData.bumpref != null) {
+                this.materials[matData.id].bumpMap = this.textures[matData.bumpref]
+                this.materials[matData.id].bumpScale = (matData.bumpscale != null) ? matData.bumpscale : 1.0
+            }
+
+            if (matData.specularref != null) 
+                this.materials[matData.id].specularMap = this.textures[matData.specularref]
+        }
     }
 
     loadMipmap(parentTexture, level, path) {
@@ -397,7 +393,13 @@ class MySceneConf {
         if (child.representations[0].thetastart !== undefined) geometry.parameters.thetaStart = child.representations[0].thetastart * (Math.PI / 180)
         if (child.representations[0].thetalength !== undefined) geometry.parameters.thetaLength = child.representations[0].thetalength * (Math.PI / 180)
     
-        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+        if (material != null) {
+            const width = Math.abs(child.representations[0].top - child.representations[0].base) * 2
+            const height = child.representations[0].height
+            this.configRepeatFactor(material, width, height)
+        }
+        else 
+            material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
         let cylinder = new THREE.Mesh(geometry, material)
         cylinder.castShadow = castShadows
@@ -416,7 +418,13 @@ class MySceneConf {
         if (child.representations[0].parts_x !== undefined) geometry.parameters.widthSegments = child.representations[0].parts_x
         if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
 
-        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+        if (material != null) {
+            const width = x2 - x1
+            const height = y2 - y1
+            this.configRepeatFactor(material, width, height)
+        }
+        else 
+            material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
         let rectangle = new THREE.Mesh(geometry, material)
         rectangle.position.set((x2 + x1) / 2, (y2 + y1) / 2)
@@ -438,7 +446,13 @@ class MySceneConf {
         if (child.representations[0].phistart !== undefined) geometry.parameters.phiStart = child.representations[0].phistart * (Math.PI / 180)
         if (child.representations[0].philength !== undefined) geometry.parameters.phiLength = child.representations[0].philength * (Math.PI / 180)
 
-        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+        if (material != null) {
+            const width = child.representations[0].radius * 2
+            const height = child.representations[0].radius * 2
+            this.configRepeatFactor(material, width, height)
+        }
+        else 
+            material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
         let sphere = new THREE.Mesh(geometry, material)
         sphere.castShadow = castShadows
@@ -460,7 +474,14 @@ class MySceneConf {
         if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
         if (child.representations[0].parts_z !== undefined) geometry.parameters.depthSegments = child.representations[0].parts_z
 
-        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+        if (material != null) {
+            const width = x2 - x1
+            const height = y2 - y1
+            this.configRepeatFactor(material, width, height)
+        }
+        else 
+            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
         let box = new THREE.Mesh(geometry, material)
         box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
 
@@ -471,8 +492,6 @@ class MySceneConf {
     }
 
     configNurbs(child, material = null, castShadows = false, receiveShadows = false) {
-        if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
-
         const degreeU = child.representations[0].degree_u
         const degreeV = child.representations[0].degree_v
 
@@ -491,6 +510,28 @@ class MySceneConf {
             controlPoints.push(row)
         }
 
+        if (material != null) {
+            let minX = child.representations[0].controlpoints[0]["xx"]
+            let maxX = child.representations[0].controlpoints[0]["xx"]
+            let minY = child.representations[0].controlpoints[0]["yy"]
+            let maxY = child.representations[0].controlpoints[0]["yy"]
+        
+            for (let i = 1; i < child.representations[0].controlpoints.length; i++) {
+                const currentX = child.representations[0].controlpoints[i]["xx"]
+                const currentY = child.representations[0].controlpoints[i]["yy"]
+                minX = Math.min(minX, currentX)
+                maxX = Math.max(maxX, currentX)
+                minY = Math.min(minY, currentY)
+                maxY = Math.max(maxY, currentY)
+            }
+        
+            const width = maxX - minX
+            const height = maxY - minY
+            this.configRepeatFactor(material, width, height)
+        }
+        else 
+            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
         let builder = new MyNurbsBuilder()
         let surface = builder.build(
             controlPoints,
@@ -506,6 +547,13 @@ class MySceneConf {
         nurbs.receiveShadow = receiveShadows
 
         return nurbs
+    }
+
+    configRepeatFactor(material, width, height) {
+        material.map.wrapS = THREE.RepeatWrapping
+        material.map.wrapT = THREE.RepeatWrapping
+        const matData = this.data.materials[material.name]
+        material.map.repeat.set(width / matData.texlength_s, height / matData.texlength_t)
     }
 }
 
