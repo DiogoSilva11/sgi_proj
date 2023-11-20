@@ -87,7 +87,7 @@ class MySceneConf {
                 }
             }
             if (mat.bumpref != null) {
-                console.log(this.data.textures[mat.bumpref])
+                //console.log(this.data.textures[mat.bumpref])
                 const file = "../" + this.data.textures[mat.bumpref].filepath
                 const texture = new THREE.TextureLoader().load(file)
                 this.materials[mat.id].bumpMap = texture
@@ -119,7 +119,6 @@ class MySceneConf {
             skybox = this.data.skyboxes[skybox]
 
             const geometry = new THREE.BoxGeometry(skybox.size[0], skybox.size[1], skybox.size[2])
-
             const texture = new THREE.CubeTextureLoader().load([
                 "../" + skybox.front,
                 "../" + skybox.back,
@@ -128,7 +127,6 @@ class MySceneConf {
                 "../" + skybox.left,
                 "../" + skybox.right
             ])
-
             let material = new THREE.MeshPhongMaterial({
                 envMap: texture,
                 emissive: new THREE.Color(skybox.emissive.r, skybox.emissive.g, skybox.emissive.b),
@@ -142,10 +140,12 @@ class MySceneConf {
         }
     }
 
-    configNode(key, material = null) {
+    configNode(key, material = null, castShadows = false, receiveShadows = false) {
         let node = this.data.nodes[key]
         let group = new THREE.Group()
 
+        if (node.castShadows == true) castShadows = true
+        if (node.receiveShadows == true) receiveShadows = true
         if (node.transformations !== undefined) this.transformNode(node, group)
         if (node.materialIds.length != 0) material = this.materials[node.materialIds[0]]
 
@@ -153,45 +153,49 @@ class MySceneConf {
             let child = node.children[i]
             switch (child.type) {
                 case "node":
-                    let newNode = this.configNode(child.id, material)
+                    let newNode = this.configNode(child.id, material, castShadows, receiveShadows)
                     group.add(newNode)
+                    break;
+                case "lod":
+                    let lod = this.configLod(child, material, castShadows, receiveShadows)
+                    group.add(lod)
                     break;
                 case "pointlight":
                     let pointLight = this.configPointLight(child)
                     group.add(pointLight)
-                    //group.add(new THREE.PointLightHelper(pointLight))
+                    group.add(new THREE.PointLightHelper(pointLight))
                     break;
                 case "spotlight":
                     let spotLight = this.configSpotLight(child)
                     group.add(spotLight)
                     group.add(spotLight.target)
-                    //group.add(new THREE.SpotLightHelper(spotLight))
+                    group.add(new THREE.SpotLightHelper(spotLight))
                     break;
                 case "directionallight":
                     let directionalLight = this.configDirectionalLight(child)
                     group.add(directionalLight)
-                    //group.add(new THREE.DirectionalLightHelper(directionalLight))
+                    group.add(new THREE.DirectionalLightHelper(directionalLight))
                     break;
                 case "primitive":
                     switch (child.subtype) {
                         case "cylinder":
-                            let cylinder = this.configCylinder(child, material)
+                            let cylinder = this.configCylinder(child, material, castShadows, receiveShadows)
                             group.add(cylinder)
                             break;
                         case "rectangle":
-                            let rectangle = this.configRectangle(child, material)
+                            let rectangle = this.configRectangle(child, material, castShadows, receiveShadows)
                             group.add(rectangle)
                             break;
                         case "sphere":
-                            let sphere = this.configSphere(child, material)
+                            let sphere = this.configSphere(child, material, castShadows, receiveShadows)
                             group.add(sphere)
                             break;
                         case "box":
-                            let box = this.configBox(child, material)
+                            let box = this.configBox(child, material, castShadows, receiveShadows)
                             group.add(box)
                             break;
                         case "nurbs":
-                            let nurbs = this.configNurbs(child, material)
+                            let nurbs = this.configNurbs(child, material, castShadows, receiveShadows)
                             group.add(nurbs)
                             break;
                         default:
@@ -231,6 +235,19 @@ class MySceneConf {
                     break;
             }
         }
+    }
+
+    configLod(child, material = null, castShadows = false, receiveShadows = false) {
+        let lod = new THREE.LOD()
+
+        const noderefs = child.children
+        for (const ref in noderefs) {
+            const newGroup = this.configNode(noderefs[ref].node.id, material, castShadows, receiveShadows)
+            const dist = noderefs[ref].mindist
+            lod.addLevel(newGroup, dist)
+        }
+
+        return lod
     }
 
     configPointLight(child) {
@@ -298,7 +315,7 @@ class MySceneConf {
         return light
     }
 
-    configCylinder(child, material = null) {
+    configCylinder(child, material = null, castShadows = false, receiveShadows = false) {
         let geometry = new THREE.CylinderGeometry(
             child.representations[0].top,
             child.representations[0].base,
@@ -312,12 +329,15 @@ class MySceneConf {
         if (child.representations[0].thetalength !== undefined) geometry.parameters.thetaLength = child.representations[0].thetalength * (Math.PI / 180)
     
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
         let cylinder = new THREE.Mesh(geometry, material)
+        cylinder.castShadow = castShadows
+        cylinder.receiveShadow = receiveShadows
 
         return cylinder
     }
     
-    configRectangle(child, material = null) {
+    configRectangle(child, material = null, castShadows = false, receiveShadows = false) {
         const x1 = child.representations[0].xy1[0]
         const y1 = child.representations[0].xy1[1]
         const x2 = child.representations[0].xy2[0]
@@ -328,13 +348,16 @@ class MySceneConf {
         if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
         let rectangle = new THREE.Mesh(geometry, material)
         rectangle.position.set((x2 + x1) / 2, (y2 + y1) / 2)
+        rectangle.castShadow = castShadows
+        rectangle.receiveShadow = receiveShadows
 
         return rectangle
     }
     
-    configSphere(child, material = null) {
+    configSphere(child, material = null, castShadows = false, receiveShadows = false) {
         let geometry = new THREE.SphereGeometry(
             child.representations[0].radius,
             child.representations[0].slices,
@@ -347,12 +370,15 @@ class MySceneConf {
         if (child.representations[0].philength !== undefined) geometry.parameters.phiLength = child.representations[0].philength * (Math.PI / 180)
 
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
+
         let sphere = new THREE.Mesh(geometry, material)
+        sphere.castShadow = castShadows
+        sphere.receiveShadow = receiveShadows
 
         return sphere
     }
     
-    configBox(child, material = null) {
+    configBox(child, material = null, castShadows = false, receiveShadows = false) {
         const x1 = child.representations[0].xyz1[0]
         const y1 = child.representations[0].xyz1[1]
         const z1 = child.representations[0].xyz1[2]
@@ -369,10 +395,13 @@ class MySceneConf {
         let box = new THREE.Mesh(geometry, material)
         box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
 
+        box.castShadow = castShadows
+        box.receiveShadow = receiveShadows
+
         return box
     }
 
-    configNurbs(child, material = null) {
+    configNurbs(child, material = null, castShadows = false, receiveShadows = false) {
         if (material == null) material = new THREE.MeshBasicMaterial({color: 0xffffff})
 
         const degreeU = child.representations[0].degree_u
@@ -404,6 +433,9 @@ class MySceneConf {
         )
 
         let nurbs = new THREE.Mesh(surface, material)
+        nurbs.castShadow = castShadows
+        nurbs.receiveShadow = receiveShadows
+
         return nurbs
     }
 }

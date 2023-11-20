@@ -121,7 +121,7 @@
 
     <graph rootid="scene"> 
 
-		<node id="scene"> 
+		<node id="scene" > 
             <children> 
                 <noderef id="leftWall" /> 
 				<noderef id="rightWall" /> 
@@ -267,7 +267,7 @@
             </children>
         </node>
 
-        <node id="carpet">
+        <node id="carpet" >
             <transforms>
                 <translate value3="4 0.01 8.5" />
                 <rotate value3="-90 0 0" />
@@ -282,7 +282,7 @@
             </children>
         </node>
 
-		<node id="table">
+		<node id="table" >
 			<transforms>
 				<translate value3="8 0 6.5" />
 				<translate value3="0 0.95 0" />
@@ -300,7 +300,7 @@
             </children> 
         </node>
 
-		<node id="tableTop">
+		<node id="tableTop" >
 			<transforms>
 				<translate value3="0 0.48 0" />
 				<scale value3="1 0.08 1" />
