@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { MyTriangle } from './MyTriangle';
+import { MyTriangle } from './MyTriangle.js';
 
 class MyPolygon extends THREE.BufferGeometry {
     constructor(radius, stacks, slices, centerColor, peripheryColor) {
@@ -37,28 +37,29 @@ class MyPolygon extends THREE.BufferGeometry {
                 const y4 = by * ((j + 1) / this.stacks) * this.radius
                 const z4 = 0
 
-                let triangle = new MyTriangle(x1, y1, z1, x2, y2, z2, x4, y4, z4)
-                positions.push(...triangle.getAttribute('position').array)
-                normals.push(...triangle.getAttribute('normal').array)
-
                 const colorA = this.centerColor.clone().lerp(this.peripheryColor, Math.sqrt(x1 * x1 + y1 * y1) / this.radius)
                 const colorB = this.centerColor.clone().lerp(this.peripheryColor, Math.sqrt(x2 * x2 + y2 * y2) / this.radius)
                 const colorC = this.centerColor.clone().lerp(this.peripheryColor, Math.sqrt(x3 * x3 + y3 * y3) / this.radius)
                 const colorD = this.centerColor.clone().lerp(this.peripheryColor, Math.sqrt(x4 * x4 + y4 * y4) / this.radius)
-                colors.push(
-                    ...colorA.toArray(),
-                    ...colorB.toArray(),
-                    ...colorD.toArray()
-                )
 
-                if (j > 0) {
-                    triangle = new MyTriangle(x1, y1, z1, x4, y4, z4, x3, y3, z3)
+                if (j == 0) {
+                    let triangle = new MyTriangle(x1, y1, z1, x2, y2, z2, x4, y4, z4)
                     positions.push(...triangle.getAttribute('position').array)
                     normals.push(...triangle.getAttribute('normal').array)
                     colors.push(
-                        ...colorAtoArray(),
-                        ...colorDtoArray(),
-                        ...colorCtoArray()
+                        ...colorA.toArray(),
+                        ...colorB.toArray(),
+                        ...colorD.toArray()
+                    )
+                }
+                else {
+                    let triangle = new MyTriangle(x1, y1, z1, x4, y4, z4, x3, y3, z3)
+                    positions.push(...triangle.getAttribute('position').array)
+                    normals.push(...triangle.getAttribute('normal').array)
+                    colors.push(
+                        ...colorA.toArray(),
+                        ...colorD.toArray(),
+                        ...colorC.toArray()
                     )
                 }
             }
