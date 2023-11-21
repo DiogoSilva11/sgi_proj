@@ -273,10 +273,10 @@ class MySceneConf {
                             let nurbs = this.configNurbs(child, material, castShadows, receiveShadows)
                             group.add(nurbs)
                             break
-                        //case "polygon":
-                        //    let polygon = this.configPolygon(child, material, castShadows, receiveShadows)
-                        //    group.add(polygon)
-                        //    break
+                        case "polygon":
+                            let polygon = this.configPolygon(child, material, castShadows, receiveShadows)
+                            group.add(polygon)
+                            break
                         default:
                             break
                     }
@@ -299,9 +299,9 @@ class MySceneConf {
                     group.position.set(tx, ty, tz)
                     break
                 case "R":
-                    const rx = group.rotation.x + t.rotation[0] * (Math.PI / 180)
-                    const ry = group.rotation.y + t.rotation[1] * (Math.PI / 180)
-                    const rz = group.rotation.z + t.rotation[2] * (Math.PI / 180)
+                    const rx = group.rotation.x + t.rotation[0] //* (Math.PI / 180)
+                    const ry = group.rotation.y + t.rotation[1] //* (Math.PI / 180)
+                    const rz = group.rotation.z + t.rotation[2] //* (Math.PI / 180)
                     group.rotation.set(rx, ry, rz)
                     break
                 case "S":
@@ -413,7 +413,7 @@ class MySceneConf {
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+            material = new THREE.MeshPhongMaterial()
 
         let cylinder = new THREE.Mesh(geometry, material)
         cylinder.castShadow = castShadows
@@ -433,12 +433,12 @@ class MySceneConf {
         if (child.representations[0].parts_y !== undefined) geometry.parameters.heightSegments = child.representations[0].parts_y
 
         if (material != null) {
-            const width = x2 - x1
-            const height = y2 - y1
+            const width = Math.abs(x2 - x1)
+            const height = Math.abs(y2 - y1)
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+            material = new THREE.MeshPhongMaterial()
 
         let rectangle = new THREE.Mesh(geometry, material)
         rectangle.position.set((x2 + x1) / 2, (y2 + y1) / 2)
@@ -474,7 +474,7 @@ class MySceneConf {
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshStandardMaterial({color: 0xffffff, side: THREE.DoubleSide, vertexColors: true, transparent: false})
+            material = new THREE.MeshPhongMaterial()
 
         let triangle = new THREE.Mesh(geometry, material)
         triangle.castShadow = castShadows
@@ -500,12 +500,12 @@ class MySceneConf {
         if (child.representations[0].philength !== undefined) geometry.parameters.phiLength = child.representations[0].philength * (Math.PI / 180)
 
         if (material != null) {
-            const width = child.representations[0].radius * 2
-            const height = child.representations[0].radius * 2
+            const width = child.representations[0].radius
+            const height = child.representations[0].radius
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+            material = new THREE.MeshPhongMaterial()
 
         let sphere = new THREE.Mesh(geometry, material)
         sphere.castShadow = castShadows
@@ -528,12 +528,12 @@ class MySceneConf {
         if (child.representations[0].parts_z !== undefined) geometry.parameters.depthSegments = child.representations[0].parts_z
 
         if (material != null) {
-            const width = x2 - x1
-            const height = y2 - y1
+            const width = Math.abs(x2 - x1)
+            const height = Math.abs(y2 - y1)
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+            material = new THREE.MeshPhongMaterial()
 
         let box = new THREE.Mesh(geometry, material)
         box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
@@ -583,7 +583,7 @@ class MySceneConf {
             this.configRepeatFactor(material, width, height)
         }
         else 
-            material = new THREE.MeshBasicMaterial({color: 0xffffff})
+            material = new THREE.MeshPhongMaterial()
 
         let builder = new MyNurbsBuilder()
         let surface = builder.build(
@@ -603,47 +603,24 @@ class MySceneConf {
     }
 
     configPolygon(child, material = null, castShadows = false, receiveShadows = false) {
-        /*
-        const positions = []
-        positions.push(ax, ay, az)
-        positions.push(bx, by, bz)
-        positions.push(cx, cy, cz)
+        const radius = child.representations[0].radius
+        const stacks = child.representations[0].stacks
+        const slices = child.representations[0].slices
+        const color_c = child.representations[0].color_c
+        const color_p = child.representations[0].color_p
 
-        const normals = []
-        const pA = new THREE.Vector3(ax, ay, az)
-        const pB = new THREE.Vector3(bx, by, bz)
-        const pC = new THREE.Vector3(cx, cy, cz)
-        cb.subVectors(pC, pB)
-        ab.subVectors(pA, pB)
-        cb.cross(ab)
-        cb.normalize()
-        const nx = cb.x
-        const ny = cb.y
-        const nz = cb.z
-        normals.push(nx, ny, nz)
-        normals.push(nx, ny, nz)
-        normals.push(nx, ny, nz)
+        let geometry = new MyPolygon(radius, stacks, slices, color_c, color_p)
 
-        // to do
-        const colors = []
-        //const vx = (x / n) + 0.5
-        //const vy = (y / n) + 0.5
-        //const vz = (z / n) + 0.5
-        //color.setRGB( vx, vy, vz )
-        //const alpha = Math.random()
-        //colors.push(color.r, color.g, color.b, alpha)
-        //colors.push(color.r, color.g, color.b, alpha)
-        //colors.push(color.r, color.g, color.b, alpha)
-        
-        let geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-        geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 4))
-        geometry.computeBoundingSphere()
-        */
+        material = (material == null) ? new THREE.MeshPhongMaterial() : material
+        material.vertexColors = true
+
+        let polygon = new THREE.Mesh(geometry, material)
+
+        return polygon
     }
 
     configRepeatFactor(material, width, height) {
+        if (material.map == null) return
         material.map.wrapS = THREE.RepeatWrapping
         material.map.wrapT = THREE.RepeatWrapping
         const matData = this.data.materials[material.name]

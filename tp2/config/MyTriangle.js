@@ -25,17 +25,17 @@ class MyTriangle extends THREE.BufferGeometry {
 		let normal = new THREE.Vector3(crossProductX, crossProductY, crossProductZ)
         normal.normalize()
 
-		let a = this.p1.distanceTo(this.p2);
-		let b = this.p2.distanceTo(this.p3);
-		let c = this.p1.distanceTo(this.p3);
+		let a = this.p1.distanceTo(this.p2)
+		let b = this.p2.distanceTo(this.p3)
+		let c = this.p1.distanceTo(this.p3)
 		let cos_ac = (a * a - b * b + c * c) / (2 * a * c)
 		let sin_ac = Math.sqrt(1 - cos_ac * cos_ac)
 
-		const vertices = new Float32Array([
+		const vertices = [
             ...this.p1.toArray(),
 			...this.p2.toArray(),
 			...this.p3.toArray()	
-        ])
+        ]
 		const indices = [0, 1, 2]
 		const normals = [
 			...normal.toArray(),
