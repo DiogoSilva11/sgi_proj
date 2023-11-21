@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { MyNurbsBuilder } from './MyNurbsBuilder.js';
+import { MyTriangle } from './MyTriangle.js';
+import { MyPolygon } from './MyPolygon.js';
 
 class MySceneConf {
     constructor(data, scene) {
@@ -251,10 +253,10 @@ class MySceneConf {
                             let rectangle = this.configRectangle(child, material, castShadows, receiveShadows)
                             group.add(rectangle)
                             break
-                        //case "triangle":
-                        //    let triangle = this.configTriangle(child, material, castShadows, receiveShadows)
-                        //    group.add(triangle)
-                        //    break
+                        case "triangle":
+                            let triangle = this.configTriangle(child, material, castShadows, receiveShadows)
+                            group.add(triangle)
+                            break
                         //case "model3d":
                         //    let model3d = this.configModel3D(child, material, castShadows, receiveShadows)
                         //    group.add(model3d)
@@ -447,57 +449,26 @@ class MySceneConf {
     }
 
     configTriangle(child, material = null, castShadows = false, receiveShadows = false) {
-        const positions = []
-        const ax = child.representations[0].xyz1[0]
-        const ay = child.representations[0].xyz1[1]
-        const az = child.representations[0].xyz1[2]
-        const bx = child.representations[0].xyz2[0]
-        const by = child.representations[0].xyz2[1]
-        const bz = child.representations[0].xyz2[2]
-        const cx = child.representations[0].xyz3[0]
-        const cy = child.representations[0].xyz3[1]
-        const cz = child.representations[0].xyz3[2]
-        positions.push(ax, ay, az)
-        positions.push(bx, by, bz)
-        positions.push(cx, cy, cz)
+        const x1 = child.representations[0].xyz1[0]
+        const y1 = child.representations[0].xyz1[1]
+        const z1 = child.representations[0].xyz1[2]
+        const x2 = child.representations[0].xyz2[0]
+        const y2 = child.representations[0].xyz2[1]
+        const z2 = child.representations[0].xyz2[2]
+        const x3 = child.representations[0].xyz3[0]
+        const y3 = child.representations[0].xyz3[1]
+        const z3 = child.representations[0].xyz3[2]
 
-        const normals = []
-        const pA = new THREE.Vector3(ax, ay, az)
-        const pB = new THREE.Vector3(bx, by, bz)
-        const pC = new THREE.Vector3(cx, cy, cz)
-        cb.subVectors(pC, pB)
-        ab.subVectors(pA, pB)
-        cb.cross(ab)
-        cb.normalize()
-        const nx = cb.x
-        const ny = cb.y
-        const nz = cb.z
-        normals.push(nx, ny, nz)
-        normals.push(nx, ny, nz)
-        normals.push(nx, ny, nz)
-
-        // to do
-        const colors = []
-        //const vx = (x / n) + 0.5
-        //const vy = (y / n) + 0.5
-        //const vz = (z / n) + 0.5
-        //color.setRGB( vx, vy, vz )
-        //const alpha = Math.random()
-        //colors.push(color.r, color.g, color.b, alpha)
-        //colors.push(color.r, color.g, color.b, alpha)
-        //colors.push(color.r, color.g, color.b, alpha)
-        
-        let geometry = new THREE.BufferGeometry()
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-        geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
-        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 4))
-        geometry.computeBoundingSphere()
+        let geometry = new MyTriangle(x1, y1, z1, x2, y2, z2, x3, y3, z3)
 
         if (material != null) {
-            const width = pA.distanceTo(pB)
+            const p1 = new THREE.Vector3(x1, y1, z1)
+            const p2 = new THREE.Vector3(x2, y2, z2)
+            const p3 = new THREE.Vector3(x3, y3, z3)
+            const width = p1.distanceTo(p2)
             const cross = new THREE.Vector3().crossVectors(
-                new THREE.Vector3().subVectors(pB, pA),
-                new THREE.Vector3().subVectors(pC, pA)
+                new THREE.Vector3().subVectors(p2, p1),
+                new THREE.Vector3().subVectors(p3, p1)
             )
             const height = cross.length() / width
             this.configRepeatFactor(material, width, height)
@@ -632,7 +603,44 @@ class MySceneConf {
     }
 
     configPolygon(child, material = null, castShadows = false, receiveShadows = false) {
+        /*
+        const positions = []
+        positions.push(ax, ay, az)
+        positions.push(bx, by, bz)
+        positions.push(cx, cy, cz)
+
+        const normals = []
+        const pA = new THREE.Vector3(ax, ay, az)
+        const pB = new THREE.Vector3(bx, by, bz)
+        const pC = new THREE.Vector3(cx, cy, cz)
+        cb.subVectors(pC, pB)
+        ab.subVectors(pA, pB)
+        cb.cross(ab)
+        cb.normalize()
+        const nx = cb.x
+        const ny = cb.y
+        const nz = cb.z
+        normals.push(nx, ny, nz)
+        normals.push(nx, ny, nz)
+        normals.push(nx, ny, nz)
+
         // to do
+        const colors = []
+        //const vx = (x / n) + 0.5
+        //const vy = (y / n) + 0.5
+        //const vz = (z / n) + 0.5
+        //color.setRGB( vx, vy, vz )
+        //const alpha = Math.random()
+        //colors.push(color.r, color.g, color.b, alpha)
+        //colors.push(color.r, color.g, color.b, alpha)
+        //colors.push(color.r, color.g, color.b, alpha)
+        
+        let geometry = new THREE.BufferGeometry()
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+        geometry.setAttribute('normal', new THREE.BufferAttribute(normals, 3))
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 4))
+        geometry.computeBoundingSphere()
+        */
     }
 
     configRepeatFactor(material, width, height) {
