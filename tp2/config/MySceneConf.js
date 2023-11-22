@@ -135,7 +135,7 @@ class MySceneConf {
         )
     }
 
-    configMaterial(materialID, width = 1.0, height = 1.0) {
+    configMaterial(materialID, repeat = true, width = 1.0, height = 1.0) {
         if (materialID == null) 
             return new THREE.MeshPhongMaterial()
 
@@ -163,9 +163,11 @@ class MySceneConf {
         if (matData.textureref !== null) {
             material.map = this.configTexture(matData.textureref)
 
-            material.map.wrapS = THREE.RepeatWrapping
-            material.map.wrapT = THREE.RepeatWrapping
-            material.map.repeat.set(width / matData.texlength_s, height / matData.texlength_t)
+            if (repeat) {
+                material.map.wrapS = THREE.RepeatWrapping
+                material.map.wrapT = THREE.RepeatWrapping
+                material.map.repeat.set(width / matData.texlength_s, height / matData.texlength_t)
+            }
         }
 
         if (matData.bumpref != null) {
@@ -299,9 +301,9 @@ class MySceneConf {
                     group.position.set(tx, ty, tz)
                     break
                 case "R":
-                    const rx = group.rotation.x + t.rotation[0] // * (Math.PI / 180)
-                    const ry = group.rotation.y + t.rotation[1] // * (Math.PI / 180)
-                    const rz = group.rotation.z + t.rotation[2] // * (Math.PI / 180)
+                    const rx = group.rotation.x + t.rotation[0] * (Math.PI / 180)
+                    const ry = group.rotation.y + t.rotation[1] * (Math.PI / 180)
+                    const rz = group.rotation.z + t.rotation[2] * (Math.PI / 180)
                     group.rotation.set(rx, ry, rz)
                     break
                 case "S":
@@ -402,14 +404,11 @@ class MySceneConf {
             child.representations[0].slices,
             child.representations[0].stacks,
             !child.representations[0].capsclose,
-            child.representations[0].thetastart, // * (Math.PI / 180)
+            child.representations[0].thetastart, // * (Math.PI / 180),
             child.representations[0].thetalength // * (Math.PI / 180)
         )
 
-        const width = Math.abs(child.representations[0].top - child.representations[0].base) * 2
-        const height = child.representations[0].height
-
-        let cylinder = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
+        let cylinder = new THREE.Mesh(geometry, this.configMaterial(materialID, false))
         cylinder.castShadow = castShadows
         cylinder.receiveShadow = receiveShadows
 
@@ -431,7 +430,7 @@ class MySceneConf {
         const width = Math.abs(x2 - x1)
         const height = Math.abs(y2 - y1)
 
-        let rectangle = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
+        let rectangle = new THREE.Mesh(geometry, this.configMaterial(materialID, true, width, height))
         rectangle.position.set((x2 + x1) / 2, (y2 + y1) / 2)
         rectangle.castShadow = castShadows
         rectangle.receiveShadow = receiveShadows
@@ -462,7 +461,7 @@ class MySceneConf {
         )
         const height = cross.length() / width
 
-        let triangle = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
+        let triangle = new THREE.Mesh(geometry, this.configMaterial(materialID, true, width, height))
         return triangle
     }
 
@@ -475,16 +474,13 @@ class MySceneConf {
             child.representations[0].radius,
             child.representations[0].slices,
             child.representations[0].stacks,
-            child.representations[0].phistart, // * (Math.PI / 180),
-            child.representations[0].philength, // * (Math.PI / 180),
-            child.representations[0].thetastart, // * (Math.PI / 180),
-            child.representations[0].thetalength // * (Math.PI / 180)
+            child.representations[0].phistart * (Math.PI / 180),
+            child.representations[0].philength * (Math.PI / 180),
+            child.representations[0].thetastart * (Math.PI / 180),
+            child.representations[0].thetalength * (Math.PI / 180)
         )
 
-        const width = child.representations[0].radius
-        const height = child.representations[0].radius
-
-        let sphere = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
+        let sphere = new THREE.Mesh(geometry, this.configMaterial(materialID, false))
         sphere.castShadow = castShadows
         sphere.receiveShadow = receiveShadows
 
@@ -510,7 +506,7 @@ class MySceneConf {
         const width = Math.abs(x2 - x1)
         const height = Math.abs(y2 - y1)
 
-        let box = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
+        let box = new THREE.Mesh(geometry, this.configMaterial(materialID, true, width, height))
         box.position.set((x2 + x1) / 2, (y2 + y1) / 2, (z2 + z1) / 2)
 
         box.castShadow = castShadows
@@ -547,22 +543,7 @@ class MySceneConf {
             child.representations[0].parts_v
         )
 
-        let minX = child.representations[0].controlpoints[0]["xx"]
-        let maxX = child.representations[0].controlpoints[0]["xx"]
-        let minY = child.representations[0].controlpoints[0]["yy"]
-        let maxY = child.representations[0].controlpoints[0]["yy"]
-        for (let i = 1; i < child.representations[0].controlpoints.length; i++) {
-            const currentX = child.representations[0].controlpoints[i]["xx"]
-            const currentY = child.representations[0].controlpoints[i]["yy"]
-            minX = Math.min(minX, currentX)
-            maxX = Math.max(maxX, currentX)
-            minY = Math.min(minY, currentY)
-            maxY = Math.max(maxY, currentY)
-        }
-        const width = maxX - minX
-        const height = maxY - minY
-
-        let nurbs = new THREE.Mesh(surface, this.configMaterial(materialID, width, height))
+        let nurbs = new THREE.Mesh(surface, this.configMaterial(materialID, false))
         nurbs.castShadow = castShadows
         nurbs.receiveShadow = receiveShadows
 
@@ -578,7 +559,7 @@ class MySceneConf {
 
         let geometry = new MyPolygon(radius, stacks, slices, color_c, color_p)
 
-        let material = this.configMaterial(materialID)
+        let material = this.configMaterial(materialID, false)
         material.vertexColors = true
 
         let polygon = new THREE.Mesh(geometry, material)
