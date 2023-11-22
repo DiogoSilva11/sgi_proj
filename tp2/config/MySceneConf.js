@@ -121,7 +121,6 @@ class MySceneConf {
     }
 
     loadMipmap(parentTexture, level, path) {
-        console.log(path)  
         new THREE.TextureLoader().load(path, 
             function(mipmapTexture) {
                 const canvas = document.createElement('canvas')
@@ -255,7 +254,7 @@ class MySceneConf {
                             group.add(rectangle)
                             break
                         case "triangle":
-                            let triangle = this.configTriangle(child, materialID, castShadows, receiveShadows)
+                            let triangle = this.configTriangle(child, materialID)
                             group.add(triangle)
                             break
                         //case "model3d":
@@ -275,7 +274,7 @@ class MySceneConf {
                             group.add(nurbs)
                             break
                         case "polygon":
-                            let polygon = this.configPolygon(child, materialID, castShadows, receiveShadows)
+                            let polygon = this.configPolygon(child, materialID)
                             group.add(polygon)
                             break
                         default:
@@ -440,7 +439,7 @@ class MySceneConf {
         return rectangle
     }
 
-    configTriangle(child, materialID = null, castShadows = false, receiveShadows = false) {
+    configTriangle(child, materialID = null) {
         const x1 = child.representations[0].xyz1[0]
         const y1 = child.representations[0].xyz1[1]
         const z1 = child.representations[0].xyz1[2]
@@ -464,9 +463,6 @@ class MySceneConf {
         const height = cross.length() / width
 
         let triangle = new THREE.Mesh(geometry, this.configMaterial(materialID, width, height))
-        triangle.castShadow = castShadows
-        triangle.receiveShadow = receiveShadows
-
         return triangle
     }
 
@@ -573,7 +569,7 @@ class MySceneConf {
         return nurbs
     }
 
-    configPolygon(child, materialID = null, castShadows = false, receiveShadows = false) {
+    configPolygon(child, materialID = null) {
         const radius = child.representations[0].radius
         const stacks = child.representations[0].stacks
         const slices = child.representations[0].slices
@@ -582,7 +578,7 @@ class MySceneConf {
 
         let geometry = new MyPolygon(radius, stacks, slices, color_c, color_p)
 
-        let material = (materialID == null) ? new THREE.MeshPhongMaterial() : this.configMaterial(materialID)
+        let material = this.configMaterial(materialID)
         material.vertexColors = true
 
         let polygon = new THREE.Mesh(geometry, material)
