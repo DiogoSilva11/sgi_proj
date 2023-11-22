@@ -59,7 +59,7 @@ class MyPolygon extends THREE.BufferGeometry {
         this.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3))
         this.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(normals), 3))
         this.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3))
-        //this.computeBoundingSphere()
+        this.computeBoundingSphere()
     }
 }
 
