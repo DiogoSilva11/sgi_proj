@@ -137,6 +137,9 @@ class MyGuiInterface  {
         })
     }
 
+    /**
+     * Updates the gui interface
+     */
     update() {
         if (this.cameraFolder != undefined) this.cameraFolder.destroy()
         if (this.lightFolder != undefined) this.lightFolder.destroy()
@@ -144,6 +147,9 @@ class MyGuiInterface  {
         this.init()
     }
 
+    /**
+     * Updates the active camera if required
+     */
     updateLightIfRequired() {
         if (this.lastLightName !== this.activeLightName) {
             this.lastLightName = this.activeLightName
@@ -151,6 +157,9 @@ class MyGuiInterface  {
         }
     }
 
+    /**
+     * Updates the active structure if required
+     */
     updateStructureIfRequired() {
         if (this.lastStructureName !== this.activeStructureName) {
             this.lastStructureName = this.activeStructureName

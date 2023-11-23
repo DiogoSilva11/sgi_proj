@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { MyTriangle } from './MyTriangle.js';
 
+// MyPolygon class, which extends the BufferGeometry class
 class MyPolygon extends THREE.BufferGeometry {
     constructor(radius, stacks, slices, centerColor, peripheryColor) {
         super()
@@ -12,6 +13,9 @@ class MyPolygon extends THREE.BufferGeometry {
         this.initBuffers()
     }
 
+    /**
+     * Initializes the buffers of this geometry
+     */
     initBuffers() {
         const positions = []
         const normals = []

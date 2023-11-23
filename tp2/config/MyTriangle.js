@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
+// MyTriangle class, which extends the BufferGeometry class
 class MyTriangle extends THREE.BufferGeometry {
 	constructor(x1, y1, z1, x2, y2, z2, x3, y3, z3, afs = 1, aft = 1) {
 		super()
@@ -9,6 +10,9 @@ class MyTriangle extends THREE.BufferGeometry {
         this.initBuffers()
 	}
 
+	/**
+	 * Initializes the buffers of this geometry
+	 */
 	initBuffers() {
         let vectorAx = this.p2.x - this.p1.x
 		let vectorAy = this.p2.y - this.p1.y

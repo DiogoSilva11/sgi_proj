@@ -2,8 +2,15 @@ import * as THREE from 'three';
 import { MyNurbsBuilder } from './MyNurbsBuilder.js';
 import { MyTriangle } from './MyTriangle.js';
 import { MyPolygon } from './MyPolygon.js';
+import { MySceneData } from '../parser/MySceneData.js';
 
+// MySceneConf class, which configures the scene
 class MySceneConf {
+    /**
+     * MySceneConf constructor
+     * @param {MySceneData} data Scene data
+     * @param {THREE.Scene} scene Scene object
+     */
     constructor(data, scene) {
         this.data = data
         this.scene = scene
@@ -18,6 +25,9 @@ class MySceneConf {
         this.scene.add(baseNode)
     }
 
+    /**
+     * Configures the global scene settings
+     */
     configGlobals() {
         if (this.data.options.type == "globals") {
             let background = this.data.options.background
@@ -33,6 +43,9 @@ class MySceneConf {
         }
     }
 
+    /**
+     * Configures the scene fog
+     */
     configFog() {
         let fog = new THREE.Fog(
             new THREE.Color(this.data.fog.color.r, this.data.fog.color.g, this.data.fog.color.b),
@@ -42,6 +55,11 @@ class MySceneConf {
         this.scene.fog = fog
     }
 
+    /**
+     * Configures a texture from its ID
+     * @param {String} textureID Texture ID
+     * @returns Texture object
+     */
     configTexture(textureID) {
         const texData = this.data.textures[textureID]
 
@@ -76,6 +94,12 @@ class MySceneConf {
         return texture
     }
 
+    /**
+     * Configures mipmap texture
+     * @param {THREE.TextureLoader} texture Texture object
+     * @param {Object} texData Texture data
+     * @returns Texture object
+     */
     configMipmap(texture, texData) {
         texture.generateMipmaps = texData.mipmaps
         texture.anisotropy = texData.anisotropy
@@ -122,6 +146,12 @@ class MySceneConf {
         }
     }
 
+    /**
+     * Loads a mipmap texture
+     * @param {THREE.TextureLoader} parentTexture Parent texture object
+     * @param {Number} level Mipmap level
+     * @param {String} path Path to the mipmap texture
+     */
     loadMipmap(parentTexture, level, path) {
         new THREE.TextureLoader().load(path, 
             function(mipmapTexture) {
@@ -137,6 +167,14 @@ class MySceneConf {
         )
     }
 
+    /**
+     * Configures a material from its ID
+     * @param {String} materialID Material ID
+     * @param {Boolean} repeat True if the texture should be repeated
+     * @param {Number} width Width of the object
+     * @param {Number} height Height of the object
+     * @returns Material object
+     */
     configMaterial(materialID, repeat = true, width = 1.0, height = 1.0) {
         if (materialID == null) 
             return new THREE.MeshPhongMaterial()
@@ -183,6 +221,9 @@ class MySceneConf {
         return material
     }
 
+    /**
+     * Configures the skyboxes
+     */
     configSkyboxes() {
         for (let skybox in this.data.skyboxes) {
             skybox = this.data.skyboxes[skybox]
@@ -211,6 +252,14 @@ class MySceneConf {
         }
     }
 
+    /**
+     * Configures a node from its ID
+     * @param {String} key Node ID
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Group} Group object
+     */
     configNode(key, materialID = null, castShadows = false, receiveShadows = false) {
         let node = this.data.nodes[key]
         let group = new THREE.Group()
@@ -293,6 +342,11 @@ class MySceneConf {
         return group
     }
 
+    /**
+     * Applies transformations to a node
+     * @param {Object} node Node object
+     * @param {THREE.Group} group Group object
+     */
     transformNode(node, group) {
         for (let t in node.transformations) {
             t = node.transformations[t]
@@ -321,6 +375,14 @@ class MySceneConf {
         }
     }
 
+    /**
+     * Configures a LOD object
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.LOD} LOD object
+     */
     configLod(child, materialID = null, castShadows = false, receiveShadows = false) {
         let lod = new THREE.LOD()
 
@@ -334,6 +396,11 @@ class MySceneConf {
         return lod
     }
 
+    /** 
+     * Configures a point light
+     * @param {Object} child Child object
+     * @returns {THREE.PointLight} Point light object
+     */
     configPointLight(child) {
         let light = new THREE.PointLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
@@ -355,13 +422,18 @@ class MySceneConf {
         return light
     }
 
+    /** 
+     * Configures a spot light
+     * @param {Object} child Child object
+     * @returns {THREE.SpotLight} Spot light object
+     */
     configSpotLight(child) {
         let light = new THREE.SpotLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b),
         )
         light.position.set(child.position[0], child.position[1], child.position[2])
         light.target.position.set(child.target[0], child.target[1], child.target[2])
-        light.angle = child.angle * (Math.PI / 180)
+        light.angle = child.angle // * (Math.PI / 180)
 
         if (child.enabled !== undefined) light.visible = child.enabled
         if (child.intensity !== undefined) light.intensity = child.intensity
@@ -379,6 +451,11 @@ class MySceneConf {
         return light
     }
 
+    /**
+     * Configures a directional light
+     * @param {Object} child Child object
+     * @returns {THREE.DirectionalLight} Directional light object
+     */
     configDirectionalLight(child) {
         let light = new THREE.DirectionalLight(
             new THREE.Color(child.color.r, child.color.g, child.color.b)
@@ -402,6 +479,14 @@ class MySceneConf {
         return light
     }
 
+    /** 
+     * Configures a cylinder
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Mesh} Mesh object
+     */
     configCylinder(child, materialID = null, castShadows = false, receiveShadows = false) {
         let geometry = new THREE.CylinderGeometry(
             child.representations[0].top,
@@ -421,6 +506,14 @@ class MySceneConf {
         return cylinder
     }
     
+    /**
+     * Configures a rectangle
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Mesh} Mesh object
+     */
     configRectangle(child, materialID = null, castShadows = false, receiveShadows = false) {
         const x1 = child.representations[0].xy1[0]
         const y1 = child.representations[0].xy1[1]
@@ -444,6 +537,12 @@ class MySceneConf {
         return rectangle
     }
 
+    /**
+     * Configures a triangle
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @returns {THREE.Mesh} Mesh object
+     */
     configTriangle(child, materialID = null) {
         const x1 = child.representations[0].xyz1[0]
         const y1 = child.representations[0].xyz1[1]
@@ -475,6 +574,14 @@ class MySceneConf {
         // to do
     }
     
+    /**   
+     * Configures a sphere
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Mesh} Mesh object
+     */
     configSphere(child, materialID = null, castShadows = false, receiveShadows = false) {
         let geometry = new THREE.SphereGeometry(
             child.representations[0].radius,
@@ -493,6 +600,14 @@ class MySceneConf {
         return sphere
     }
     
+    /**
+     * Configures a box
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Mesh} Mesh object
+     */
     configBox(child, materialID = null, castShadows = false, receiveShadows = false) {
         const x1 = child.representations[0].xyz1[0]
         const y1 = child.representations[0].xyz1[1]
@@ -521,6 +636,14 @@ class MySceneConf {
         return box
     }
 
+    /**
+     * Configures a NURBS object
+     * @param {Object} child Child object
+     * @param {String} materialID Material ID
+     * @param {Boolean} castShadows True if the object should cast shadows
+     * @param {Boolean} receiveShadows True if the object should receive shadows
+     * @returns {THREE.Mesh} Mesh object
+     */
     configNurbs(child, materialID = null, castShadows = false, receiveShadows = false) {
         const degreeU = child.representations[0].degree_u
         const degreeV = child.representations[0].degree_v
@@ -556,6 +679,11 @@ class MySceneConf {
         return nurbs
     }
 
+    /**
+     * Configures a polygon
+     * @param {Object} child Child object
+     * @returns {THREE.Mesh} Mesh object
+     */
     configPolygon(child) {
         const radius = child.representations[0].radius
         const stacks = child.representations[0].stacks
