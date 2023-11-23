@@ -23,6 +23,8 @@ class MySceneConf {
 
         let baseNode = this.configNode(this.data.rootId)
         this.scene.add(baseNode)
+
+        console.log(baseNode)
     }
 
     /**
@@ -263,9 +265,9 @@ class MySceneConf {
     configNode(key, materialID = null, castShadows = false, receiveShadows = false) {
         let node = this.data.nodes[key]
         let group = new THREE.Group()
-
-        if (node.castShadows == true) castShadows = true
-        if (node.receiveShadows == true) receiveShadows = true
+  
+        castShadows = (castShadows === true) ? true : node.castShadows
+        receiveShadows = (receiveShadows === true) ? true : node.receiveShadows
         if (node.transformations !== undefined) this.transformNode(node, group)
         if (node.materialIds.length != 0) materialID = node.materialIds[0]
 
@@ -310,13 +312,12 @@ class MySceneConf {
                             let triangle = this.configTriangle(child, materialID)
                             group.add(triangle)
                             break
-                        //case "model3d":
-                        //    let model3d = this.configModel3D(child, materialID, castShadows, receiveShadows)
-                        //    group.add(model3d)
-                        //    break
                         case "sphere":
                             let sphere = this.configSphere(child, materialID, castShadows, receiveShadows)
                             group.add(sphere)
+                            break
+                        case "model3d":
+                            let model3d = this.configModel3D(child, materialID, castShadows, receiveShadows)
                             break
                         case "box":
                             let box = this.configBox(child, materialID, castShadows, receiveShadows)
@@ -338,6 +339,7 @@ class MySceneConf {
             }
         }
 
+        group.name = node.id
         this.structures[node.id] = group
         return group
     }
@@ -358,9 +360,9 @@ class MySceneConf {
                     group.position.set(tx, ty, tz)
                     break
                 case "R":
-                    const rx = group.rotation.x + t.rotation[0] * (Math.PI / 180)
-                    const ry = group.rotation.y + t.rotation[1] * (Math.PI / 180)
-                    const rz = group.rotation.z + t.rotation[2] * (Math.PI / 180)
+                    const rx = group.rotation.x + t.rotation[0] // * (Math.PI / 180)
+                    const ry = group.rotation.y + t.rotation[1] // * (Math.PI / 180)
+                    const rz = group.rotation.z + t.rotation[2] // * (Math.PI / 180)
                     group.rotation.set(rx, ry, rz)
                     break
                 case "S":
@@ -571,7 +573,8 @@ class MySceneConf {
     }
 
     configModel3D(child, materialID = null, castShadows = false, receiveShadows = false) {
-        // to do
+        console.log("Model 3D not available in this version.")
+        return null
     }
     
     /**   

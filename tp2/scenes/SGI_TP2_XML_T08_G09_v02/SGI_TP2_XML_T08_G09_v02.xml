@@ -64,7 +64,7 @@
             target="4 8 3" 
         /> 
 
-        <perspective id="sofaCam" 
+        <perspective id="couchCam" 
             angle="60" 
             near="0.1" 
             far="1000" 
@@ -102,12 +102,12 @@
         <texture id="clockTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/clock.jpg" />
         <texture id="newspaperTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/newspaper.jpg" />
         <texture id="boxTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/box.jpg" />
-        <texture id="sofaTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/sofa.jpg" />
+        <texture id="couchTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/couch.jpg" />
         <texture id="warningTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/warning.png" />
         <texture id="earthTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/earth.jpg" />
         <texture id="earthMapTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/earth_map.jpg" />
         <texture id="videoTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/city_life.mp4" isVideo="true"/>
-        <texture id="paintingTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/painting_1024.png" 
+        <texture id="paintingTex" filepath="scenes/SGI_TP2_XML_T08_G09_v02/textures/painting_1024.jpg" 
             magFilter="NearestFilter"
             minFilter="NearestFilter"
             mipmaps="false"
@@ -270,12 +270,12 @@
             wireframe="true"
         />
 
-        <material id="sofaApp" 
+        <material id="couchApp" 
             color="0.5 0.2 0.2 1.0" 
             emissive="0.0 0.0 0.0 0.0" 
 			specular="0 0 0 0" 
             shininess="0" 
-            textureref="sofaTex" 
+            textureref="couchTex" 
         />
 
         <material id="lightApp" 
@@ -295,7 +295,7 @@
     </materials> 
 
     <graph rootid="scene"> 
-		<node id="scene" castshadows="true" > 
+		<node id="scene" > 
             <children> 
                 <noderef id="floor" />
                 <noderef id="roof" />
@@ -305,15 +305,12 @@
                 <noderef id="lamp2" />
                 <noderef id="lamp3" />
                 <noderef id="lamp4" />
-                <lodref id="bookshelfLod1" />
-                <lodref id="bookshelfLod2" />
-                <lodref id="bookshelfLod3" />
+                <noderef id="bookshelves" />
                 <noderef id="carpet" />
                 <noderef id="table" />
                 <noderef id="tvBox" />
                 <noderef id="globeBox" />
-                <noderef id="sofa1" />
-                <noderef id="sofa2" />
+                <noderef id="couches" />
 
                 <pointlight id="light1" 
                     enabled="true" 
@@ -360,10 +357,10 @@
             </children> 
         </node>
 
-        <node id="floor" castshadows="false" >
+        <node id="floor" castshadows="false" receiveshadows="true" >
 			<transforms>
 				<translate value3="0 0 15" />
-				<rotate value3="-90 0.0 0.0" />
+				<rotate value3="-1.5708 0.0 0.0" />
             </transforms> 
 
 			<materialref id="floorApp" />
@@ -378,7 +375,7 @@
         <node id="roof" castshadows="false" receiveshadows="false" >
 			<transforms>
 				<translate value3="30 10 15" />
-				<rotate value3="-90 180 0" />
+				<rotate value3="-1.5708 3.14159 0" />
             </transforms> 
 
 			<materialref id="roofApp" />
@@ -390,10 +387,10 @@
             </children> 
         </node>
 
-        <node id="leftWall" castshadows="false" >
+        <node id="leftWall" castshadows="false" receiveshadows="true" >
 			<transforms>
 				<translate value3="0 0 15" />
-				<rotate value3="0.0 90 0.0" />
+				<rotate value3="0.0 1.5708 0.0" />
             </transforms> 
 
 			<materialref id="wallpaperApp" />
@@ -406,7 +403,7 @@
             </children> 
         </node>
 
-        <node id="rightWall" castshadows="false" >
+        <node id="rightWall" castshadows="false" receiveshadows="true" >
         	<transforms>
 				<translate value3="0 0 -15" />
             </transforms> 
@@ -510,7 +507,7 @@
                         slices="6" 
                         stacks="7" 
                         color_c="0.5 0.5 0 1" 
-                        color_p="0.5 0.5 0 1"
+                        color_p="0.05 0.05 0 1"
                     />
                 </primitive>
             </children> 
@@ -519,7 +516,7 @@
         <node id="warningSign">
             <transforms>
                 <translate value3="0 0 0.1" />
-                <rotate value3="90 90 0" />
+                <rotate value3="1.5708 1.5708 0" />
             </transforms>
 
             <materialref id="warningApp" />
@@ -547,7 +544,7 @@
         <node id="clock">
             <transforms>
                 <translate value3="23.5 7.5 0.1" />
-                <rotate value3="90 0 0" />
+                <rotate value3="1.5708 0 0" />
             </transforms>
 
             <materialref id="clockApp" />
@@ -568,7 +565,7 @@
         <node id="basicClock">
             <transforms>
                 <translate value3="23.5 7.5 0.1" />
-                <rotate value3="90 0 0" />
+                <rotate value3="1.5708 0 0" />
             </transforms>
 
             <materialref id="basicApp" />
@@ -586,100 +583,49 @@
             </children>
         </node>
 
-        <lod id="bookshelfLod1" castshadows="false" receiveshadows="false" >
+        <node id="bookshelves">            
             <children>
-                <noderef id="bookshelf1" mindist="1" />
-                <noderef id="basicBookshelf1" mindist="60"/>
+                <noderef id="bookshelf1" />
+                <noderef id="bookshelf2" />
+                <noderef id="bookshelf3" />
             </children>
-        </lod>
+        </node>
 
         <node id="bookshelf1">
-			<transforms>
+            <transforms>
 				<translate value3="5 0 -11" />
             </transforms> 
-
-			<materialref id="bookshelfApp" />
-			
-            <children>     
-                <noderef id="bookshelfBorder1" /> 
-                <noderef id="bookshelfBorder2" />   
-                <noderef id="bookshelfBorder3" />    
-                <primitive>
-                    <box xyz1="0 0 0" xyz2="10 7 2" />
-                </primitive>
-            </children> 
-        </node>
-
-        <node id="basicBookshelf1">
-			<transforms>
-				<translate value3="5 0 -11" />
-            </transforms> 
-
-			<materialref id="basicApp" />
-			
-            <children>     
-                <noderef id="bookshelfBorder1" /> 
-                <noderef id="bookshelfBorder2" />   
-                <noderef id="bookshelfBorder3" />    
-                <primitive>
-                    <box xyz1="0 0 0" xyz2="10 7 2" />
-                </primitive>
-            </children> 
-        </node>
-
-        <lod id="bookshelfLod2" castshadows="false" receiveshadows="false" >
             <children>
-                <noderef id="bookshelf2" mindist="1" />
-                <noderef id="basicBookshelf2" mindist="60"/>
+                <lodref id="bookshelfLod" />
             </children>
-        </lod>
+        </node>
 
         <node id="bookshelf2">
-			<transforms>
+            <transforms>
 				<translate value3="5 0 -5" />
             </transforms> 
-
-			<materialref id="bookshelfApp" />
-			
-            <children>     
-                <noderef id="bookshelfBorder1" /> 
-                <noderef id="bookshelfBorder2" />   
-                <noderef id="bookshelfBorder3" />    
-                <primitive>
-                    <box xyz1="0 0 0" xyz2="10 7 2" />
-                </primitive>
-            </children> 
-        </node>
-
-        <node id="basicBookshelf2">
-			<transforms>
-				<translate value3="5 0 -5" />
-            </transforms> 
-
-			<materialref id="basicApp" />
-			
-            <children>     
-                <noderef id="bookshelfBorder1" /> 
-                <noderef id="bookshelfBorder2" />   
-                <noderef id="bookshelfBorder3" />    
-                <primitive>
-                    <box xyz1="0 0 0" xyz2="10 7 2" />
-                </primitive>
-            </children> 
-        </node>
-
-        <lod id="bookshelfLod3" castshadows="false" receiveshadows="false" >
             <children>
-                <noderef id="bookshelf3" mindist="1" />
-                <noderef id="basicBookshelf3" mindist="60"/>
+                <lodref id="bookshelfLod" />
+            </children>
+        </node>
+
+        <node id="bookshelf3">
+            <transforms>
+				<translate value3="5 0 9" />
+            </transforms> 
+            <children>
+                <lodref id="bookshelfLod" />
+            </children>
+        </node>
+
+        <lod id="bookshelfLod" castshadows="false" receiveshadows="false" >
+            <children>
+                <noderef id="bookshelf" mindist="1" />
+                <noderef id="basicBookshelf" mindist="65"/>
             </children>
         </lod>
 
-        <node id="bookshelf3">
-			<transforms>
-				<translate value3="5 0 9" />
-            </transforms> 
-
+        <node id="bookshelf">
 			<materialref id="bookshelfApp" />
 			
             <children>     
@@ -692,11 +638,7 @@
             </children> 
         </node>
 
-        <node id="basicBookshelf3">
-			<transforms>
-				<translate value3="5 0 9" />
-            </transforms> 
-
+        <node id="basicBookshelf">
 			<materialref id="basicApp" />
 			
             <children>     
@@ -712,7 +654,7 @@
         <node id="bookshelfBorder1">
             <transforms>
                 <translate value3="0 7.01 2" />
-                <rotate value3="-90 0 0" />
+                <rotate value3="-1.5708 0 0" />
             </transforms>
 
             <materialref id="bookshelfBorderApp" />
@@ -727,7 +669,7 @@
         <node id="bookshelfBorder2">
             <transforms>
                 <translate value3="10.01 0 2" />
-                <rotate value3="0 90 0" />
+                <rotate value3="0 1.5708 0" />
             </transforms>
 
             <materialref id="bookshelfBorderApp" />
@@ -742,7 +684,7 @@
         <node id="bookshelfBorder3">
             <transforms>
                 <translate value3="-0.01 0 2" />
-                <rotate value3="0 90 0" />
+                <rotate value3="0 1.5708 0" />
             </transforms>
 
             <materialref id="bookshelfBorderApp" />
@@ -757,7 +699,7 @@
         <node id="carpet" castshadows="false" receiveshadows="true" >
             <transforms>
                 <translate value3="6 0.01 5.5" />
-                <rotate value3="-90 0 0" />
+                <rotate value3="-1.5708 0 0" />
             </transforms>
 
             <materialref id="carpetApp" />
@@ -773,7 +715,7 @@
             <transforms>
                 <translate value3="-0.2 0.6 0.3" />
                 <scale value3="0.1 0.2 0.5" />
-                <rotate value3="-90 0 0" />
+                <rotate value3="-1.5708 0 0" />
             </transforms>
 
             <materialref id="newspaperApp" />
@@ -849,7 +791,7 @@
         <node id="tvFrame">
             <transforms>
                 <translate value3="-1.5 2.2 -0.1" />
-                <rotate value3="90 0 0" />
+                <rotate value3="1.5708 0 0" />
             </transforms>
 
             <children>
@@ -863,7 +805,7 @@
         <node id="tvScreen">
             <transforms>
                 <translate value3="0.22 0.21 1.7" />
-                <rotate value3="-90 0 0" />
+                <rotate value3="-1.5708 0 0" />
             </transforms>
 
             <materialref id="videoApp" />
@@ -928,41 +870,106 @@
             </children>
         </node>
 
-        <node id="sofa1" castshadows="false" receiveshadows="false" >
+        <node id="couches" castshadows="false" receiveshadows="false" >
+            <children>
+                <noderef id="couch1" />
+                <noderef id="couch2" />          
+            </children> 
+        </node>
+
+        <node id="couch1">
             <transforms>
                 <translate value3="27 0 0.5" />
-                <rotate value3="0 180 0" />
+                <rotate value3="0 3.14159 0" />
             </transforms>
-
-            <materialref id="sofaApp" />
-
             <children>
-                <noderef id="sofaBack" />
-                <primitive>
-                    <box xyz1="0 0 0" xyz2="7 1.2 3" />
-                </primitive>
+                <lodref id="couchLod" />
             </children>
         </node>
 
-        <node id="sofa2" castshadows="false" receiveshadows="false" >
+        <node id="couch2">
             <transforms>
                 <translate value3="20 0 2" />
             </transforms>
+            <children>
+                <lodref id="couchLod" />
+            </children>
+        </node>
 
-            <materialref id="sofaApp" />
+        <lod id="couchLod">
+            <children>
+                <noderef id="couch" mindist="1" />
+                <noderef id="basicCouch" mindist="40"/>
+                <noderef id="superBasicCouch" mindist="50"/>
+            </children>
+        </lod>  
+
+        <node id="couch">
+            <materialref id="couchApp" />
 
             <children>
-                <noderef id="sofaBack" />
+                <noderef id="couchArm1" />
+                <noderef id="couchArm2" />
+                <noderef id="couchBack" />
                 <primitive>
                     <box xyz1="0 0 0" xyz2="7 1.2 3" />
                 </primitive>
             </children>
         </node>
 
-        <node id="sofaBack">
+        <node id="basicCouch">
+            <materialref id="couchApp" />
+
+            <children>
+                <noderef id="couchBack" />
+                <primitive>
+                    <box xyz1="0 0 0" xyz2="7 1.2 3" />
+                </primitive>
+            </children>
+        </node>
+
+        <node id="superBasicCouch">
+            <materialref id="couchApp" />
+
             <children>
                 <primitive>
-                    <box xyz1="0 0 0" xyz2="7 2.2 1.2" />
+                    <box xyz1="0 0 0" xyz2="7 1.8 3" />
+                </primitive>
+            </children>
+        </node>
+
+        <node id="couchBack">
+            <transforms>
+                <translate value3="0.9 0 0" />
+            </transforms>
+
+            <children>
+                <primitive>
+                    <box xyz1="0 0 0" xyz2="5.2 2.2 1.2" />
+                </primitive>
+            </children>
+        </node>
+
+        <node id="couchArm1">
+            <transforms>
+                <translate value3="-0.1 0 0" />
+            </transforms>
+
+            <children>
+                <primitive>
+                    <box xyz1="0 0 0" xyz2="1 2.2 3" />
+                </primitive>
+            </children>
+        </node>
+
+        <node id="couchArm2">
+            <transforms>
+                <translate value3="6.1 0 0" />
+            </transforms>
+
+            <children>
+                <primitive>
+                    <box xyz1="0 0 0" xyz2="1 2.2 3" />
                 </primitive>
             </children>
         </node>
@@ -1017,7 +1024,7 @@
 		<node id="rectangle1"> 
             <transforms>
 				<translate value3="0 0 -0.5" />
-				<rotate value3="0 180 0" />
+				<rotate value3="0 3.14159 0" />
             </transforms> 
 
             <children>   
@@ -1042,7 +1049,7 @@
 		<node id="rectangle3"> 
             <transforms>
 				<translate value3="0 -0.5 0" />
-				<rotate value3="90 0.0 0.0" />
+				<rotate value3="1.5708 0.0 0.0" />
             </transforms> 
 
             <children>   
@@ -1055,7 +1062,7 @@
 		<node id="rectangle4"> 
             <transforms>
 				<translate value3="0 0.5 0" />
-				<rotate value3="-90 0.0 0.0" />
+				<rotate value3="-1.5708 0.0 0.0" />
             </transforms> 
 
             <children>             
@@ -1068,7 +1075,7 @@
 		<node id="rectangle5"> 
             <transforms>
 				<translate value3="-0.5 0 0" />
-				<rotate value3="0.0 -90 0.0" />
+				<rotate value3="0.0 -1.5708 0.0" />
             </transforms> 
 
             <children>             
@@ -1081,7 +1088,7 @@
 		<node id="rectangle6"> 
             <transforms>
 				<translate value3="0.5 0 0" />
-				<rotate value3="0.0 90 0.0" />
+				<rotate value3="0.0 1.5708 0.0" />
             </transforms> 
 
             <children>             
