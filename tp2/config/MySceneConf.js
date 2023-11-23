@@ -172,7 +172,7 @@ class MySceneConf {
 
         if (matData.bumpref != null) {
             material.bumpMap = this.configTexture(matData.bumpref)
-            material.bumpScale = (matData.bumpscale != null) ? matData.bumpscale : 1.0
+            material.bumpScale = matData.bumpscale
         }
 
         if (matData.specularref != null) 
@@ -232,18 +232,18 @@ class MySceneConf {
                 case "pointlight":
                     let pointLight = this.configPointLight(child)
                     group.add(pointLight)
-                    group.add(new THREE.PointLightHelper(pointLight))
+                    //group.add(new THREE.PointLightHelper(pointLight))
                     break
                 case "spotlight":
                     let spotLight = this.configSpotLight(child)
                     group.add(spotLight)
                     group.add(spotLight.target)
-                    group.add(new THREE.SpotLightHelper(spotLight))
+                    //group.add(new THREE.SpotLightHelper(spotLight))
                     break
                 case "directionallight":
                     let directionalLight = this.configDirectionalLight(child)
                     group.add(directionalLight)
-                    group.add(new THREE.DirectionalLightHelper(directionalLight))
+                    //group.add(new THREE.DirectionalLightHelper(directionalLight))
                     break
                 case "primitive":
                     switch (child.subtype) {
@@ -276,7 +276,7 @@ class MySceneConf {
                             group.add(nurbs)
                             break
                         case "polygon":
-                            let polygon = this.configPolygon(child, materialID)
+                            let polygon = this.configPolygon(child)
                             group.add(polygon)
                             break
                         default:
@@ -474,10 +474,10 @@ class MySceneConf {
             child.representations[0].radius,
             child.representations[0].slices,
             child.representations[0].stacks,
-            child.representations[0].phistart * (Math.PI / 180),
-            child.representations[0].philength * (Math.PI / 180),
-            child.representations[0].thetastart * (Math.PI / 180),
-            child.representations[0].thetalength * (Math.PI / 180)
+            child.representations[0].phistart, // * (Math.PI / 180),
+            child.representations[0].philength, // * (Math.PI / 180),
+            child.representations[0].thetastart, // * (Math.PI / 180),
+            child.representations[0].thetalength // * (Math.PI / 180)
         )
 
         let sphere = new THREE.Mesh(geometry, this.configMaterial(materialID, false))
@@ -550,7 +550,7 @@ class MySceneConf {
         return nurbs
     }
 
-    configPolygon(child, materialID = null) {
+    configPolygon(child) {
         const radius = child.representations[0].radius
         const stacks = child.representations[0].stacks
         const slices = child.representations[0].slices
@@ -559,7 +559,7 @@ class MySceneConf {
 
         let geometry = new MyPolygon(radius, stacks, slices, color_c, color_p)
 
-        let material = this.configMaterial(materialID, false)
+        let material = this.configMaterial(null, false)
         material.vertexColors = true
 
         let polygon = new THREE.Mesh(geometry, material)

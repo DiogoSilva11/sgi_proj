@@ -40,11 +40,8 @@ function configCameras(data, app) {
             camData.location[1], 
             camData.location[2]
         )
-        camera.lookAt(new THREE.Vector3(
-            camData.target[0],
-            camData.target[1],
-            camData.target[2]
-        ))
+
+        camera.customOptions = {target : {x: camData.target[0], y: camData.target[1], z: camData.target[2]}}
 
         app.cameras[camData.id] = camera
     }
