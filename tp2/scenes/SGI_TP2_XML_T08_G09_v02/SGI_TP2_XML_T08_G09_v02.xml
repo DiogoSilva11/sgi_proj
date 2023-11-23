@@ -4,7 +4,7 @@
 
     <fog color="1.0 1.0 1.0 1.0" near="0.0" far="500.0" />
 
-    <cameras initial="globeCam" > 
+    <cameras initial="roomCam" > 
         <orthogonal id="sceneCam" 
             near="0.1" 
             far="1000" 

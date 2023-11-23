@@ -7,6 +7,8 @@ class MySceneConf {
     constructor(data, scene) {
         this.data = data
         this.scene = scene
+        this.lights = {}
+        this.structures = {}
 
         this.configGlobals()
         this.configFog()
@@ -287,6 +289,7 @@ class MySceneConf {
             }
         }
 
+        this.structures[node.id] = group
         return group
     }
 
@@ -348,6 +351,7 @@ class MySceneConf {
             light.shadow.mapSize.height = child.shadowmapsize
         }
 
+        this.lights[child.id] = light
         return light
     }
 
@@ -371,6 +375,7 @@ class MySceneConf {
             light.shadow.mapSize.height = child.shadowmapsize
         }
 
+        this.lights[child.id] = light
         return light
     }
 
@@ -393,6 +398,7 @@ class MySceneConf {
             light.shadow.mapSize.height = child.shadowmapsize
         }
 
+        this.lights[child.id] = light
         return light
     }
 

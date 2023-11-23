@@ -137,6 +137,7 @@ class MyApp  {
      */
     setGui(gui) {   
         this.gui = gui
+        this.gui.update()
     }
 
     /**

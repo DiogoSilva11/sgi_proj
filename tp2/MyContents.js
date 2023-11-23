@@ -15,6 +15,8 @@ class MyContents  {
     constructor(app) {
         this.app = app
         this.axis = null
+        this.lights = {}
+        this.structures = {}
 
         this.reader = new MyFileReader(app, this, this.onSceneLoaded);
         //this.reader.open("scenes/demo/demo.xml")
@@ -43,6 +45,8 @@ class MyContents  {
         
         configCameras(data, this.app)
         this.sceneConf = new MySceneConf(data, this.app.scene)
+        this.lights = this.sceneConf.lights
+        this.structures = this.sceneConf.structures
     }
 
     output(obj, indent = 0) {
