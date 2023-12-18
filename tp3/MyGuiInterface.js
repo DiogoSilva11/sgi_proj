@@ -32,28 +32,28 @@ class MyGuiInterface  {
         
         const folderGeometry = this.datgui.addFolder("Curve");
         folderGeometry
-            .add(this.contents, "segments", 10, 200)
+            .add(this.contents.track, "segments", 10, 200)
             .step(50)
-            .onChange((value)=>this.contents.updateCurve(value));
+            .onChange((value)=>this.contents.track.updateCurve(value));
         folderGeometry
-            .add(this.contents, "closedCurve")
-            .onChange((value)=>this.contents.updateCurveClosing(value));
+            .add(this.contents.track, "closedCurve")
+            .onChange((value)=>this.contents.track.updateCurveClosing(value));
         folderGeometry
-            .add(this.contents, "textureRepeat", 1, 100)
+            .add(this.contents.track, "textureRepeat", 1, 100)
             .step(1)
-            .onChange((value)=>{this.contents.updateTextureRepeat(value)});
+            .onChange((value)=>{this.contents.track.updateTextureRepeat(value)});
         folderGeometry
-            .add(this.contents, "showLine")
+            .add(this.contents.track, "showLine")
             .name("Show line")
-            .onChange(()=>this.contents.updateLineVisibility());
+            .onChange(()=>this.contents.track.updateLineVisibility());
         folderGeometry
-            .add(this.contents, "showWireframe")
+            .add(this.contents.track, "showWireframe")
             .name("Show wireframe")
-            .onChange(()=>this.contents.updateWireframeVisibility());
+            .onChange(()=>this.contents.track.updateWireframeVisibility());
         folderGeometry
-            .add(this.contents, "showMesh")
+            .add(this.contents.track, "showMesh")
             .name("Show mesh")
-            .onChange(()=>this.contents.updateMeshVisibility());
+            .onChange(()=>this.contents.track.updateMeshVisibility());
     }
 }
 
