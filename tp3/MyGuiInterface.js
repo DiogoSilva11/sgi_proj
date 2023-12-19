@@ -32,14 +32,14 @@ class MyGuiInterface  {
         
         const folderGeometry = this.datgui.addFolder("Curve");
         folderGeometry
-            .add(this.contents.track, "segments", 10, 200)
-            .step(50)
+            .add(this.contents.track, "segments", 10, 400)
+            .step(10)
             .onChange((value)=>this.contents.track.updateCurve(value));
         folderGeometry
             .add(this.contents.track, "closedCurve")
             .onChange((value)=>this.contents.track.updateCurveClosing(value));
         folderGeometry
-            .add(this.contents.track, "textureRepeat", 1, 100)
+            .add(this.contents.track, "textureRepeat", 1, 200)
             .step(1)
             .onChange((value)=>{this.contents.track.updateTextureRepeat(value)});
         folderGeometry

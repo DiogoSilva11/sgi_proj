@@ -1,23 +1,31 @@
 import * as THREE from 'three';
 
 class MyTrack extends THREE.Group {
-    constructor(segments = 100, width = 1) {
+    constructor(segments = 200, width = 2) {
         super();
         this.type = 'Group';
 
         //Curve related attributes
         this.segments = segments;
         this.width = width;
-        this.textureRepeat = 1;
-        this.showWireframe = true;
+        this.textureRepeat = 100;
+        this.showWireframe = false;
         this.showMesh = true;
         this.showLine = true;
         this.closedCurve = false;
 
         this.path = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-5, 0, 5),
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(5, 0, 5)
+            new THREE.Vector3(-10, 0, 0),
+            new THREE.Vector3(-10, 0, -15),
+            new THREE.Vector3(-20, 0, -20),
+            new THREE.Vector3(-20, 0, -30),
+            new THREE.Vector3(5, 0, -30),
+            new THREE.Vector3(10, 0, -20),
+            new THREE.Vector3(10, 0, 0),
+            new THREE.Vector3(30, 0, 10),
+            new THREE.Vector3(30, 0, 20),
+            new THREE.Vector3(-10, 0, 20),
+            new THREE.Vector3(-10, 0, 0)
         ]);
 
         this.buildCurve();
@@ -35,19 +43,19 @@ class MyTrack extends THREE.Group {
      * Create materials for the curve elements: the mesh, the line and the wireframe
      */
     createCurveMaterialsTextures() {
-        const texture = new THREE.TextureLoader().load("./images/uvmapping.jpg");
+        const texture = new THREE.TextureLoader().load("./images/track.jpg");
         texture.wrapS = THREE.RepeatWrapping;
 
         this.material = new THREE.MeshBasicMaterial({ map: texture });
-        this.material.map.repeat.set(3, 3);
+        this.material.map.repeat.set(this.textureRepeat, 3);
         this.material.map.wrapS = THREE.RepeatWrapping;
         this.material.map.wrapT = THREE.RepeatWrapping;
 
         this.wireframeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x0000ff,
-        opacity: 0.3,
-        wireframe: true,
-        transparent: true,
+            color: 0x0000ff,
+            opacity: 0.3,
+            wireframe: true,
+            transparent: true,
         });
 
         this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
@@ -58,11 +66,11 @@ class MyTrack extends THREE.Group {
      */
     createCurveObjects() {
         let geometry = new THREE.TubeGeometry(
-        this.path,
-        this.segments,
-        this.width,
-        3,
-        this.closedCurve
+            this.path,
+            this.segments,
+            this.width,
+            3,
+            this.closedCurve
         );
         this.mesh = new THREE.Mesh(geometry, this.material);
         this.wireframe = new THREE.Mesh(geometry, this.wireframeMaterial);
@@ -93,7 +101,7 @@ class MyTrack extends THREE.Group {
      */
     updateCurve() {
         if (this.curve !== undefined && this.curve !== null) {
-        this.remove(this.curve);
+            this.remove(this.curve);
         }
         this.buildCurve();
     }
@@ -103,7 +111,7 @@ class MyTrack extends THREE.Group {
      */
     updateCurveClosing() {
         if (this.curve !== undefined && this.curve !== null) {
-        this.remove(this.curve);
+            this.remove(this.curve);
         }
         this.buildCurve();
     }
