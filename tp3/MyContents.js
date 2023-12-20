@@ -1,7 +1,5 @@
 import * as THREE from "three";
-import { MyAxis } from "./MyAxis.js";
-import { MyTrack } from "./elements/MyTrack.js";
-import { MyVehicle } from "./elements/MyVehicle.js";
+import { MyReader } from "./MyReader.js";
 
 /**
  *  This class contains the contents of out application
@@ -13,23 +11,13 @@ class MyContents {
     */
   constructor(app) {
     this.app = app;
-    this.axis = null;
-
-    this.track = null;
-    this.playerCar = null;
-    this.autoCar = null;
+    this.reader = new MyReader(this.app);
+    this.reader.init();
   }
   /**
    * initializes the contents
    */
   init() {
-    // create once
-    if (this.axis === null) {
-      // create and attach the axis to the scene
-      this.axis = new MyAxis(this);
-      this.app.scene.add(this.axis);
-    }
-
     // add a point light on top of the model
     const pointLight = new THREE.PointLight(0xffffff, 500, 0);
     pointLight.position.set(0, 20, 0);
@@ -43,21 +31,6 @@ class MyContents {
     // add an ambient light
     const ambientLight = new THREE.AmbientLight(0x555555);
     this.app.scene.add(ambientLight);
-
-    if (this.track === null) {
-      this.track = new MyTrack();
-      this.app.scene.add(this.track);
-    }
-    
-    if (this.playerCar === null) {
-      this.playerCar = new MyVehicle();
-      this.track.add(this.playerCar);
-    }
-
-    if (this.autoCar === null) {
-      this.autoCar = new MyVehicle(11);
-      this.track.add(this.autoCar);
-    }
   }
 
   /**

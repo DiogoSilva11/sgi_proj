@@ -32,28 +32,28 @@ class MyGuiInterface  {
         
         const folderGeometry = this.datgui.addFolder("Curve");
         folderGeometry
-            .add(this.contents.track, "segments", 10, 400)
+            .add(this.contents.reader.track, "segments", 10, 400)
             .step(10)
-            .onChange((value)=>this.contents.track.updateCurve(value));
+            .onChange((value)=>this.contents.reader.track.updateCurve(value));
         folderGeometry
-            .add(this.contents.track, "closedCurve")
-            .onChange((value)=>this.contents.track.updateCurveClosing(value));
+            .add(this.contents.reader.track, "closedCurve")
+            .onChange((value)=>this.contents.reader.track.updateCurveClosing(value));
         folderGeometry
-            .add(this.contents.track, "textureRepeat", 1, 200)
+            .add(this.contents.reader.track, "textureRepeat", 1, 200)
             .step(1)
-            .onChange((value)=>{this.contents.track.updateTextureRepeat(value)});
+            .onChange((value)=>{this.contents.reader.track.updateTextureRepeat(value)});
         folderGeometry
-            .add(this.contents.track, "showLine")
+            .add(this.contents.reader.track, "showLine")
             .name("Show line")
-            .onChange(()=>this.contents.track.updateLineVisibility());
+            .onChange(()=>this.contents.reader.track.updateLineVisibility());
         folderGeometry
-            .add(this.contents.track, "showWireframe")
+            .add(this.contents.reader.track, "showWireframe")
             .name("Show wireframe")
-            .onChange(()=>this.contents.track.updateWireframeVisibility());
+            .onChange(()=>this.contents.reader.track.updateWireframeVisibility());
         folderGeometry
-            .add(this.contents.track, "showMesh")
+            .add(this.contents.reader.track, "showMesh")
             .name("Show mesh")
-            .onChange(()=>this.contents.track.updateMeshVisibility());
+            .onChange(()=>this.contents.reader.track.updateMeshVisibility());
     }
 }
 
