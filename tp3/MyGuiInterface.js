@@ -29,6 +29,10 @@ class MyGuiInterface  {
      * Initialize the gui interface
      */
     init() {
+        const cameraFolder = this.datgui.addFolder('Camera')
+        cameraFolder.add(this.app, 'activeCameraName', ['Perspective', 'Left', 'Top', 'Front']).name("active camera");
+        cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("x coord")
+        cameraFolder.open()
         
         const folderGeometry = this.datgui.addFolder("Curve");
         folderGeometry
@@ -54,6 +58,12 @@ class MyGuiInterface  {
             .add(this.contents.reader.track, "showMesh")
             .name("Show mesh")
             .onChange(()=>this.contents.reader.track.updateMeshVisibility());
+
+        const animationFolder = this.datgui.addFolder('Animation')
+        animationFolder.add(this.contents.reader.route, 'mixerPause', true).name("Pause");
+        animationFolder.add(this.contents.reader.route, 'enableAnimationPosition', true).name("Pos. track");
+        animationFolder.add(this.contents.reader.route, 'mixerTime', 0, 6).name("Track time").onChange(() => { this.contents.reader.route.setMixerTime() });
+        animationFolder.open()
     }
 }
 

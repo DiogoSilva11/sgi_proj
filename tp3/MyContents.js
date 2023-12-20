@@ -14,6 +14,7 @@ class MyContents {
     this.reader = new MyReader(this.app);
     this.reader.init();
   }
+
   /**
    * initializes the contents
    */
@@ -37,7 +38,9 @@ class MyContents {
    * updates the contents
    * this method is called from the render method of the app
    */
-  update() {}
+  update() {
+    if (this.reader.route !== null) this.reader.route.update();
+  }
 }
 
 export { MyContents };

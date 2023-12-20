@@ -1,10 +1,12 @@
 import { MyTrack } from "./elements/MyTrack.js";
+import { MyRoute } from "./elements/MyRoute.js";
 import { MyVehicle } from "./elements/MyVehicle.js";
 
 class MyReader {
     constructor(app) {
         this.app = app;
         this.track = null;
+        this.route = null;
         this.playerCar = null;
         this.autoCar = null;
     }
@@ -16,17 +18,19 @@ class MyReader {
         }
         
         if (this.playerCar === null) {
-            this.playerCar = new MyVehicle(9, 0.6, 0);
+            this.playerCar = new MyVehicle(-2, 0.6, 0);
             this.track.add(this.playerCar);
         }
 
         if (this.autoCar === null) {
-            this.autoCar = new MyVehicle(11, 0.6, 0);
+            this.autoCar = new MyVehicle(0, 0.6, 0);
             this.track.add(this.autoCar);
         }
-    }
 
-    update() {
+        if (this.route === null) {
+            this.route = new MyRoute(this.app);
+        }
+        this.route.playAnimation(this.autoCar);
     }
 }
 

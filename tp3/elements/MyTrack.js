@@ -11,21 +11,21 @@ class MyTrack extends THREE.Group {
         this.textureRepeat = 100;
         this.showWireframe = false;
         this.showMesh = true;
-        this.showLine = true;
+        this.showLine = false;
         this.closedCurve = false;
 
         this.path = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(-10, 0, 0),
-            new THREE.Vector3(-10, 0, -15),
-            new THREE.Vector3(-20, 0, -20),
-            new THREE.Vector3(-20, 0, -30),
-            new THREE.Vector3(5, 0, -30),
-            new THREE.Vector3(10, 0, -20),
-            new THREE.Vector3(10, 0, 0),
-            new THREE.Vector3(30, 0, 10),
-            new THREE.Vector3(30, 0, 20),
-            new THREE.Vector3(-10, 0, 20),
-            new THREE.Vector3(-10, 0, 0)
+            new THREE.Vector3(1, 0, 0),
+            new THREE.Vector3(1, 0, -15),
+            new THREE.Vector3(-9, 0, -20),
+            new THREE.Vector3(-9, 0, -30),
+            new THREE.Vector3(16, 0, -30),
+            new THREE.Vector3(21, 0, -20),
+            new THREE.Vector3(21, 0, 0),
+            new THREE.Vector3(41, 0, 10),
+            new THREE.Vector3(41, 0, 20),
+            new THREE.Vector3(1, 0, 20),
+            new THREE.Vector3(1, 0, 0)
         ]);
 
         this.buildCurve();
