@@ -145,10 +145,12 @@ class MyRoute {
     }
 
     update() {
-        const delta = this.clock.getDelta()
-        this.mixer.update(delta)
-        this.checkAnimationStateIsPause()
-        this.checkTracksEnabled()
+        if (this.mixer !== undefined) {
+            const delta = this.clock.getDelta()
+            this.mixer.update(delta)
+            this.checkAnimationStateIsPause()
+            this.checkTracksEnabled()
+        }
     }
 }
 

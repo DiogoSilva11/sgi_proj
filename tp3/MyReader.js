@@ -30,7 +30,6 @@ class MyReader {
         if (this.route === null) {
             this.route = new MyRoute(this.app);
         }
-        this.route.playAnimation(this.autoCar);
     }
 }
 

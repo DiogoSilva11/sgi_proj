@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MyReader } from "./MyReader.js";
+import { MyGame } from "./MyGame.js";
 
 /**
  *  This class contains the contents of out application
@@ -11,8 +11,8 @@ class MyContents {
     */
   constructor(app) {
     this.app = app;
-    this.reader = new MyReader(this.app);
-    this.reader.init();
+    this.game = new MyGame(app);
+    this.game.init();
   }
 
   /**
@@ -39,7 +39,7 @@ class MyContents {
    * this method is called from the render method of the app
    */
   update() {
-    if (this.reader.route !== null) this.reader.route.update();
+    this.game.update();
   }
 }
 

@@ -44,7 +44,7 @@ class MyApp  {
         document.body.appendChild(this.stats.dom)
 
         this.initCameras();
-        this.setActiveCamera('Perspective')
+        this.setActiveCamera('Front')
 
         // Create a renderer with Antialiasing
         this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -65,6 +65,61 @@ class MyApp  {
      * initializes all the cameras
      */
     initCameras() {
+        const aspect = window.innerWidth / window.innerHeight;
+
+        // defines the frustum size for the orthographic cameras
+        const left = -this.frustumSize / 2 * aspect
+        const right = this.frustumSize /2 * aspect 
+        const top = this.frustumSize / 2 
+        const bottom = -this.frustumSize / 2
+        const near = -this.frustumSize /2
+        const far =  this.frustumSize
+
+        // create a front view orthographic camera
+        const orthoFront = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
+        orthoFront.up = new THREE.Vector3(0,1,0);
+        orthoFront.position.set(0,0, this.frustumSize /4) 
+        orthoFront.lookAt( new THREE.Vector3(0,0,0) );
+        this.cameras['Front'] = orthoFront
+    }
+
+    /**
+     * sets the active camera by name
+     * @param {String} cameraName 
+     */
+    setActiveCamera(cameraName) {   
+        this.activeCameraName = cameraName
+        this.activeCamera = this.cameras[this.activeCameraName]
+    }
+
+    getActiveCamera() {
+        return this.cameras[this.activeCameraName]
+    }
+
+    /**
+     * updates the active camera if required
+     * this function is called in the render loop
+     * when the active camera name changes
+     * it updates the active camera and the controls
+     */
+    updateCameraIfRequired() {
+
+        // camera changed?
+        if (this.lastCameraName !== this.activeCameraName) {
+            this.lastCameraName = this.activeCameraName;
+            this.activeCamera = this.cameras[this.activeCameraName]
+            document.getElementById("camera").innerHTML = this.activeCameraName
+           
+            // call on resize to update the camera aspect ratio
+            // among other things
+            this.onResize()
+
+            if (this.controls !== null)
+                this.controls.object = this.activeCamera
+        }
+    }
+
+    activateControls() {
         const aspect = window.innerWidth / window.innerHeight;
 
         // Create a basic perspective camera
@@ -94,52 +149,15 @@ class MyApp  {
         orthoTop.lookAt( new THREE.Vector3(0,0,0) );
         this.cameras['Top'] = orthoTop
 
-        // create a front view orthographic camera
-        const orthoFront = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoFront.up = new THREE.Vector3(0,1,0);
-        orthoFront.position.set(0,0, this.frustumSize /4) 
-        orthoFront.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Front'] = orthoFront
-    }
-
-    /**
-     * sets the active camera by name
-     * @param {String} cameraName 
-     */
-    setActiveCamera(cameraName) {   
-        this.activeCameraName = cameraName
-        this.activeCamera = this.cameras[this.activeCameraName]
-    }
-
-    /**
-     * updates the active camera if required
-     * this function is called in the render loop
-     * when the active camera name changes
-     * it updates the active camera and the controls
-     */
-    updateCameraIfRequired() {
-
-        // camera changed?
-        if (this.lastCameraName !== this.activeCameraName) {
-            this.lastCameraName = this.activeCameraName;
-            this.activeCamera = this.cameras[this.activeCameraName]
-            document.getElementById("camera").innerHTML = this.activeCameraName
-           
-            // call on resize to update the camera aspect ratio
-            // among other things
-            this.onResize()
-
-            // are the controls yet?
-            if (this.controls === null) {
-                // Orbit controls allow the camera to orbit around a target.
-                this.controls = new OrbitControls( this.activeCamera, this.renderer.domElement );
-                this.controls.enableZoom = true;
-                this.controls.update();
-            }
-            else {
-                this.controls.object = this.activeCamera
-            }
+        if (this.controls === null) {
+            // Orbit controls allow the camera to orbit around a target.
+            this.controls = new OrbitControls( this.activeCamera, this.renderer.domElement );
+            this.controls.enableZoom = true;
+            this.controls.update();
         }
+
+        this.setActiveCamera('Perspective');
+        this.gui.reset();
     }
 
     /**
@@ -180,7 +198,8 @@ class MyApp  {
         }
 
         // required if controls.enableDamping or controls.autoRotate are set to true
-        this.controls.update();
+        if (this.controls !== null)
+            this.controls.update();
 
         // render the scene
         this.renderer.render(this.scene, this.activeCamera);
