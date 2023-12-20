@@ -14,11 +14,17 @@ class MyGame {
     }
 
     init() {
+        this.menu();
+    }
+
+    menu() {
         this.app.setActiveCamera('Front');
 
+        this.menu = new THREE.Group();
         this.gameLabel();
         this.authorLabels();
         this.startLabel();
+        this.app.scene.add(this.menu);
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
@@ -28,11 +34,11 @@ class MyGame {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, this.app.getActiveCamera());
-            const intersects = raycaster.intersectObjects(this.app.scene.children);
+            const intersects = raycaster.intersectObjects(this.menu.children);
             if (intersects.length > 0) {
                 const selectedObject = intersects[0].object;
                 if (selectedObject === this.start) {
-                    this.startGame();
+                    this.gameplay();
                 }
             }
         });
@@ -67,7 +73,7 @@ class MyGame {
         this.game = new THREE.Mesh(geometry, material);
         this.game.add(sprites);
         this.game.position.y = 7;
-        this.app.scene.add(this.game);
+        this.menu.add(this.game);
     }
 
     authorLabels() {
@@ -102,7 +108,7 @@ class MyGame {
         this.author1 = new THREE.Mesh(geometry, material);
         this.author1.add(sprites);
         this.author1.position.y = 4.5;
-        this.app.scene.add(this.author1);
+        this.menu.add(this.author1);
 
         text = "Tomás Pires";
         sprites = new THREE.Group();
@@ -135,7 +141,7 @@ class MyGame {
         this.author2 = new THREE.Mesh(geometry, material);
         this.author2.add(sprites);
         this.author2.position.y = 3;
-        this.app.scene.add(this.author2);
+        this.menu.add(this.author2);
 
         text = "SGI FEUP";
         sprites = new THREE.Group();
@@ -167,7 +173,7 @@ class MyGame {
         this.org = new THREE.Mesh(geometry, material);
         this.org.add(sprites);
         this.org.position.y = 1.5;
-        this.app.scene.add(this.org);
+        this.menu.add(this.org);
     }
 
     startLabel() {
@@ -203,7 +209,7 @@ class MyGame {
         this.start = new THREE.Mesh(geometry, material);
         this.start.add(sprites);
         this.start.position.y = -3;
-        this.app.scene.add(this.start);
+        this.menu.add(this.start);
     }
 
     createSprite(text, color = 0x999999) {
@@ -235,12 +241,8 @@ class MyGame {
         return sprites;
     }
 
-    startGame() {
-        this.app.scene.remove(this.game);
-        this.app.scene.remove(this.author1);
-        this.app.scene.remove(this.author2);
-        this.app.scene.remove(this.org);
-        this.app.scene.remove(this.start);
+    gameplay() {
+        this.app.scene.remove(this.menu);
 
         this.app.activateControls();
 
@@ -249,11 +251,24 @@ class MyGame {
 
         // calling like this for now
         this.reader.route.playAnimation(this.reader.autoCar);
+
+        // control playerCar using WASD keys
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'w') {
+                this.reader.playerCar.accelerate();
+            } else if (event.key === 's') {
+                this.reader.playerCar.brake();
+            } else if (event.key === 'a') {
+                this.reader.playerCar.turnLeft();
+            } else if (event.key === 'd') {
+                this.reader.playerCar.turnRight();
+            }
+        });
     }
 
     update() {
         if (this.reader !== null) {
-            this.reader.route.update();
+            this.reader.update();
         }
     } 
 }

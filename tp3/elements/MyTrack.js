@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class MyTrack extends THREE.Group {
-    constructor(segments = 200, width = 2) {
+    constructor(segments = 200, width = 3) {
         super();
         this.type = 'Group';
 

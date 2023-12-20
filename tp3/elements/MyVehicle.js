@@ -8,6 +8,8 @@ class MyVehicle extends THREE.Group {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.speed = 0;
+        this.angle = 0;
 
         this.buildVehicle();
     }
@@ -23,13 +25,14 @@ class MyVehicle extends THREE.Group {
 
         let geometry = new THREE.BoxGeometry(1, 0.5, 2);
         this.body = new THREE.Mesh(geometry, material);
-        this.body.position.set(this.x, this.y, this.z);
         this.add(this.body);
 
         geometry = new THREE.BoxGeometry(1, 0.3, 1.2);
         this.roof = new THREE.Mesh(geometry, material);
-        this.roof.position.set(this.x, this.y + 0.4, this.z + 0.1);
+        this.roof.position.set(0, 0.4, 0.1);
         this.add(this.roof);
+
+        this.position.set(this.x, this.y, this.z);
     }
 
     createWheels() {
@@ -60,6 +63,29 @@ class MyVehicle extends THREE.Group {
 
         for (const wheel of this.wheels)
             this.body.add(wheel);
+    }
+
+    accelerate() {
+        if (this.speed < 0.2) this.speed += 0.03;
+    }
+
+    brake() {
+        if (this.speed > -0.1) this.speed -= 0.05;
+    }
+
+    turnLeft() {
+        this.angle += THREE.MathUtils.degToRad(5);
+        this.rotation.y = this.angle;
+    }
+
+    turnRight() {
+        this.angle -= THREE.MathUtils.degToRad(5);
+        this.rotation.y = this.angle;
+    }
+
+    update() {
+        this.position.x -= this.speed * Math.sin(this.angle);
+        this.position.z -= this.speed * Math.cos(this.angle);
     }
 }
 

@@ -18,18 +18,23 @@ class MyReader {
         }
         
         if (this.playerCar === null) {
-            this.playerCar = new MyVehicle(-2, 0.6, 0);
+            this.playerCar = new MyVehicle(-2, 0.7, 0);
             this.track.add(this.playerCar);
         }
 
         if (this.autoCar === null) {
-            this.autoCar = new MyVehicle(0, 0.6, 0);
+            this.autoCar = new MyVehicle(0, 0.7, 0);
             this.track.add(this.autoCar);
         }
 
         if (this.route === null) {
             this.route = new MyRoute(this.app);
         }
+    }
+
+    update() {
+        this.route.update();
+        this.playerCar.update();
     }
 }
 
