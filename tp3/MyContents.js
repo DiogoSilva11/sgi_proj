@@ -32,6 +32,24 @@ class MyContents {
     // add an ambient light
     const ambientLight = new THREE.AmbientLight(0x555555);
     this.app.scene.add(ambientLight);
+
+    const geometry = new THREE.BoxGeometry(100, 100, 100);
+    let texture = new THREE.CubeTextureLoader().load([
+        "./images/skybox.png",
+        "./images/skybox.png",
+        "./images/skybox.png",
+        "./images/skybox.png",
+        "./images/skybox.png",
+        "./images/skybox.png"
+    ]);
+    let material = new THREE.MeshPhongMaterial({
+        envMap: texture,
+        emissive: 0xffffff,
+        emissiveIntensity: 1,
+        side: THREE.BackSide
+    });
+    this.skybox = new THREE.Mesh(geometry, material);
+    this.app.scene.add(this.skybox);
   }
 
   /**

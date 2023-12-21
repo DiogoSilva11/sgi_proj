@@ -22,7 +22,12 @@ class MyMenu extends THREE.Group {
         this.add(sprite.build());
 
         sprite = new MySprite('Start', 0x089611, 0, 0.45, 0.8, 3.5, 1.2, -3);
-        this.start = sprite.build();
+        this.add(sprite.build());
+
+        const geometry = new THREE.PlaneGeometry(3.5, 1.2);
+        const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+        this.start = new THREE.Mesh(geometry, material);
+        this.start.position.set(0, -3, 0.1);
         this.add(this.start);
         
         this.app.scene.add(this);

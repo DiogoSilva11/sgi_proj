@@ -102,6 +102,21 @@ class MyVehicle extends THREE.Group {
         this.wheels[1].rotation.y = THREE.MathUtils.degToRad(value);
     }
 
+    checkCollision(x, z) {
+        return (Math.abs(this.position.x - x) < 1 && Math.abs(this.position.z - z) < 1);
+    }
+    
+    collide(x, z) {
+        const avoidanceDistance = 1.5;
+        const moveX = this.position.x < x ? -avoidanceDistance : avoidanceDistance;
+        const moveZ = this.position.z < z ? -avoidanceDistance : avoidanceDistance;
+        this.position.x += moveX;
+        this.position.z += moveZ;
+        this.angle += THREE.MathUtils.degToRad(30);
+        this.rotation.y = this.angle;
+        this.turnWheels();
+    }
+
     update() {
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);

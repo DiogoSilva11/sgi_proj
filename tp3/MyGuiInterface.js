@@ -13,7 +13,7 @@ class MyGuiInterface  {
      */
     constructor(app) {
         this.app = app
-        this.datgui =  new GUI();
+        //this.datgui =  new GUI();
         this.contents = null
     }
 
@@ -29,6 +29,7 @@ class MyGuiInterface  {
      * Initialize the gui interface
      */
     init() {
+        /*
         if (this.app.cameras['Perspective'] !== undefined) {
             const cameraFolder = this.datgui.addFolder('Camera')
             cameraFolder.add(this.app, 'activeCameraName', ['Perspective', 'Left', 'Top', 'Front']).name("Active camera");
@@ -68,6 +69,7 @@ class MyGuiInterface  {
             animationFolder.add(this.contents.reader.route, 'mixerTime', 0, 6).name("Track time").onChange(() => { this.contents.reader.route.setMixerTime() });
             animationFolder.close();
         }
+        */
     }
 
     reset() {

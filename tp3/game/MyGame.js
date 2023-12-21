@@ -16,7 +16,9 @@ class MyGame {
     }
 
     mainMenu() {
-        this.app.setActiveCamera('Front');
+        this.app.cameras['Perspective'].position.set(0, 0, 15);
+        this.app.cameras['Perspective'].lookAt(0, 0, 0);
+        this.app.deactivateControls();
 
         this.menu = new MyMenu(this.app);
         this.menu.init();
@@ -56,13 +58,12 @@ class MyGame {
             else if (event.key === 'a')  this.reader.playerCar.turnLeft();
             else if (event.key === 'd')  this.reader.playerCar.turnRight();
             else if (event.key === 'Escape') {
-                //this.app.deactivateControls();
                 document.removeEventListener('keydown', this.gameListener);
                 if (this.reader) {
                     this.reader.remove();
                     this.reader = null;
                 }
-                this.overMenu();
+                this.mainMenu();
             }
         };
 

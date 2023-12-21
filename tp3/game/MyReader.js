@@ -49,12 +49,16 @@ class MyReader {
         this.app.controls.target.z = this.playerCar.position.z;
 
         this.app.cameras['Perspective'].position.x = this.playerCar.position.x + 5;
+        this.app.cameras['Perspective'].position.y = 10;
         this.app.cameras['Perspective'].position.z = this.playerCar.position.z + 5;
     }
 
     update() {
         this.route.update();
-        this.playerCar.update();
+        let x = this.autoCar.position.x;
+        let z = this.autoCar.position.z;
+        if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
+        else this.playerCar.update();
         if (this.app.controls !== null) {
             this.followCar();
         }

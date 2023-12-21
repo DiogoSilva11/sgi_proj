@@ -44,7 +44,7 @@ class MyApp  {
         document.body.appendChild(this.stats.dom)
 
         this.initCameras();
-        this.setActiveCamera('Front')
+        this.setActiveCamera('Perspective')
 
         // Create a renderer with Antialiasing
         this.renderer = new THREE.WebGLRenderer({antialias:true});
@@ -67,6 +67,11 @@ class MyApp  {
     initCameras() {
         const aspect = window.innerWidth / window.innerHeight;
 
+        // Create a basic perspective camera
+        const perspective1 = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 )
+        perspective1.position.set(0, 0, 15)
+        this.cameras['Perspective'] = perspective1
+
         // defines the frustum size for the orthographic cameras
         const left = -this.frustumSize / 2 * aspect
         const right = this.frustumSize /2 * aspect 
@@ -81,6 +86,20 @@ class MyApp  {
         orthoFront.position.set(0,0, this.frustumSize /4) 
         orthoFront.lookAt( new THREE.Vector3(0,0,0) );
         this.cameras['Front'] = orthoFront
+
+        // create a left view orthographic camera
+        const orthoLeft = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
+        orthoLeft.up = new THREE.Vector3(0,1,0);
+        orthoLeft.position.set(-this.frustumSize /4,0,0) 
+        orthoLeft.lookAt( new THREE.Vector3(0,0,0) );
+        this.cameras['Left'] = orthoLeft
+
+        // create a top view orthographic camera
+        const orthoTop = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
+        orthoTop.up = new THREE.Vector3(0,0,1);
+        orthoTop.position.set(0, this.frustumSize /4, 0) 
+        orthoTop.lookAt( new THREE.Vector3(0,0,0) );
+        this.cameras['Top'] = orthoTop
     }
 
     /**
@@ -120,53 +139,19 @@ class MyApp  {
     }
 
     activateControls() {
-        const aspect = window.innerWidth / window.innerHeight;
-
-        // Create a basic perspective camera
-        const perspective1 = new THREE.PerspectiveCamera( 75, aspect, 0.1, 1000 )
-        perspective1.position.set(5, 15, 5)
-        this.cameras['Perspective'] = perspective1
-
-        // defines the frustum size for the orthographic cameras
-        const left = -this.frustumSize / 2 * aspect
-        const right = this.frustumSize /2 * aspect 
-        const top = this.frustumSize / 2 
-        const bottom = -this.frustumSize / 2
-        const near = -this.frustumSize /2
-        const far =  this.frustumSize
-
-        // create a left view orthographic camera
-        const orthoLeft = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoLeft.up = new THREE.Vector3(0,1,0);
-        orthoLeft.position.set(-this.frustumSize /4,0,0) 
-        orthoLeft.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Left'] = orthoLeft
-
-        // create a top view orthographic camera
-        const orthoTop = new THREE.OrthographicCamera( left, right, top, bottom, near, far);
-        orthoTop.up = new THREE.Vector3(0,0,1);
-        orthoTop.position.set(0, this.frustumSize /4, 0) 
-        orthoTop.lookAt( new THREE.Vector3(0,0,0) );
-        this.cameras['Top'] = orthoTop
-
         if (this.controls === null) {
             // Orbit controls allow the camera to orbit around a target.
-            this.controls = new OrbitControls( this.activeCamera, this.renderer.domElement );
+            this.controls = new OrbitControls(this.activeCamera, this.renderer.domElement);
             this.controls.enableZoom = true;
             this.controls.update();
         }
-
-        this.setActiveCamera('Perspective');
-        this.gui.reset();
     }
 
     deactivateControls() {
-        delete this.cameras['Perspective'];
-        delete this.cameras['Left'];
-        delete this.cameras['Top'];
-        this.controls = null;
-        this.setActiveCamera('Front');
-        this.gui.reset();
+        if (this.controls !== null) {
+            this.controls.dispose();
+            this.controls = null;
+        }
     }
 
     /**
