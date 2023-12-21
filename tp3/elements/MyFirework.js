@@ -5,13 +5,13 @@ class MyFirework {
         this.app = app
         this.scene = scene
 
-        this.done     = false 
-        this.dest     = [] 
+        this.done = false 
+        this.dest = [] 
         
         this.vertices = null
-        this.colors   = null
+        this.colors = null
         this.geometry = null
-        this.points   = null
+        this.points = null
         
         this.material = new THREE.PointsMaterial({
             size: 0.1,
@@ -33,22 +33,22 @@ class MyFirework {
      */
     launch() {
         let color = new THREE.Color()
-        color.setHSL( THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9 )
-        let colors = [ color.r, color.g, color.b ]
+        color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9)
+        let colors = [color.r, color.g, color.b]
 
-        let x = THREE.MathUtils.randFloat( -5, 5 ) 
-        let y = THREE.MathUtils.randFloat( this.height * 0.9, this.height * 1.1)
-        let z = THREE.MathUtils.randFloat( -5, 5 ) 
-        this.dest.push( x, y, z ) 
-        let vertices = [0,0,0]
+        let x = THREE.MathUtils.randFloat(-5, 5) 
+        let y = THREE.MathUtils.randFloat(this.height * 0.9, this.height * 1.1)
+        let z = THREE.MathUtils.randFloat(-5, 5) 
+        this.dest.push(x, y, z) 
+        let vertices = [0, 0, 0]
         
         this.geometry = new THREE.BufferGeometry()
-        this.geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array(vertices), 3 ) );
-        this.geometry.setAttribute( 'color', new THREE.BufferAttribute( new Float32Array(colors), 3 ) );
-        this.points = new THREE.Points( this.geometry, this.material )
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+        this.geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+        this.points = new THREE.Points(this.geometry, this.material)
         this.points.castShadow = true;
         this.points.receiveShadow = true;
-        this.app.scene.add( this.points )  
+        this.app.scene.add(this.points)  
         console.log("firework launched")
     }
 
@@ -57,8 +57,8 @@ class MyFirework {
      * @param {*} vector 
      */
     explode(origin, n, rangeBegin, rangeEnd) {
-        this.app.scene.remove( this.points )
-        this.points.geometry.dispose()
+        this.app.scene.remove(this.points);
+        this.points.geometry.dispose();
     }
     
     /**
@@ -66,12 +66,12 @@ class MyFirework {
      */
     reset() {
         console.log("firework reseted")
-        this.app.scene.remove( this.points )  
-        this.dest     = [] 
+        this.app.scene.remove(this.points)  
+        this.dest = [] 
         this.vertices = null
-        this.colors   = null 
+        this.colors = null 
         this.geometry = null
-        this.points   = null
+        this.points = null
     }
 
     /**
@@ -80,25 +80,24 @@ class MyFirework {
      */
     update() {
         // do only if objects exist
-        if( this.points && this.geometry )
-        {
-            let verticesAtribute = this.geometry.getAttribute( 'position' )
+        if (this.points && this.geometry) {
+            let verticesAtribute = this.geometry.getAttribute('position')
             let vertices = verticesAtribute.array
             let count = verticesAtribute.count
 
             // lerp particle positions 
             let j = 0
-            for( let i = 0; i < vertices.length; i+=3 ) {
-                vertices[i  ] += ( this.dest[i  ] - vertices[i  ] ) / this.speed
-                vertices[i+1] += ( this.dest[i+1] - vertices[i+1] ) / this.speed
-                vertices[i+2] += ( this.dest[i+2] - vertices[i+2] ) / this.speed
+            for (let i = 0; i < vertices.length; i += 3) {
+                vertices[i] += (this.dest[i] - vertices[i]) / this.speed
+                vertices[i + 1] += (this.dest[i + 1] - vertices[i + 1]) / this.speed
+                vertices[i + 2] += (this.dest[i + 2] - vertices[i + 2]) / this.speed
             }
             verticesAtribute.needsUpdate = true
             
             // only one particle?
-            if( count === 1 ) {
+            if (count === 1) {
                 //is YY coordinate higher close to destination YY? 
-                if( Math.ceil( vertices[1] ) > ( this.dest[1] * 0.95 ) ) {
+                if (Math.ceil(vertices[1]) > (this.dest[1] * 0.95)) {
                     // add n particles departing from the location at (vertices[0], vertices[1], vertices[2])
                     this.explode(vertices, 80, this.height * 0.05, this.height * 0.8) 
                     return 
@@ -106,15 +105,14 @@ class MyFirework {
             }
             
             // are there a lot of particles (aka already exploded)?
-            if( count > 1 ) {
+            if (count > 1) {
                 // fade out exploded particles 
                 this.material.opacity -= 0.015 
                 this.material.needsUpdate = true
             }
             
             // remove, reset and stop animating 
-            if( this.material.opacity <= 0 )
-            {
+            if (this.material.opacity <= 0) {
                 this.reset() 
                 this.done = true 
                 return 

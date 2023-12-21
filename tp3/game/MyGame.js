@@ -56,7 +56,7 @@ class MyGame {
             else if (event.key === 'a')  this.reader.playerCar.turnLeft();
             else if (event.key === 'd')  this.reader.playerCar.turnRight();
             else if (event.key === 'Escape') {
-                this.app.deactivateControls();
+                //this.app.deactivateControls();
                 document.removeEventListener('keydown', this.gameListener);
                 if (this.reader) {
                     this.reader.remove();
@@ -70,16 +70,13 @@ class MyGame {
     }
 
     overMenu() {
-        this.app.setActiveCamera('Front');
-
         this.over = new MyOver(this.app);
         this.over.init();
     }
 
     update() {
-        if (this.reader !== null) {
-            this.reader.update();
-        }
+        if (this.reader !== null) this.reader.update();
+        else if (this.over !== null) this.over.update();
     } 
 }
 
