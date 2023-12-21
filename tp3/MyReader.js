@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { MyTrack } from "./elements/MyTrack.js";
 import { MyRoute } from "./elements/MyRoute.js";
 import { MyVehicle } from "./elements/MyVehicle.js";
@@ -36,8 +37,8 @@ class MyReader {
         this.app.controls.target.x = this.playerCar.position.x;
         this.app.controls.target.z = this.playerCar.position.z;
 
-        this.app.activeCamera.position.x = this.playerCar.position.x + Math.sin(this.playerCar.angle) * 10;
-        this.app.activeCamera.position.z = this.playerCar.position.z + Math.cos(this.playerCar.angle) * 10;
+        this.app.cameras['Perspective'].position.x = this.playerCar.position.x + 5;
+        this.app.cameras['Perspective'].position.z = this.playerCar.position.z + 5;
     }
 
     update() {
