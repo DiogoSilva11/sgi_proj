@@ -32,9 +32,20 @@ class MyReader {
         }
     }
 
+    followCar() {
+        this.app.controls.target.x = this.playerCar.position.x;
+        this.app.controls.target.z = this.playerCar.position.z;
+
+        this.app.activeCamera.position.x = this.playerCar.position.x + Math.sin(this.playerCar.angle) * 10;
+        this.app.activeCamera.position.z = this.playerCar.position.z + Math.cos(this.playerCar.angle) * 10;
+    }
+
     update() {
         this.route.update();
         this.playerCar.update();
+        if (this.app.controls !== null) {
+            this.followCar();
+        }
     }
 }
 

@@ -66,20 +66,21 @@ class MyVehicle extends THREE.Group {
     }
 
     accelerate() {
-        if (this.speed < 0.2) this.speed += 0.03;
+        if (this.speed < 0.5) this.speed += 0.005;
+        console.log(this.speed);
     }
 
     brake() {
-        if (this.speed > -0.1) this.speed -= 0.05;
+        if (this.speed > -0.2) this.speed -= 0.005;
     }
 
     turnLeft() {
-        this.angle += THREE.MathUtils.degToRad(5);
+        this.angle += THREE.MathUtils.degToRad(10);
         this.rotation.y = this.angle;
     }
 
     turnRight() {
-        this.angle -= THREE.MathUtils.degToRad(5);
+        this.angle -= THREE.MathUtils.degToRad(10);
         this.rotation.y = this.angle;
     }
 

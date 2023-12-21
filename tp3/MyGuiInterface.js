@@ -32,7 +32,6 @@ class MyGuiInterface  {
         if (this.app.cameras['Perspective'] !== undefined) {
             const cameraFolder = this.datgui.addFolder('Camera')
             cameraFolder.add(this.app, 'activeCameraName', ['Perspective', 'Left', 'Top', 'Front']).name("Active camera");
-            cameraFolder.add(this.app.activeCamera.position, 'x', 0, 10).name("X coord")
             cameraFolder.open()
         }
         

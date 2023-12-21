@@ -250,7 +250,7 @@ class MyGame {
         this.reader.init();
 
         // calling like this for now
-        this.reader.route.playAnimation(this.reader.autoCar);
+        //this.reader.route.playAnimation(this.reader.autoCar);
 
         // control playerCar using WASD keys
         document.addEventListener('keydown', (event) => {
