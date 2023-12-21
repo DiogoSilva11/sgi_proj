@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { MyGame } from "./MyGame.js";
+import { MyGame } from "./game/MyGame.js";
 
 /**
  *  This class contains the contents of out application

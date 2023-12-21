@@ -5,7 +5,6 @@ class MyTrack extends THREE.Group {
         super();
         this.type = 'Group';
 
-        //Curve related attributes
         this.segments = segments;
         this.width = width;
         this.textureRepeat = 100;

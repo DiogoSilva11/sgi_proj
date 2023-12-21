@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { MyTrack } from "./elements/MyTrack.js";
-import { MyRoute } from "./elements/MyRoute.js";
-import { MyVehicle } from "./elements/MyVehicle.js";
+import { MyTrack } from "../elements/MyTrack.js";
+import { MyRoute } from "../elements/MyRoute.js";
+import { MyVehicle } from "../elements/MyVehicle.js";
 
 class MyReader {
     constructor(app) {
