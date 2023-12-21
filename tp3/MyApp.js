@@ -160,6 +160,15 @@ class MyApp  {
         this.gui.reset();
     }
 
+    deactivateControls() {
+        delete this.cameras['Perspective'];
+        delete this.cameras['Left'];
+        delete this.cameras['Top'];
+        this.controls = null;
+        this.setActiveCamera('Front');
+        this.gui.reset();
+    }
+
     /**
      * the window resize handler
      */

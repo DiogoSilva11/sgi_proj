@@ -30,7 +30,18 @@ class MyReader {
 
         if (this.route === null) {
             this.route = new MyRoute(this.app);
+            this.route.playAnimation(this.autoCar);
         }
+    }
+
+    remove() {
+        this.app.scene.remove(this.track);
+        this.track = null;
+        this.app.scene.remove(this.playerCar);
+        this.playerCar = null;
+        this.app.scene.remove(this.autoCar);
+        this.autoCar = null;
+        this.route = null;
     }
 
     followCar() {
