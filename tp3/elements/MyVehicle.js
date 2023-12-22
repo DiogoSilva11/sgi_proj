@@ -223,23 +223,23 @@ class MyVehicle extends THREE.Group {
     }
 
     accelerate() {
-        if (this.speed < 0.5) this.speed += 0.1;
+        if (this.speed < 0.4) this.speed += 0.01;
     }
 
     brake() {
-        if (this.speed > -0.2) this.speed -= 0.05;
+        if (this.speed > -0.2) this.speed -= 0.01;
     }
 
     turnLeft() {
         this.left = true;
         this.right = false;
-        this.angleOffset = 6;
+        this.angleOffset = 8;
     }
 
     turnRight() {
         this.right = true;
         this.left = false;
-        this.angleOffset = 6;
+        this.angleOffset = 8;
     }
 
     turnWheels() {
@@ -256,6 +256,16 @@ class MyVehicle extends THREE.Group {
         this.wheels[1].rotation.y = THREE.MathUtils.degToRad(value);
     }
 
+    updateLights() {
+        this.lights[1].target.position.x = this.position.x - 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
+        this.lights[1].target.position.z = this.position.z + 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
+        this.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.lights[1]);
+
+        this.lights[3].target.position.x = this.position.x + 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
+        this.lights[3].target.position.z = this.position.z - 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
+        this.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.lights[3]);
+    }
+
     checkCollision(x, z) {
         return (Math.abs(this.position.x - x) < 1 && Math.abs(this.position.z - z) < 1);
     }
@@ -269,16 +279,7 @@ class MyVehicle extends THREE.Group {
         this.angle += THREE.MathUtils.degToRad(30);
         this.rotation.y = this.angle;
         this.turnWheels();
-    }
-
-    updateLights() {
-        this.lights[1].target.position.x = this.x - 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
-        this.lights[1].target.position.z = this.z + 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
-        this.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.lights[1]);
-
-        this.lights[3].target.position.x = this.x + 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
-        this.lights[3].target.position.z = this.z - 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
-        this.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.lights[3]);
+        this.updateLights();
     }
 
     update() {

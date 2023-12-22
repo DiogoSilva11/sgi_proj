@@ -15,6 +15,7 @@ class MyReader {
         this.obstaclePark = null;
         this.cars = [];
         this.track = null;
+        this.route = null;
     }
 
     init() {
@@ -48,6 +49,9 @@ class MyReader {
             this.track = new MyTrack(path);
             this.app.scene.add(this.track);
         }
+
+        if (this.route === null)
+            this.route = new MyRoute(this.app);
     }
 
     createGround() {
@@ -93,10 +97,6 @@ class MyReader {
         pole = this.createPole(-65, 0, 75);
         pole.rotation.y = - Math.PI;
         this.poles.push(pole);
-
-        pole = this.createPole(-75, 0, 40);
-        pole.rotation.y = - Math.PI;
-        //this.poles.push(pole);
 
         pole = this.createPole(-80, 0, 0);
         pole.rotation.y = - Math.PI;
