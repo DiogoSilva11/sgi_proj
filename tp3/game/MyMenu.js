@@ -34,15 +34,8 @@ class MyMenu extends THREE.Group {
         this.add(label);
 
         sprite = new MySprite('Start', 0x089611, 0, 0.45, 0.8, 3.5, 1.2);
-        label = sprite.build();
-        label.position.set(-87, 2, 44);
-        label.rotation.y = - Math.PI / 2.6;
-        this.add(label);
-
-        const geometry = new THREE.PlaneGeometry(3.5, 1.5);
-        const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
-        this.start = new THREE.Mesh(geometry, material);
-        this.start.position.set(-87.2, 2, 44.1);
+        this.start = sprite.build();
+        this.start.position.set(-87, 1, 44);
         this.start.rotation.y = - Math.PI / 2.6;
         this.add(this.start);
         

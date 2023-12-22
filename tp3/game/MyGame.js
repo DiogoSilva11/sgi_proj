@@ -39,14 +39,21 @@ class MyGame {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, this.app.getActiveCamera());
-            const intersects = raycaster.intersectObjects(this.menu.children);
-            if (intersects.length > 0) {
-                const selectedObject = intersects[0].object;
-                if (selectedObject === this.menu.start) {
-                    document.removeEventListener('click', this.menuListener);
-                    this.app.scene.remove(this.menu);
-                    this.menu = null;
-                    this.gameplay();
+            const intersectStart = raycaster.intersectObjects(this.menu.start.children, true);
+            const intersectCars = [];
+            for (let i = 0; i < this.reader.cars.length; i++)
+                intersectCars.push(raycaster.intersectObjects(this.reader.cars[i].children, true));
+            if (intersectStart.length > 0) {
+                document.removeEventListener('click', this.menuListener);
+                this.app.scene.remove(this.menu);
+                this.menu = null;
+                this.gameplay();
+            }
+            else {
+                for (let i = 0; i < intersectCars.length; i++) {
+                    if (intersectCars[i].length > 0) {
+                        console.log('Car ' + i + ' selected');
+                    }
                 }
             }
         };
