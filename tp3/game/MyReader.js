@@ -41,7 +41,7 @@ class MyReader {
 
         if (this.route === null) {
             this.route = new MyRoute(this.app);
-            this.route.playAnimation(this.autoCar);
+            //this.route.playAnimation(this.autoCar);
         }
     }
 
@@ -97,7 +97,7 @@ class MyReader {
         let z = this.autoCar.position.z;
         if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
         else this.playerCar.update();
-        if (this.app.controls !== null) this.followCar();
+        //if (this.app.controls !== null) this.followCar();
     }
 }
 

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MyParkingLot } from '../elements/MyParkingLot.js';
 import { MyMenu } from './MyMenu.js';
 import { MyReader } from "./MyReader.js";
 import { MyOver } from "./MyOver.js";
@@ -55,6 +56,7 @@ class MyGame {
         this.createGround();
         this.createLights();
         this.createStadium();
+        this.createParkingLots();
 
         this.gameListener = (event) => {
             if (event.key === 'w')  this.reader.playerCar.accelerate();
@@ -175,6 +177,18 @@ class MyGame {
 
         this.stadium.position.set(50, 0, 20);
         this.app.scene.add(this.stadium);
+    }
+
+    createParkingLots() {
+        this.playerPark = new MyParkingLot(-85, 0, 20);
+        this.app.scene.add(this.playerPark);
+
+        this.autoPark = new MyParkingLot(-70, 0, 60);
+        this.app.scene.add(this.autoPark);
+
+        this.obstaclePark = new MyParkingLot(-50, 0, 90);
+        this.obstaclePark.rotation.y = Math.PI / 3.5;
+        this.app.scene.add(this.obstaclePark);
     }
 
     removeElements() {

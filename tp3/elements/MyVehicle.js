@@ -272,7 +272,7 @@ class MyVehicle extends THREE.Group {
     }
 
     update() {
-        if (this.speed > 0) this.speed -= 0.001;
+        //if (this.speed > 0) this.speed -= 0.001;
 
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);
