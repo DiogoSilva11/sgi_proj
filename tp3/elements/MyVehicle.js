@@ -223,11 +223,11 @@ class MyVehicle extends THREE.Group {
     }
 
     accelerate() {
-        if (this.speed < 0.3) this.speed += 0.1;
+        if (this.speed < 0.5) this.speed += 0.1;
     }
 
     brake() {
-        if (this.speed > -0.15) this.speed -= 0.05;
+        if (this.speed > -0.2) this.speed -= 0.05;
     }
 
     turnLeft() {
@@ -272,6 +272,8 @@ class MyVehicle extends THREE.Group {
     }
 
     update() {
+        if (this.speed > 0) this.speed -= 0.001;
+
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);
 

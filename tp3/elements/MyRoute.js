@@ -4,17 +4,17 @@ class MyRoute {
     constructor(app) {
         this.app = app;
         this.keyPoints = [
-            new THREE.Vector3(-1, 0.7, 0),
-            new THREE.Vector3(-1, 0.7, -15),
-            new THREE.Vector3(9, 0.7, -20),
-            new THREE.Vector3(9, 0.7, -30),
-            new THREE.Vector3(-16, 0.7, -30),
-            new THREE.Vector3(-21, 0.7, -20),
-            new THREE.Vector3(-21, 0.7, 0),
-            new THREE.Vector3(-41, 0.7, 10),
-            new THREE.Vector3(-41, 0.7, 20),
-            new THREE.Vector3(-1, 0.7, 20),
-            new THREE.Vector3(-1, 0.7, 0)
+            new THREE.Vector3(-1, 0.4, 0),
+            new THREE.Vector3(-1, 0.4, -15),
+            new THREE.Vector3(9, 0.4, -20),
+            new THREE.Vector3(9, 0.4, -30),
+            new THREE.Vector3(-16, 0.4, -30),
+            new THREE.Vector3(-21, 0.4, -20),
+            new THREE.Vector3(-21, 0.4, 0),
+            new THREE.Vector3(-41, 0.4, 10),
+            new THREE.Vector3(-41, 0.4, 20),
+            new THREE.Vector3(-1, 0.4, 20),
+            new THREE.Vector3(-1, 0.4, 0)
         ];
         this.clock = new THREE.Clock();
         this.mixerTime = 0;

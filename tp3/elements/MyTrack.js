@@ -1,33 +1,46 @@
 import * as THREE from 'three';
 
 class MyTrack extends THREE.Group {
-    constructor(segments = 200, width = 3) {
+    constructor(path, segments = 400, width = 5) {
         super();
         this.type = 'Group';
 
+        this.path = path;
         this.segments = segments;
         this.width = width;
-        this.textureRepeat = 100;
         this.showWireframe = false;
         this.showMesh = true;
         this.showLine = false;
         this.closedCurve = false;
 
-        this.path = new THREE.CatmullRomCurve3([
-            new THREE.Vector3(1, 0, 0),
-            new THREE.Vector3(1, 0, -15),
-            new THREE.Vector3(-9, 0, -20),
-            new THREE.Vector3(-9, 0, -30),
-            new THREE.Vector3(16, 0, -30),
-            new THREE.Vector3(21, 0, -20),
-            new THREE.Vector3(21, 0, 0),
-            new THREE.Vector3(41, 0, 10),
-            new THREE.Vector3(41, 0, 20),
-            new THREE.Vector3(1, 0, 20),
-            new THREE.Vector3(1, 0, 0)
-        ]);
-
         this.buildCurve();
+        this.buildFinishLine();
+        this.position.y -= 0.5;
+    }
+
+    buildFinishLine() {
+        let material = new THREE.MeshPhongMaterial({ color: 0x000000 });
+        let geometry = new THREE.CylinderGeometry(0.1, 0.1, 4);
+
+        let stick1 = new THREE.Mesh(geometry, material);
+        stick1.position.set(-4.3, 2, 0);
+        this.add(stick1);
+
+        let stick2 = new THREE.Mesh(geometry, material);
+        stick2.position.set(4.3, 2, 0);
+        this.add(stick2);
+
+        const texture = new THREE.TextureLoader().load("./images/finish.jpg");
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 1);
+        material = new THREE.MeshPhongMaterial({
+            map: texture
+        });
+        geometry = new THREE.BoxGeometry(8.8, 3, 0.2);
+        let box = new THREE.Mesh(geometry, material);
+        box.position.set(0, 5.5, 0);
+        this.add(box);
     }
 
     /**
@@ -45,8 +58,11 @@ class MyTrack extends THREE.Group {
         const texture = new THREE.TextureLoader().load("./images/track.jpg");
         texture.wrapS = THREE.RepeatWrapping;
 
-        this.material = new THREE.MeshPhongMaterial({map: texture});
-        this.material.map.repeat.set(this.textureRepeat, 3);
+        this.material = new THREE.MeshPhongMaterial({
+            map: texture,
+            shininess: 0
+        });
+        this.material.map.repeat.set(100, 100);
         this.material.map.wrapS = THREE.RepeatWrapping;
         this.material.map.wrapT = THREE.RepeatWrapping;
 
