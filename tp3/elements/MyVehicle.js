@@ -271,9 +271,17 @@ class MyVehicle extends THREE.Group {
         this.turnWheels();
     }
 
-    update() {
-        //if (this.speed > 0) this.speed -= 0.001;
+    updateLights() {
+        this.lights[1].target.position.x = this.x - 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
+        this.lights[1].target.position.z = this.z + 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
+        this.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.lights[1]);
 
+        this.lights[3].target.position.x = this.x + 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
+        this.lights[3].target.position.z = this.z - 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
+        this.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.lights[3]);
+    }
+
+    update() {
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);
 
@@ -300,6 +308,8 @@ class MyVehicle extends THREE.Group {
             this.rotation.y = this.angle;
             this.turnWheels();
         }
+
+        this.updateLights();
     }
 }
 

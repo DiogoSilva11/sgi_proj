@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class MySprite {
-    constructor(text, color, pos, offset, scale, width, height, y) {
+    constructor(text, color, pos, offset, scale, width, height) {
         this.text = text;
         this.color = color;
         this.pos = pos;
@@ -9,7 +9,6 @@ class MySprite {
         this.scale = scale;
         this.width = width;
         this.height = height;
-        this.y = y;
         this.spriteSize = 32 / 512;
 
         this.build();
@@ -35,6 +34,7 @@ class MySprite {
             x = x + this.offset;
             let center = this.offset * this.text.length / 2;
             sprite.position.x = x - center;
+            sprite.position.z = 0.1;
             sprite.scale.set(this.scale, this.scale, this.scale);
             this.sprites.add(sprite);
 
@@ -58,6 +58,16 @@ class MySprite {
                     else if (character === 't') x -= 0.1;
                     else if (character === 'r') x -= 0.05;
                     break;
+                case 'Pick Your Car':
+                    if (character === 'i') x -= 0.1;
+                    else if (character === 'P') x += 0.1;
+                    break;
+                case 'Pick Opponent Car':
+                    if (character === 'i') x -= 0.1;
+                    else if (character === 'P' || character === 'O') x += 0.1;
+                    break;
+                default:
+                    break;
             }
         }
         
@@ -65,7 +75,6 @@ class MySprite {
         const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
         const mesh = new THREE.Mesh(geometry, material);
         mesh.add(this.sprites);
-        mesh.position.y = this.y;
         return mesh;
     }
 }

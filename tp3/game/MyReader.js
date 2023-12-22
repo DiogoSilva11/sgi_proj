@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { MyParkingLot } from "../elements/MyParkingLot.js";
 import { MyTrack } from "../elements/MyTrack.js";
 import { MyRoute } from "../elements/MyRoute.js";
 import { MyVehicle } from "../elements/MyVehicle.js";
@@ -6,13 +7,32 @@ import { MyVehicle } from "../elements/MyVehicle.js";
 class MyReader {
     constructor(app) {
         this.app = app;
+        this.ground = null;
+        this.poles = [];
+        this.stadium = null;
+        this.playerPark = null;
+        this.autoPark = null;
+        this.obstaclePark = null;
+        this.cars = [];
         this.track = null;
-        this.route = null;
-        this.playerCar = null;
-        this.autoCar = null;
     }
 
     init() {
+        if (this.ground === null)
+            this.createGround();
+
+        if (this.poles.length === 0)
+            this.createLights();
+
+        if (this.stadium === null)
+            this.createStadium();
+
+        if (this.playerPark === null && this.autoPark === null && this.obstaclePark === null)
+            this.createParkingLots();
+
+        if (this.cars.length === 0)
+            this.createCars();
+
         if (this.track === null) {
             const path = new THREE.CatmullRomCurve3([
                 new THREE.Vector3(0, 0, 0),
@@ -28,76 +48,172 @@ class MyReader {
             this.track = new MyTrack(path);
             this.app.scene.add(this.track);
         }
+    }
+
+    createGround() {
+        const geometry = new THREE.PlaneGeometry(1000, 1000);
+        let texture = new THREE.TextureLoader().load("./images/grass.jpg");
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(100, 100);
+        let material = new THREE.MeshPhongMaterial({ map: texture });
+        this.ground = new THREE.Mesh(geometry, material);
+        this.ground.rotation.x = - Math.PI / 2;
+        this.ground.position.y = - 0.1;
+        this.app.scene.add(this.ground);
+    }
+
+    createLights() {
+        let light = new THREE.PointLight(0xffffff, 1000, 400);
+        light.position.set(-30, 70, 10);
+        this.app.scene.add(light);
+
+        light = new THREE.PointLight(0xffffff, 150, 50);
+        light.position.set(-93, 15, 23);
+        this.app.scene.add(light);
+
+        light = new THREE.PointLight(0xffffff, 150, 50);
+        light.position.set(-77, 15, 60);
+        this.app.scene.add(light);
+
+        let pole = this.createPole(15, 0, 20);
+        this.poles.push(pole);
+
+        pole = this.createPole(20, 0, 60);
+        this.poles.push(pole);
+
+        pole = this.createPole(5, 0, 100);
+        pole.rotation.y = - Math.PI / 4;
+        this.poles.push(pole);
+
+        pole = this.createPole(-30, 0, 100);
+        pole.rotation.y = - Math.PI / 2;
+        this.poles.push(pole);
+
+        pole = this.createPole(-65, 0, 75);
+        pole.rotation.y = - Math.PI;
+        this.poles.push(pole);
+
+        pole = this.createPole(-75, 0, 40);
+        pole.rotation.y = - Math.PI;
+        //this.poles.push(pole);
+
+        pole = this.createPole(-80, 0, 0);
+        pole.rotation.y = - Math.PI;
+        this.poles.push(pole);
+
+        pole = this.createPole(-55, 0, -30);
+        pole.rotation.y = - Math.PI;
+        this.poles.push(pole);
+
+        pole = this.createPole(-20, 0, -70);
+        pole.rotation.y = Math.PI / 2;
+        this.poles.push(pole);
+
+        pole = this.createPole(20, 0, -30);
+        this.poles.push(pole);
+
+        for (const pole of this.poles) 
+            this.app.scene.add(pole);
+    }
+
+    createPole(x, y, z) {
+        let material = new THREE.MeshPhongMaterial({ color: 0x000000 });
+        let sourceMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        let geometry = new THREE.CylinderGeometry(0.3, 0.3, 20);
+        let topGeo = new THREE.BoxGeometry(2, 0.6, 1);
+        let sourceGeo = new THREE.BoxGeometry(1.4, 0.5, 1);
+
+        const pole = new THREE.Mesh(geometry, material);
+        const top = new THREE.Mesh(topGeo, material);
+        top.position.set(-0.7, 10.3, 0);
+        pole.add(top);
+        const source = new THREE.Mesh(sourceGeo, sourceMat);
+        source.position.set(-1, 9.75, 0);
+        pole.add(source);
+        const light = new THREE.PointLight(0xffffff, 200, 100);
+        pole.add(light);
+        pole.position.set(x, y + 8, z);
         
-        if (this.playerCar === null) {
-            this.playerCar = new MyVehicle(-2, 0.4, 0);
-            this.app.scene.add(this.playerCar);
-        }
-
-        if (this.autoCar === null) {
-            this.autoCar = new MyVehicle(0, 0.4, 0);
-            this.app.scene.add(this.autoCar);
-        }
-
-        if (this.route === null) {
-            this.route = new MyRoute(this.app);
-            //this.route.playAnimation(this.autoCar);
-        }
+        return pole;
     }
 
-    remove() {
-        this.app.scene.remove(this.track);
-        this.track = null;
-        this.app.scene.remove(this.playerCar);
-        this.playerCar = null;
-        this.app.scene.remove(this.autoCar);
-        this.autoCar = null;
-        this.route = null;
+    createStadium() {
+        this.stadium = new THREE.Group();
+
+        let material = new THREE.MeshPhongMaterial({ color: 0x000000 });
+        let geometry = new THREE.BoxGeometry(1, 20, 100);
+        let box = new THREE.Mesh(geometry, material);
+        box.position.set(0, 9, 0);
+        this.stadium.add(box);
+
+        const texture = new THREE.TextureLoader().load("./images/seats.jpg");
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(4, 2);
+        material = new THREE.MeshPhongMaterial({ map: texture });
+        geometry = new THREE.BoxGeometry(1, 30, 100);
+        let seats = new THREE.Mesh(geometry, material);
+        seats.position.set(-10.5, 8, 0);
+        seats.rotation.z = - Math.PI / 4;
+        this.stadium.add(seats);
+
+        this.stadium.position.set(50, 0, 20);
+        this.app.scene.add(this.stadium);
     }
 
-    updateCarLights() {
-        let x = this.playerCar.position.x;
-        let z = this.playerCar.position.z;
-        let angle = this.playerCar.angle;
+    createParkingLots() {
+        this.playerPark = new MyParkingLot(-85, 0, 20);
+        this.app.scene.add(this.playerPark);
 
-        this.playerCar.lights[1].target.position.x = x - 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
-        this.playerCar.lights[1].target.position.z = z + 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
-        this.playerCar.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.playerCar.lights[1]);
+        this.autoPark = new MyParkingLot(-70, 0, 60);
+        this.app.scene.add(this.autoPark);
 
-        this.playerCar.lights[3].target.position.x = x + 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
-        this.playerCar.lights[3].target.position.z = z - 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
-        this.playerCar.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.playerCar.lights[3]);
-
-        x = this.autoCar.position.x;
-        z = this.autoCar.position.z;
-        angle = this.autoCar.angle;
-
-        this.autoCar.lights[1].target.position.x = x - 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
-        this.autoCar.lights[1].target.position.z = z + 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
-        this.autoCar.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.autoCar.lights[1]);
-
-        this.autoCar.lights[3].target.position.x = x + 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
-        this.autoCar.lights[3].target.position.z = z - 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
-        this.autoCar.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.autoCar.lights[3]);
+        this.obstaclePark = new MyParkingLot(-50, 0, 90);
+        this.obstaclePark.rotation.y = Math.PI / 3.5;
+        this.app.scene.add(this.obstaclePark);
     }
 
-    followCar() {
-        this.app.controls.target.x = this.playerCar.position.x;
-        this.app.controls.target.z = this.playerCar.position.z;
+    createCars() {
+        let car = new MyVehicle(-85, 0.4, 21);
+        car.rotation.y = Math.PI / 2;
+        car.angle = Math.PI / 2;
+        car.updateLights();
+        this.cars.push(car);
 
-        this.app.cameras['Perspective'].position.x = this.playerCar.position.x - 10;
-        this.app.cameras['Perspective'].position.y = 10;
-        this.app.cameras['Perspective'].position.z = this.playerCar.position.z - 10;
-    }
+        car = new MyVehicle(-82, 0.4, 25);
+        car.rotation.y = Math.PI / 2;
+        car.angle = Math.PI / 2;
+        car.updateLights();
+        this.cars.push(car);
 
-    update() {
-        this.route.update();
-        this.updateCarLights();
-        let x = this.autoCar.position.x;
-        let z = this.autoCar.position.z;
-        if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
-        else this.playerCar.update();
-        //if (this.app.controls !== null) this.followCar();
+        car = new MyVehicle(-88, 0.4, 17);
+        car.rotation.y = Math.PI / 2;
+        car.angle = Math.PI / 2;
+        car.updateLights();
+        this.cars.push(car);
+
+        car = new MyVehicle(-71, 0.4, 55);
+        car.rotation.y = Math.PI / 1.3;
+        car.angle = Math.PI / 1.3;
+        car.updateLights();
+        this.cars.push(car);
+
+        car = new MyVehicle(-70, 0.4, 60);
+        car.rotation.y = Math.PI / 1.3;
+        car.angle = Math.PI / 1.3;
+        car.updateLights();
+        this.cars.push(car);
+
+        car = new MyVehicle(-69, 0.4, 65);
+        car.rotation.y = Math.PI / 1.3;
+        car.angle = Math.PI / 1.3;
+        car.updateLights();
+        this.cars.push(car);
+
+        for (const car of this.cars)
+            this.app.scene.add(car);
     }
 }
 
