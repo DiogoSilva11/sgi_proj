@@ -11,25 +11,25 @@ class MyMenu extends THREE.Group {
     init() {
         let sprite = new MySprite('TURBO RACERS', 0xbd8b02, -0.2, 0.7, 1, 10, 2);
         let label = sprite.build();
-        label.position.set(-87, 15, 44);
+        label.position.set(-87, 17, 44);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
         sprite = new MySprite('Diogo Silva', 0x999999, 0, 0.35, 0.6, 5, 1.2);
         label = sprite.build();
-        label.position.set(-87, 12.5, 44);
+        label.position.set(-88.9, 14.5, 39);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
         sprite = new MySprite('Tomás Pires', 0x999999, -0.1, 0.35, 0.6, 5, 1.2);
         label = sprite.build();
-        label.position.set(-87, 11, 44);
+        label.position.set(-85.1, 14.5, 49);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
-        sprite = new MySprite('SGI FEUP', 0x999999, 0, 0.4, 0.6, 5, 1.2);
+        sprite = new MySprite('SGI FEUP', 0xa35426, 0, 0.4, 0.6, 5, 1.2);
         label = sprite.build();
-        label.position.set(-87, 9.5, 44);
+        label.position.set(-87, 14.5, 44);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
