@@ -126,6 +126,26 @@ class MyGame {
         this.app.cameras['Perspective'].position.z = this.playerCar.position.z - 10;
     }
 
+    offTrack() {
+        let x = this.playerCar.position.x;
+        let z = this.playerCar.position.z;
+        const points = this.reader.track.sampledPoints;
+
+        let minDistance = 1000;
+        let index = 0;
+        for (let i = 0; i < 200; i++) {
+            const distance = Math.sqrt(Math.pow(points[i].x - x, 2) + Math.pow(points[i].z - z, 2));
+            if (distance < minDistance) {
+                minDistance = distance;
+                index = i;
+            }
+        }
+
+        if (Math.abs(points[index].x - x) > 10 || Math.abs(points[index].z - z) > 10) {
+            console.log('off track');
+        }
+    }
+
     update() {
         if (this.state === 'gameplay' && this.playerCar !== null && this.autoCar !== null) {
             let x = this.autoCar.position.x;
@@ -140,11 +160,13 @@ class MyGame {
 
             if (this.app.controls !== null && this.follow) this.followCar();
             this.reader.route.update();
+
+            this.offTrack();
         }
         else if (this.state === 'over') {
             this.over.update();
         }
-    } 
+    }
 }
 
 export { MyGame };

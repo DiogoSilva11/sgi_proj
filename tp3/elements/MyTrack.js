@@ -12,6 +12,7 @@ class MyTrack extends THREE.Group {
         this.showMesh = true;
         this.showLine = false;
         this.closedCurve = false;
+        this.sampledPoints = [];
 
         this.buildCurve();
         this.buildFinishLine();
@@ -49,6 +50,11 @@ class MyTrack extends THREE.Group {
     buildCurve() {
         this.createCurveMaterialsTextures();
         this.createCurveObjects();
+
+        for (let i = 0; i < 200; i++) {
+            const point = this.path.getPoint(i / 200);
+            this.sampledPoints.push(point);
+        }
     }
 
     /**
