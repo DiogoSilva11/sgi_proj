@@ -20,7 +20,7 @@ class MyContents {
    */
   init() {
     // add a point light on top of the model
-    const pointLight = new THREE.PointLight(0xffffff, 500, 0);
+    const pointLight = new THREE.PointLight(0xffffff, 300, 0);
     pointLight.position.set(0, 20, 0);
     this.app.scene.add(pointLight);
 
@@ -30,17 +30,17 @@ class MyContents {
     this.app.scene.add(pointLightHelper);
 
     // add an ambient light
-    const ambientLight = new THREE.AmbientLight(0x555555);
+    const ambientLight = new THREE.AmbientLight(0x111111);
     this.app.scene.add(ambientLight);
 
     const geometry = new THREE.BoxGeometry(100, 100, 100);
     let texture = new THREE.CubeTextureLoader().load([
-        "./images/skybox.png",
-        "./images/skybox.png",
-        "./images/skybox.png",
-        "./images/skybox.png",
-        "./images/skybox.png",
-        "./images/skybox.png"
+        "./images/skybox.jpg",
+        "./images/skybox.jpg",
+        "./images/skybox.jpg",
+        "./images/skybox.jpg",
+        "./images/skybox.jpg",
+        "./images/skybox.jpg"
     ]);
     let material = new THREE.MeshPhongMaterial({
         envMap: texture,

@@ -44,6 +44,21 @@ class MyReader {
         this.route = null;
     }
 
+    updateCarLights() {
+        let x = this.playerCar.position.x;
+        let z = this.playerCar.position.z;
+        let angle = this.playerCar.angle;
+        console.log(THREE.MathUtils.radToDeg(angle));
+
+        this.playerCar.lights[1].target.position.x = x - 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
+        this.playerCar.lights[1].target.position.z = z + 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
+        this.playerCar.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.playerCar.lights[1]);
+
+        this.playerCar.lights[3].target.position.x = x + 0.35 * Math.cos(angle) - 4 * Math.sin(angle);
+        this.playerCar.lights[3].target.position.z = z - 0.35 * Math.sin(angle) - 4 * Math.cos(angle);
+        this.playerCar.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.playerCar.lights[3]);
+    }
+
     followCar() {
         this.app.controls.target.x = this.playerCar.position.x;
         this.app.controls.target.z = this.playerCar.position.z;
@@ -55,12 +70,15 @@ class MyReader {
 
     update() {
         this.route.update();
-        let x = this.autoCar.position.x;
-        let z = this.autoCar.position.z;
-        if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
-        else this.playerCar.update();
+        this.updateCarLights();
+
+        //let x = this.autoCar.position.x;
+        //let z = this.autoCar.position.z;
+        //if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
+        //else this.playerCar.update();
+        this.playerCar.update();
         if (this.app.controls !== null) {
-            this.followCar();
+            //this.followCar();
         }
     }
 }

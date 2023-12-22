@@ -45,7 +45,7 @@ class MyTrack extends THREE.Group {
         const texture = new THREE.TextureLoader().load("./images/track.jpg");
         texture.wrapS = THREE.RepeatWrapping;
 
-        this.material = new THREE.MeshBasicMaterial({ map: texture });
+        this.material = new THREE.MeshPhongMaterial({map: texture});
         this.material.map.repeat.set(this.textureRepeat, 3);
         this.material.map.wrapS = THREE.RepeatWrapping;
         this.material.map.wrapT = THREE.RepeatWrapping;
