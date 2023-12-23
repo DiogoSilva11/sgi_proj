@@ -66,6 +66,17 @@ class MySprite {
                     if (character === 'i') x -= 0.1;
                     else if (character === 'P' || character === 'O') x += 0.1;
                     break;
+                case 'DIFFICULTY':
+                    if (character === 'I') x -= 0.2;
+                case 'Normal':
+                    if (character === 'N') x += 0.05;
+                    else if (character === 'r') x -= 0.05;
+                    else if (character === 'm') x += 0.15;
+                    break;
+                case 'Hard':
+                    if (character === 'H') x += 0.1;
+                    else if (character === 'r') x -= 0.05;
+                    break;
                 default:
                     break;
             }

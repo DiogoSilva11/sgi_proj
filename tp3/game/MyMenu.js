@@ -36,10 +36,31 @@ class MyMenu extends THREE.Group {
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
         
+        this.difficultyLevels();
         this.createInput();
         this.carLabels();
 
         this.app.scene.add(this);
+    }
+
+    difficultyLevels() {
+        let sprite = new MySprite('DIFFICULTY', 0xa35426, 0, 0.5, 0.7, 6, 1.2);
+        let label = sprite.build();
+        label.position.set(-87, 6, 44);
+        label.rotation.y = - Math.PI / 2.6;
+        this.add(label);
+
+        sprite = new MySprite('Normal', 0x444444, -0.15, 0.4, 0.6, 3, 1.2);
+        label = sprite.build();
+        label.position.set(-87, 4.5, 44);
+        label.rotation.y = - Math.PI / 2.6;
+        this.add(label);
+
+        sprite = new MySprite('Hard', 0x444444, -0.15, 0.38, 0.6, 3, 1.2);
+        label = sprite.build();
+        label.position.set(-87, 3, 44);
+        label.rotation.y = - Math.PI / 2.6;
+        this.add(label);
     }
 
     carLabels() {
@@ -59,10 +80,9 @@ class MyMenu extends THREE.Group {
     createInput() {
         this.input = document.createElement('input');
         this.input.type = 'text';
-        this.input.placeholder = 'Enter Player Name';
         this.input.style.position = 'absolute';
         this.input.style.top = '50%';
-        this.input.style.left = '49.5%';
+        this.input.style.left = '49%';
         this.input.style.transform = 'translate(-50%, -50%)';
         this.input.style.width = '200px';
         this.input.style.height = '35px';
@@ -78,9 +98,9 @@ class MyMenu extends THREE.Group {
     }
 
     startLabel() {
-        const sprite = new MySprite('Start', 0x089611, 0, 0.45, 0.8, 3.5, 1.2);
+        const sprite = new MySprite('Start', 0x089611, -0.05, 0.4, 0.7, 3.5, 1.2);
         this.start = sprite.build();
-        this.start.position.set(-87, 1, 44);
+        this.start.position.set(-89, 1, 44.9);
         this.start.rotation.y = - Math.PI / 2.6;
         this.add(this.start);
     }
