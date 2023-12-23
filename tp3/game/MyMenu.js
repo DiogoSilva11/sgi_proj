@@ -6,6 +6,9 @@ class MyMenu extends THREE.Group {
         super();
         this.type = 'Group';
         this.app = app;
+
+        this.input = null;
+        this.start = null;
     }
 
     init() {
@@ -32,13 +35,8 @@ class MyMenu extends THREE.Group {
         label.position.set(-87, 14.5, 44);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
-
-        sprite = new MySprite('Start', 0x089611, 0, 0.45, 0.8, 3.5, 1.2);
-        this.start = sprite.build();
-        this.start.position.set(-87, 1, 44);
-        this.start.rotation.y = - Math.PI / 2.6;
-        this.add(this.start);
         
+        this.createInput();
         this.carLabels();
 
         this.app.scene.add(this);
@@ -56,6 +54,35 @@ class MyMenu extends THREE.Group {
         label.position.set(-80.7, 1, 59);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
+    }
+
+    createInput() {
+        this.input = document.createElement('input');
+        this.input.type = 'text';
+        this.input.placeholder = 'Enter Player Name';
+        this.input.style.position = 'absolute';
+        this.input.style.top = '50%';
+        this.input.style.left = '49.5%';
+        this.input.style.transform = 'translate(-50%, -50%)';
+        this.input.style.width = '200px';
+        this.input.style.height = '35px';
+        this.input.style.border = '5px solid #000';
+        this.input.style.backgroundColor = '#000';
+        this.input.style.color = '#fff';
+        this.input.style.padding = '10px';
+        document.body.appendChild(this.input);
+    }
+
+    removeInput() {
+        document.body.removeChild(this.input);
+    }
+
+    startLabel() {
+        const sprite = new MySprite('Start', 0x089611, 0, 0.45, 0.8, 3.5, 1.2);
+        this.start = sprite.build();
+        this.start.position.set(-87, 1, 44);
+        this.start.rotation.y = - Math.PI / 2.6;
+        this.add(this.start);
     }
 }
 

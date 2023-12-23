@@ -9,6 +9,7 @@ class MyGame {
         this.reader = null;
         this.menu = null;
         this.over = null;
+        this.playerName = null;
         this.playerCar = null;
         this.autoCar = null;
         this.state = 'menu';
@@ -31,6 +32,9 @@ class MyGame {
         this.menu = new MyMenu(this.app);
         this.menu.init();
 
+        this.inputListener = (event) => {this.playerName = event.target.value;}
+        this.menu.input.addEventListener('input', this.inputListener);
+
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
@@ -44,36 +48,36 @@ class MyGame {
                 intersectCars.push(raycaster.intersectObjects(this.reader.cars[i].children, true));
             for (let i = 0; i < intersectCars.length; i++) {
                 if (intersectCars[i].length > 0) {
-                    if (i < 3 && this.playerCar === null)
+                    if (i < 3 && this.playerCar === null) {
                         this.playerCar = this.reader.cars[i];
-                    else if (i >= 3 && this.autoCar === null)
+                        console.log('Player car: ', i);
+                    }
+                    else if (i >= 3 && this.autoCar === null) {
                         this.autoCar = this.reader.cars[i];
+                        console.log('Auto car: ', i);
+                    }
 
                     if (this.playerCar !== null && this.autoCar !== null)
                         document.removeEventListener('click', this.carSelector);
                 }
             }
         }
-
         document.addEventListener('click', this.carSelector);
 
-        this.menuListener = (event) => {
-            if (this.playerCar !== null && this.autoCar !== null) {
-                event.preventDefault();
-                mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(mouse, this.app.getActiveCamera());
-                const intersectStart = raycaster.intersectObjects(this.menu.start.children, true);
-                if (intersectStart.length > 0) {
-                    document.removeEventListener('click', this.menuListener);
-                    this.app.scene.remove(this.menu);
-                    this.menu = null;
-                    this.gameplay();
-                }
+        this.startListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectStart = raycaster.intersectObjects(this.menu.start.children, true);
+            if (intersectStart.length > 0) {
+                document.removeEventListener('click', this.startListener);
+                this.menu.removeInput();
+                this.app.scene.remove(this.menu);
+                this.menu = null;
+                this.gameplay();
             }
         };
-
-        document.addEventListener('click', this.menuListener);
     }
 
     gameplay() {
@@ -153,7 +157,19 @@ class MyGame {
     }
 
     update() {
-        if (this.state === 'gameplay' && this.playerCar !== null && this.autoCar !== null) {
+        if (this.state === 'menu') {
+            if (this.playerName != null && this.playerName != '' && this.playerCar !== null
+                && this.autoCar !== null && this.menu.start === null) {
+                this.menu.startLabel();
+                document.addEventListener('click', this.startListener);
+            }
+            if (this.menu.start !== null && this.playerName === '') {
+                document.removeEventListener('click', this.startListener);
+                this.menu.remove(this.menu.start);
+                this.menu.start = null;
+            }
+        }
+        else if (this.state === 'gameplay' && this.playerCar !== null && this.autoCar !== null) {
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
