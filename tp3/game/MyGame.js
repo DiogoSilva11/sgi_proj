@@ -80,7 +80,7 @@ class MyGame {
         this.state = 'gameplay';
         this.app.activateControls();
 
-        this.playerCar.position.set(-2, 0.4, 5);
+        this.playerCar.position.set(-2, 0.4, 8);
         this.playerCar.rotation.y = 0;
         this.playerCar.angle = 0;
 
@@ -129,20 +129,26 @@ class MyGame {
     offTrack() {
         let x = this.playerCar.position.x;
         let z = this.playerCar.position.z;
-        const points = this.reader.track.sampledPoints;
+        const points = this.reader.track.path.getPoints(this.reader.track.segments);
+        let onTrack = false;
+        for (const point of points)
+            if (Math.abs(-point.x - x) < 5 && Math.abs(point.z - z) < 5)
+                onTrack = true;
 
-        let minDistance = 1000;
-        let index = 0;
-        for (let i = 0; i < 200; i++) {
-            const distance = Math.sqrt(Math.pow(points[i].x - x, 2) + Math.pow(points[i].z - z, 2));
-            if (distance < minDistance) {
-                minDistance = distance;
-                index = i;
+        if (onTrack) {
+            if (this.playerCar.offTrack) {
+                this.playerCar.offTrack = false;
+                this.playerCar.maxSpeed = 0.4;
+                this.playerCar.minSpeed = -0.2;
             }
+            return;
         }
 
-        if (Math.abs(points[index].x - x) > 10 || Math.abs(points[index].z - z) > 10) {
-            console.log('off track');
+        if (!this.playerCar.offTrack) {
+            this.playerCar.offTrack = true;
+            this.playerCar.speed *= 0.5;
+            this.playerCar.maxSpeed *= 0.5;
+            this.playerCar.minSpeed *= 0.5;
         }
     }
 

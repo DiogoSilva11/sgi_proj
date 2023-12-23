@@ -14,6 +14,9 @@ class MyVehicle extends THREE.Group {
         this.angleOffset = 0;
         this.left = false;
         this.right = false;
+        this.offTrack = false;
+        this.maxSpeed = 0.4;
+        this.minSpeed = -0.2;
 
         this.buildVehicle();
     }
@@ -223,11 +226,11 @@ class MyVehicle extends THREE.Group {
     }
 
     accelerate() {
-        if (this.speed < 0.4) this.speed += 0.01;
+        if (this.speed < this.maxSpeed) this.speed += 0.01;
     }
 
     brake() {
-        if (this.speed > -0.2) this.speed -= 0.01;
+        if (this.speed > this.minSpeed) this.speed -= 0.01;
     }
 
     turnLeft() {

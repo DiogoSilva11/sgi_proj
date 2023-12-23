@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 class MyTrack extends THREE.Group {
-    constructor(path, segments = 400, width = 5) {
+    constructor(path, segments = 1000, width = 5) {
         super();
         this.type = 'Group';
 
@@ -10,9 +10,8 @@ class MyTrack extends THREE.Group {
         this.width = width;
         this.showWireframe = false;
         this.showMesh = true;
-        this.showLine = false;
+        this.showLine = true;
         this.closedCurve = false;
-        this.sampledPoints = [];
 
         this.buildCurve();
         this.buildFinishLine();
@@ -50,11 +49,26 @@ class MyTrack extends THREE.Group {
     buildCurve() {
         this.createCurveMaterialsTextures();
         this.createCurveObjects();
+    }
 
-        for (let i = 0; i < 200; i++) {
-            const point = this.path.getPoint(i / 200);
-            this.sampledPoints.push(point);
+    generateList(startX, endX, startZ, endZ) {
+        const list = [];
+        const xDiff = Math.abs(endX - startX);
+        const zDiff = Math.abs(endZ - startZ);
+        const steps = Math.max(xDiff, zDiff);
+      
+        let currentX = startX;
+        let currentZ = startZ;
+        const xStep = xDiff !== 0 ? (endX - startX) / steps : 0;
+        const zStep = zDiff !== 0 ? (endZ - startZ) / steps : 0;
+      
+        for (let i = 0; i <= steps; i++) {
+            list.push({ x: Math.round(currentX), z: Math.round(currentZ) });
+            currentX += xStep;
+            currentZ += zStep;
         }
+      
+        return list;
     }
 
     /**
@@ -79,7 +93,7 @@ class MyTrack extends THREE.Group {
             transparent: true,
         });
 
-        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+        this.lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
     }
 
     /**
@@ -101,6 +115,7 @@ class MyTrack extends THREE.Group {
 
         // Create the final object to add to the scene
         this.line = new THREE.Line(bGeometry, this.lineMaterial);
+        this.line.position.y -= 2.7;
 
         this.curve = new THREE.Group();
 
