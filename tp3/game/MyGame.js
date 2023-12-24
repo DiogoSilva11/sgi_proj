@@ -94,6 +94,15 @@ class MyGame {
                 this.menu.removeInput();
                 this.app.scene.remove(this.menu);
                 this.menu = null;
+
+                this.playerCar.position.set(-2, 0.4, 8);
+                this.playerCar.rotation.y = 0;
+                this.playerCar.angle = 0;
+        
+                this.autoCar.position.set(2, 0.4, 5);
+                this.autoCar.rotation.y = 0;
+                this.autoCar.angle = 0;
+
                 this.gameplay();
             }
         };
@@ -102,14 +111,6 @@ class MyGame {
     gameplay() {
         this.state = 'gameplay';
         this.app.activateControls();
-
-        this.playerCar.position.set(-2, 0.4, 8);
-        this.playerCar.rotation.y = 0;
-        this.playerCar.angle = 0;
-
-        this.autoCar.position.set(2, 0.4, 5);
-        this.autoCar.rotation.y = 0;
-        this.autoCar.angle = 0;
 
         this.reader.route.playAnimation(this.autoCar);
 
@@ -169,9 +170,9 @@ class MyGame {
 
         if (!this.playerCar.offTrack) {
             this.playerCar.offTrack = true;
-            this.playerCar.speed *= 0.5;
-            this.playerCar.maxSpeed *= 0.5;
-            this.playerCar.minSpeed *= 0.5;
+            this.playerCar.speed *= 0.2;
+            this.playerCar.maxSpeed *= 0.2;
+            this.playerCar.minSpeed *= 0.2;
         }
     }
 
