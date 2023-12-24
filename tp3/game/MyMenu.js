@@ -8,6 +8,8 @@ class MyMenu extends THREE.Group {
         this.app = app;
 
         this.input = null;
+        this.normal = null;
+        this.hard = null;
         this.start = null;
     }
 
@@ -50,17 +52,33 @@ class MyMenu extends THREE.Group {
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
-        sprite = new MySprite('Normal', 0x444444, -0.15, 0.4, 0.6, 3, 1.2);
-        label = sprite.build();
-        label.position.set(-87, 4.5, 44);
-        label.rotation.y = - Math.PI / 2.6;
-        this.add(label);
+        this.setDifficulty('normal');
+    }
 
-        sprite = new MySprite('Hard', 0x444444, -0.15, 0.38, 0.6, 3, 1.2);
-        label = sprite.build();
-        label.position.set(-87, 3, 44);
-        label.rotation.y = - Math.PI / 2.6;
-        this.add(label);
+    setDifficulty(level) {
+        if (this.normal !== null && this.hard !== null) {
+            this.app.scene.remove(this.normal);
+            this.app.scene.remove(this.hard);
+        }
+
+        if (level === 'normal') {
+            this.normal = new MySprite('Normal', 0x089611, -0.15, 0.4, 0.6, 3, 1.2);
+            this.hard = new MySprite('Hard', 0x222222, -0.15, 0.38, 0.6, 3, 1.2);
+        }
+        else if (level === 'hard') {
+            this.normal = new MySprite('Normal', 0x222222, -0.15, 0.4, 0.6, 3, 1.2);
+            this.hard = new MySprite('Hard', 0x089611, -0.15, 0.38, 0.6, 3, 1.2);
+        }
+
+        this.normal = this.normal.build();
+        this.normal.position.set(-87, 4.5, 44);
+        this.normal.rotation.y = - Math.PI / 2.6;
+        this.add(this.normal);
+
+        this.hard = this.hard.build();
+        this.hard.position.set(-87, 3, 44);
+        this.hard.rotation.y = - Math.PI / 2.6;
+        this.add(this.hard);
     }
 
     carLabels() {
@@ -78,6 +96,12 @@ class MyMenu extends THREE.Group {
     }
 
     createInput() {
+        const sprite = new MySprite('Player Name', 0xbbbbbb, -0.2, 0.35, 0.6, 6, 1.6);
+        const label = sprite.build();
+        label.position.set(-87, 10.4, 44);
+        label.rotation.y = - Math.PI / 2.6;
+        this.add(label);
+
         this.input = document.createElement('input');
         this.input.type = 'text';
         this.input.style.position = 'absolute';
@@ -86,7 +110,7 @@ class MyMenu extends THREE.Group {
         this.input.style.transform = 'translate(-50%, -50%)';
         this.input.style.width = '200px';
         this.input.style.height = '35px';
-        this.input.style.border = '5px solid #000';
+        this.input.style.border = '5px solid #555';
         this.input.style.backgroundColor = '#000';
         this.input.style.color = '#fff';
         this.input.style.padding = '10px';

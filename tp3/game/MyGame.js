@@ -10,6 +10,7 @@ class MyGame {
         this.menu = null;
         this.over = null;
         this.playerName = null;
+        this.difficulty = 'normal';
         this.playerCar = null;
         this.autoCar = null;
         this.state = 'menu';
@@ -37,6 +38,24 @@ class MyGame {
 
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
+
+        this.difficultyListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectNormal = raycaster.intersectObjects(this.menu.normal.children, true);
+            const intersectHard = raycaster.intersectObjects(this.menu.hard.children, true);
+            if (intersectNormal.length > 0) {
+                this.menu.setDifficulty('normal');
+                this.difficulty = 'normal';
+            }
+            else if (intersectHard.length > 0) {
+                this.menu.setDifficulty('hard');
+                this.difficulty = 'hard';
+            }
+        }
+        document.addEventListener('click', this.difficultyListener);
 
         this.carSelector = (event) => {
             event.preventDefault();

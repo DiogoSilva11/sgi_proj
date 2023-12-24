@@ -15,7 +15,7 @@ class MySprite {
     }
 
     build() {
-        this.sprites = new THREE.Group();
+        const sprites = new THREE.Group();
         let x = this.pos;
         for (let i = 0; i < this.text.length; i++) {
             const character = this.text.charAt(i);
@@ -36,7 +36,7 @@ class MySprite {
             sprite.position.x = x - center;
             sprite.position.z = 0.1;
             sprite.scale.set(this.scale, this.scale, this.scale);
-            this.sprites.add(sprite);
+            sprites.add(sprite);
 
             switch (this.text) {
                 case 'Diogo Silva':
@@ -52,6 +52,13 @@ class MySprite {
                 case 'SGI FEUP':
                     if (character === 'G') x += 0.1;
                     else if (character === 'I') x -= 0.2;
+                    break;
+                case 'Player Name':
+                    if (character === 'P') x += 0.1;
+                    else if (character === 'l') x -= 0.1;
+                    else if (character === 'e') x += 0.05;
+                    else if (character === 'N') x += 0.1;
+                    else if (character === 'm') x += 0.15;
                     break;
                 case 'Start':
                     if (character === 'S') x += 0.1;
@@ -85,8 +92,8 @@ class MySprite {
         const geometry = new THREE.PlaneGeometry(this.width, this.height);
         const material = new THREE.MeshBasicMaterial({ color: 0x000000 });
         const mesh = new THREE.Mesh(geometry, material);
-        mesh.add(this.sprites);
-        return mesh;
+        sprites.add(mesh);
+        return sprites;
     }
 }
 
