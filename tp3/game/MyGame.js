@@ -15,6 +15,7 @@ class MyGame {
         this.autoCar = null;
         this.state = 'menu';
         this.follow = false;
+        this.paused = false;
     }
 
     init() {
@@ -87,9 +88,9 @@ class MyGame {
             raycaster.setFromCamera(mouse, this.app.getActiveCamera());
             const intersectStart = raycaster.intersectObjects(this.menu.start.children, true);
             if (intersectStart.length > 0) {
-                document.removeEventListener('click', this.startListener);
                 document.removeEventListener('click', this.difficultyListener);
                 document.removeEventListener('click', this.carSelector);
+                document.removeEventListener('click', this.startListener);
                 this.menu.removeInput();
                 this.app.scene.remove(this.menu);
                 this.menu = null;
@@ -119,7 +120,12 @@ class MyGame {
             else if (event.key === 's')  this.playerCar.brake();
             else if (event.key === 'a')  this.playerCar.turnLeft();
             else if (event.key === 'd')  this.playerCar.turnRight();
-            else if (event.key === 'q')  this.follow = !this.follow;
+            else if (event.key === 'e')  this.follow = !this.follow;
+            else if (event.key === 'q')  {
+                if (this.paused) this.reader.route.clock.start();
+                else this.reader.route.clock.stop();
+                this.paused = !this.paused;
+            }
             else if (event.key === 'Escape') {
                 document.removeEventListener('keydown', this.gameListener);
                 this.follow = false;
@@ -198,6 +204,7 @@ class MyGame {
             }
         }
         else if (this.state === 'gameplay') {
+            if (this.paused) return;
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
