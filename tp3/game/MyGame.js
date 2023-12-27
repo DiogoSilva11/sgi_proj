@@ -16,6 +16,7 @@ class MyGame {
         this.state = 'menu';
         this.follow = false;
         this.paused = false;
+        this.elapsedTime = 0;
     }
 
     init() {
@@ -112,6 +113,8 @@ class MyGame {
         this.state = 'gameplay';
         this.app.activateControls();
 
+        this.createHUD();
+
         this.reader.route.playAnimation(this.autoCar);
 
         this.follow = true;        
@@ -134,6 +137,61 @@ class MyGame {
         };
 
         document.addEventListener('keydown', this.gameListener);
+    }
+
+    createHUD() {
+        this.hud = document.createElement('div');
+        this.hud.style.position = 'absolute';
+        this.hud.style.top = '1vw';
+        this.hud.style.left = '45vw';
+        this.hud.style.width = '200px';
+        this.hud.style.height = 'auto';
+        this.hud.style.backgroundColor = '#000';
+        this.hud.style.color = '#fff';
+        document.body.appendChild(this.hud);
+
+        const title = document.createElement('div');
+        title.innerText = 'GAME STATS';
+        title.style.margin = '5px';
+        title.style.textAlign = 'center';
+        this.hud.appendChild(title);
+
+        this.elapsedTimeElement = document.createElement('div');
+        this.elapsedTimeElement.innerText = 'Elapsed Time: 0 ms';
+        this.elapsedTimeElement.style.margin = '5px';
+        this.hud.appendChild(this.elapsedTimeElement);
+
+        this.lapsCompletedElement = document.createElement('div');
+        this.lapsCompletedElement.innerText = 'Laps Completed: 0';
+        this.lapsCompletedElement.style.margin = '5px';
+        this.hud.appendChild(this.lapsCompletedElement);
+
+        this.currentSpeedElement = document.createElement('div');
+        this.currentSpeedElement.innerText = 'Current Speed: 0 km/h';
+        this.currentSpeedElement.style.margin = '5px';
+        this.hud.appendChild(this.currentSpeedElement);
+
+        this.maxSpeedElement = document.createElement('div');
+        this.maxSpeedElement.innerText = 'Max Speed: 100 km/h';
+        this.maxSpeedElement.style.margin = '5px';
+        this.hud.appendChild(this.maxSpeedElement);
+
+        this.remainingTimeElement = document.createElement('div');
+        this.remainingTimeElement.innerText = 'Remaining Time: 0 ms';
+        this.remainingTimeElement.style.margin = '5px';
+        this.hud.appendChild(this.remainingTimeElement);
+
+        this.gameStatusElement = document.createElement('div');
+        this.gameStatusElement.innerText = 'Game Status: Running';
+        this.gameStatusElement.style.margin = '5px';
+        this.hud.appendChild(this.gameStatusElement);
+    }
+
+    updateHUD() {
+        this.elapsedTimeElement.innerText = 'Elapsed Time: ' + Math.round(this.elapsedTime / 1000) + ' s';
+
+        this.currentSpeedElement.innerText = 'Current Speed: ' + Math.round(this.playerCar.speed * 250) + ' km/h';
+        this.gameStatusElement.innerText = this.paused ? 'Game Status: Paused' : 'Game Status: Running';
     }
 
     overMenu() {
@@ -204,6 +262,9 @@ class MyGame {
             }
         }
         else if (this.state === 'gameplay') {
+            this.elapsedTime += 20;
+            console.log(Math.round(this.elapsedTime / 1000));
+            this.updateHUD();
             if (this.paused) return;
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
