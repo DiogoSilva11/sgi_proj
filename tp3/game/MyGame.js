@@ -67,17 +67,14 @@ class MyGame {
                 intersectCars.push(raycaster.intersectObjects(this.reader.cars[i].children, true));
             for (let i = 0; i < intersectCars.length; i++) {
                 if (intersectCars[i].length > 0) {
-                    if (i < 3 && this.playerCar === null) {
+                    if (i < 3) {
                         this.playerCar = this.reader.cars[i];
                         console.log('Player car: ', i);
                     }
-                    else if (i >= 3 && this.autoCar === null) {
+                    else if (i >= 3) {
                         this.autoCar = this.reader.cars[i];
                         console.log('Auto car: ', i);
                     }
-
-                    if (this.playerCar !== null && this.autoCar !== null)
-                        document.removeEventListener('click', this.carSelector);
                 }
             }
         }
@@ -91,6 +88,8 @@ class MyGame {
             const intersectStart = raycaster.intersectObjects(this.menu.start.children, true);
             if (intersectStart.length > 0) {
                 document.removeEventListener('click', this.startListener);
+                document.removeEventListener('click', this.difficultyListener);
+                document.removeEventListener('click', this.carSelector);
                 this.menu.removeInput();
                 this.app.scene.remove(this.menu);
                 this.menu = null;
@@ -176,6 +175,15 @@ class MyGame {
         }
     }
 
+    speedBoost() {
+        if (this.playerCar.speedBoostTimer > 0) {
+            console.log('Speed boost!');
+        }
+        else if (this.playerCar.checkCollision(this.reader.speedBoost.position.x, this.reader.speedBoost.position.z)) {
+            this.playerCar.speedBoostTimer = 150;
+        }
+    }
+
     update() {
         if (this.state === 'menu') {
             if (this.playerName != null && this.playerName != '' && this.playerCar !== null
@@ -189,7 +197,7 @@ class MyGame {
                 this.menu.start = null;
             }
         }
-        else if (this.state === 'gameplay' && this.playerCar !== null && this.autoCar !== null) {
+        else if (this.state === 'gameplay') {
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
@@ -204,6 +212,7 @@ class MyGame {
             this.reader.route.update();
 
             this.offTrack();
+            this.speedBoost();
         }
         else if (this.state === 'over') {
             this.over.update();

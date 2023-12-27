@@ -3,6 +3,7 @@ import { MyParkingLot } from "../elements/MyParkingLot.js";
 import { MyTrack } from "../elements/MyTrack.js";
 import { MyRoute } from "../elements/MyRoute.js";
 import { MyVehicle } from "../elements/MyVehicle.js";
+import { MyPowerUp } from "../elements/MyPowerUp.js";
 
 class MyReader {
     constructor(app) {
@@ -15,6 +16,7 @@ class MyReader {
         this.obstaclePark = null;
         this.cars = [];
         this.track = null;
+        this.speedBoost = null;
         this.route = null;
     }
 
@@ -48,6 +50,13 @@ class MyReader {
             ]);
             this.track = new MyTrack(path);
             this.app.scene.add(this.track);
+        }
+
+        if (this.speedBoost === null) {
+            this.speedBoost = new MyPowerUp('speed', 2, 0.01, 80);
+            this.speedBoost.rotation.x = - Math.PI / 2;
+            this.speedBoost.rotation.z = - Math.PI / 15;
+            this.app.scene.add(this.speedBoost);
         }
 
         if (this.route === null)

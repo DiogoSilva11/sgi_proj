@@ -62,12 +62,12 @@ class MyMenu extends THREE.Group {
         }
 
         if (level === 'normal') {
-            this.normal = new MySprite('Normal', 0x089611, -0.15, 0.4, 0.6, 3, 1.2);
-            this.hard = new MySprite('Hard', 0x222222, -0.15, 0.38, 0.6, 3, 1.2);
+            this.normal = new MySprite('Normal', 0x089611, -0.1, 0.35, 0.6, 3, 1.2);
+            this.hard = new MySprite('Hard', 0x222222, -0.15, 0.35, 0.6, 3, 1.2);
         }
         else if (level === 'hard') {
-            this.normal = new MySprite('Normal', 0x222222, -0.15, 0.4, 0.6, 3, 1.2);
-            this.hard = new MySprite('Hard', 0x089611, -0.15, 0.38, 0.6, 3, 1.2);
+            this.normal = new MySprite('Normal', 0x222222, -0.1, 0.35, 0.6, 3, 1.2);
+            this.hard = new MySprite('Hard', 0x089611, -0.15, 0.35, 0.6, 3, 1.2);
         }
 
         this.normal = this.normal.build();
