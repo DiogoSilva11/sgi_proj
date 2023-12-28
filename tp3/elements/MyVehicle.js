@@ -16,6 +16,7 @@ class MyVehicle extends THREE.Group {
         this.right = false;
         this.offTrack = false;
         this.speedBoostTimer = 0;
+        this.laps = 0;
         this.maxSpeed = 0.4;
         this.minSpeed = -0.2;
 

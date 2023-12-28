@@ -17,6 +17,7 @@ class MyGame {
         this.follow = false;
         this.paused = false;
         this.elapsedTime = 0;
+        this.lapCooldown = 0;
     }
 
     init() {
@@ -112,31 +113,44 @@ class MyGame {
     gameplay() {
         this.state = 'gameplay';
         this.app.activateControls();
-
         this.createHUD();
 
         this.reader.route.playAnimation(this.autoCar);
-
         this.follow = true;        
-        this.gameListener = (event) => {
-            if (event.key === 'w')  this.playerCar.accelerate();
-            else if (event.key === 's')  this.playerCar.brake();
-            else if (event.key === 'a')  this.playerCar.turnLeft();
-            else if (event.key === 'd')  this.playerCar.turnRight();
-            else if (event.key === 'e')  this.follow = !this.follow;
-            else if (event.key === 'q')  {
+
+        this.accelerateListener = (event) => {if (event.key === 'w')  this.playerCar.accelerate();};
+        this.brakeListener = (event) => {if (event.key === 's')  this.playerCar.brake();};
+        this.turnLeftListener = (event) => {if (event.key === 'a')  this.playerCar.turnLeft();};
+        this.turnRightListener = (event) => {if (event.key === 'd')  this.playerCar.turnRight();};
+        this.followListener = (event) => {if (event.key === 'e')  this.follow = !this.follow;};
+        this.pauseListener = (event) => {
+            if (event.key === 'q')  {
                 if (this.paused) this.reader.route.clock.start();
                 else this.reader.route.clock.stop();
                 this.paused = !this.paused;
             }
-            else if (event.key === 'Escape') {
-                document.removeEventListener('keydown', this.gameListener);
+        };
+        this.overListener = (event) => {
+            if (event.key === 'Escape') {
+                document.removeEventListener('keydown', this.accelerateListener);
+                document.removeEventListener('keydown', this.brakeListener);
+                document.removeEventListener('keydown', this.turnLeftListener);
+                document.removeEventListener('keydown', this.turnRightListener);
+                document.removeEventListener('keydown', this.followListener);
+                document.removeEventListener('keydown', this.pauseListener);
+                document.removeEventListener('keydown', this.overListener);
                 this.follow = false;
                 this.overMenu();
             }
         };
 
-        document.addEventListener('keydown', this.gameListener);
+        document.addEventListener('keydown', this.accelerateListener);
+        document.addEventListener('keydown', this.brakeListener);
+        document.addEventListener('keydown', this.turnLeftListener);
+        document.addEventListener('keydown', this.turnRightListener);
+        document.addEventListener('keydown', this.followListener);
+        document.addEventListener('keydown', this.pauseListener);
+        document.addEventListener('keydown', this.overListener);
     }
 
     createHUD() {
@@ -157,17 +171,14 @@ class MyGame {
         this.hud.appendChild(title);
 
         this.elapsedTimeElement = document.createElement('div');
-        this.elapsedTimeElement.innerText = 'Elapsed Time: 0 ms';
         this.elapsedTimeElement.style.margin = '5px';
         this.hud.appendChild(this.elapsedTimeElement);
 
         this.lapsCompletedElement = document.createElement('div');
-        this.lapsCompletedElement.innerText = 'Laps Completed: 0';
         this.lapsCompletedElement.style.margin = '5px';
         this.hud.appendChild(this.lapsCompletedElement);
 
         this.currentSpeedElement = document.createElement('div');
-        this.currentSpeedElement.innerText = 'Current Speed: 0 km/h';
         this.currentSpeedElement.style.margin = '5px';
         this.hud.appendChild(this.currentSpeedElement);
 
@@ -182,14 +193,13 @@ class MyGame {
         this.hud.appendChild(this.remainingTimeElement);
 
         this.gameStatusElement = document.createElement('div');
-        this.gameStatusElement.innerText = 'Game Status: Running';
         this.gameStatusElement.style.margin = '5px';
         this.hud.appendChild(this.gameStatusElement);
     }
 
     updateHUD() {
         this.elapsedTimeElement.innerText = 'Elapsed Time: ' + Math.round(this.elapsedTime / 1000) + ' s';
-
+        this.lapsCompletedElement.innerText = 'Laps Completed: ' + this.playerCar.laps + ' / 5';
         this.currentSpeedElement.innerText = 'Current Speed: ' + Math.round(this.playerCar.speed * 250) + ' km/h';
         this.gameStatusElement.innerText = this.paused ? 'Game Status: Paused' : 'Game Status: Running';
     }
@@ -239,11 +249,29 @@ class MyGame {
         }
     }
 
-    speedBoost() {
-        if (this.playerCar.speedBoostTimer > 0) {
-            console.log('Speed boost!');
+    lapCompleted() {
+        const finishLine = Math.abs(this.playerCar.position.x) < 5 && Math.abs(this.playerCar.position.z) < 1;
+        if (finishLine && Math.round(this.lapCooldown / 1000) > 7) {
+            this.lapCooldown = 0;
+            this.playerCar.laps++;
+
+            if (this.playerCar.laps === 5) {
+                document.removeEventListener('keydown', this.accelerateListener);
+                document.removeEventListener('keydown', this.brakeListener);
+                document.removeEventListener('keydown', this.turnLeftListener);
+                document.removeEventListener('keydown', this.turnRightListener);
+                document.removeEventListener('keydown', this.followListener);
+                document.removeEventListener('keydown', this.pauseListener);
+                document.removeEventListener('keydown', this.overListener);
+                this.follow = false;
+                this.overMenu();
+            }
         }
-        else if (this.playerCar.checkCollision(this.reader.speedBoost.position.x, this.reader.speedBoost.position.z)) {
+    }
+
+    speedBoost() {
+        if (this.playerCar.speedBoostTimer == 0 && 
+            this.playerCar.checkCollision(this.reader.speedBoost.position.x, this.reader.speedBoost.position.z)) {
             this.playerCar.speedBoostTimer = 150;
         }
     }
@@ -263,8 +291,7 @@ class MyGame {
         }
         else if (this.state === 'gameplay') {
             this.elapsedTime += 20;
-            console.log(Math.round(this.elapsedTime / 1000));
-            this.updateHUD();
+            this.lapCooldown += 20;
             if (this.paused) return;
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
@@ -280,7 +307,9 @@ class MyGame {
             this.reader.route.update();
 
             this.offTrack();
+            this.lapCompleted();
             this.speedBoost();
+            this.updateHUD();
         }
         else if (this.state === 'over') {
             this.over.update();
