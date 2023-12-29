@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MyReader } from "./MyReader.js";
 import { MyMenu } from './MyMenu.js';
 import { MyOver } from "./MyOver.js";
+import { MyRoute } from "../elements/MyRoute.js";
 
 class MyGame {
     constructor(app) {
@@ -12,7 +13,9 @@ class MyGame {
         this.playerName = null;
         this.difficulty = 'normal';
         this.playerCar = null;
+        this.playerIndex = 0;
         this.autoCar = null;
+        this.autoIndex = 3;
         this.state = 'menu';
         this.follow = false;
         this.paused = false;
@@ -74,11 +77,11 @@ class MyGame {
                 if (intersectCars[i].length > 0) {
                     if (i < 3) {
                         this.playerCar = this.reader.cars[i];
-                        console.log('Player car: ', i);
+                        this.playerIndex = i;
                     }
                     else if (i >= 3) {
                         this.autoCar = this.reader.cars[i];
-                        console.log('Auto car: ', i);
+                        this.autoIndex = i;
                     }
                 }
             }
@@ -99,20 +102,20 @@ class MyGame {
                 this.app.scene.remove(this.menu);
                 this.menu = null;
 
-                this.playerCar.position.set(-2, 0.4, 8);
-                this.playerCar.rotation.y = 0;
-                this.playerCar.angle = 0;
-        
-                this.autoCar.position.set(2, 0.4, 5);
-                this.autoCar.rotation.y = 0;
-                this.autoCar.angle = 0;
-
                 this.gameplay();
             }
         };
     }
 
     gameplay() {
+        this.playerCar.position.set(-2, 0.4, 8);
+        this.playerCar.rotation.y = 0;
+        this.playerCar.angle = 0;
+
+        this.autoCar.position.set(2, 0.4, 5);
+        this.autoCar.rotation.y = 0;
+        this.autoCar.angle = 0;
+
         this.state = 'gameplay';
         this.app.activateControls();
         this.createHUD();
@@ -166,6 +169,84 @@ class MyGame {
         this.gameOver();
     }
 
+    gameOver() {
+        this.state = 'over';
+        this.app.cameras['Perspective'].position.set(-100, 10, 50);
+        this.app.cameras['Perspective'].lookAt(0, 0, 10);
+        this.app.deactivateControls();
+
+        let autoTime = 0;
+        if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
+            autoTime = Math.floor(this.elapsedTime / 1000);
+            this.playerTime = 999;
+        }
+        this.over = new MyOver(this.app, this.difficulty, this.playerTime, autoTime);
+        this.over.init();
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        this.returnListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectReturn = raycaster.intersectObjects(this.over.returnMenu.children, true);
+            if (intersectReturn.length > 0) {
+                document.removeEventListener('click', this.returnListener);
+                document.removeEventListener('click', this.restartListener);
+                this.app.scene.remove(this.over);
+                this.over = null;
+
+                this.reader.route = new MyRoute(this.app);
+                for (const car of this.reader.cars) this.app.scene.remove(car);
+                this.reader.cars = [];
+                this.reader.createCars();
+                this.playerName = null;
+                this.difficulty = 'normal';
+                this.playerCar = null;
+                this.autoCar = null;
+                this.follow = false;
+                this.paused = false;
+                this.elapsedTime = 0;
+                this.playerTime = 0;
+                this.lapCooldown = 0;
+
+                this.mainMenu();
+            }
+        }
+        document.addEventListener('click', this.returnListener);
+
+        this.restartListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectRestart = raycaster.intersectObjects(this.over.restart.children, true);
+            if (intersectRestart.length > 0) {
+                document.removeEventListener('click', this.returnListener);
+                document.removeEventListener('click', this.restartListener);
+                this.app.scene.remove(this.over);
+                this.over = null;
+
+                this.reader.route = new MyRoute(this.app);
+                for (const car of this.reader.cars) this.app.scene.remove(car);
+                this.reader.cars = [];
+                this.reader.createCars();
+                this.playerCar = this.reader.cars[this.playerIndex];
+                this.autoCar = this.reader.cars[this.autoIndex];
+                this.follow = false;
+                this.paused = false;
+                this.elapsedTime = 0;
+                this.playerTime = 0;
+                this.lapCooldown = 0;
+
+                this.gameplay();
+            }
+        }
+        document.addEventListener('click', this.restartListener);
+    }
+
     createHUD() {
         this.hud = document.createElement('div');
         this.hud.style.position = 'absolute';
@@ -215,16 +296,6 @@ class MyGame {
         this.lapsCompletedElement.innerText = 'Laps Completed: ' + this.playerCar.laps + ' / 1';
         this.currentSpeedElement.innerText = 'Current Speed: ' + Math.floor(this.playerCar.speed * 250) + ' km/h';
         this.gameStatusElement.innerText = this.paused ? 'Game Status: Paused' : 'Game Status: Running';
-    }
-
-    gameOver() {
-        this.state = 'over';
-        this.app.cameras['Perspective'].position.set(-100, 10, 50);
-        this.app.cameras['Perspective'].lookAt(0, 0, 10);
-        this.app.deactivateControls();
-
-        this.over = new MyOver(this.app, this.difficulty, this.playerTime, this.maxLaps * 31);
-        this.over.init();
     }
 
     followCar() {

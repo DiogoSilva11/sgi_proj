@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 
 class MyFirework {
-    constructor(app, origin) {
-        this.app = app
+    constructor(parent, origin) {
+        this.parent = parent
         this.origin = origin
 
         this.done = false 
@@ -48,7 +48,7 @@ class MyFirework {
         this.points = new THREE.Points(this.geometry, this.material)
         this.points.castShadow = true;
         this.points.receiveShadow = true;
-        this.app.scene.add(this.points)  
+        this.parent.add(this.points)  
     }
 
     /**
@@ -56,7 +56,7 @@ class MyFirework {
      * @param {*} vector 
      */
     explode(origin, n, rangeBegin, rangeEnd) {
-        this.app.scene.remove(this.points);
+        this.parent.remove(this.points);
         this.points.geometry.dispose();
     }
     
@@ -64,7 +64,7 @@ class MyFirework {
      * cleanup
      */
     reset() {
-        this.app.scene.remove(this.points)  
+        this.parent.remove(this.points)  
         this.dest = [] 
         this.vertices = null
         this.colors = null 

@@ -112,7 +112,7 @@ class MyOver extends THREE.Group {
     update() {
         // add new fireworks every 20% of the calls
         if (Math.random() < 0.20) {
-            this.fireworks.push(new MyFirework(this.app, this.origin))
+            this.fireworks.push(new MyFirework(this, this.origin))
         }
 
         // for each fireworks 
