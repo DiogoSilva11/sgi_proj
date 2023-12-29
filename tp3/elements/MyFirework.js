@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 
 class MyFirework {
-    constructor(app, scene) {
+    constructor(app, origin) {
         this.app = app
-        this.scene = scene
+        this.origin = origin
 
         this.done = false 
         this.dest = [] 
@@ -36,11 +36,11 @@ class MyFirework {
         color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9)
         let colors = [color.r, color.g, color.b]
 
-        let x = THREE.MathUtils.randFloat(-5, 5) 
-        let y = THREE.MathUtils.randFloat(this.height * 0.9, this.height * 1.1)
-        let z = THREE.MathUtils.randFloat(-5, 5) 
+        let x = this.origin.x + THREE.MathUtils.randFloat(-5, 5) 
+        let y = this.origin.y + THREE.MathUtils.randFloat(this.height * 0.9, this.height * 1.1)
+        let z = this.origin.z + THREE.MathUtils.randFloat(-5, 5) 
         this.dest.push(x, y, z) 
-        let vertices = [0, 0, 0]
+        let vertices = [this.origin.x, this.origin.y, this.origin.z]
         
         this.geometry = new THREE.BufferGeometry()
         this.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
@@ -49,7 +49,6 @@ class MyFirework {
         this.points.castShadow = true;
         this.points.receiveShadow = true;
         this.app.scene.add(this.points)  
-        console.log("firework launched")
     }
 
     /**
@@ -65,7 +64,6 @@ class MyFirework {
      * cleanup
      */
     reset() {
-        console.log("firework reseted")
         this.app.scene.remove(this.points)  
         this.dest = [] 
         this.vertices = null

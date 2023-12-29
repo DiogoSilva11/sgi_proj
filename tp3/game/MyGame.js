@@ -17,7 +17,9 @@ class MyGame {
         this.follow = false;
         this.paused = false;
         this.elapsedTime = 0;
+        this.playerTime = 0;
         this.lapCooldown = 0;
+        this.maxLaps = 1;
     }
 
     init() {
@@ -118,39 +120,50 @@ class MyGame {
         this.reader.route.playAnimation(this.autoCar);
         this.follow = true;        
 
-        this.accelerateListener = (event) => {if (event.key === 'w')  this.playerCar.accelerate();};
-        this.brakeListener = (event) => {if (event.key === 's')  this.playerCar.brake();};
-        this.turnLeftListener = (event) => {if (event.key === 'a')  this.playerCar.turnLeft();};
-        this.turnRightListener = (event) => {if (event.key === 'd')  this.playerCar.turnRight();};
-        this.followListener = (event) => {if (event.key === 'e')  this.follow = !this.follow;};
-        this.pauseListener = (event) => {
-            if (event.key === 'q')  {
+        this.accelerateListener = (event) => {if (event.key === 'w') this.playerCar.accelerate();};
+        this.brakeListener = (event) => {if (event.key === 's') this.playerCar.brake();};
+        this.turnLeftListener = (event) => {if (event.key === 'a') this.playerCar.turnLeft();};
+        this.turnRightListener = (event) => {if (event.key === 'd') this.playerCar.turnRight();};
+        this.gameListener = (event) => {
+            if (event.key === 'e') this.follow = !this.follow;
+            else if (event.key === 'q') {
                 if (this.paused) this.reader.route.clock.start();
                 else this.reader.route.clock.stop();
                 this.paused = !this.paused;
             }
-        };
-        this.overListener = (event) => {
-            if (event.key === 'Escape') {
-                document.removeEventListener('keydown', this.accelerateListener);
-                document.removeEventListener('keydown', this.brakeListener);
-                document.removeEventListener('keydown', this.turnLeftListener);
-                document.removeEventListener('keydown', this.turnRightListener);
-                document.removeEventListener('keydown', this.followListener);
-                document.removeEventListener('keydown', this.pauseListener);
-                document.removeEventListener('keydown', this.overListener);
-                this.follow = false;
-                this.overMenu();
-            }
+            else if (event.key === 'Escape') this.endGameplay();
         };
 
         document.addEventListener('keydown', this.accelerateListener);
         document.addEventListener('keydown', this.brakeListener);
         document.addEventListener('keydown', this.turnLeftListener);
         document.addEventListener('keydown', this.turnRightListener);
-        document.addEventListener('keydown', this.followListener);
-        document.addEventListener('keydown', this.pauseListener);
-        document.addEventListener('keydown', this.overListener);
+        document.addEventListener('keydown', this.gameListener);
+    }
+
+    endGameplay() {
+        document.removeEventListener('keydown', this.accelerateListener);
+        document.removeEventListener('keydown', this.brakeListener);
+        document.removeEventListener('keydown', this.turnLeftListener);
+        document.removeEventListener('keydown', this.turnRightListener);
+        document.removeEventListener('keydown', this.gameListener);
+
+        this.follow = false;
+        document.body.removeChild(this.hud);
+
+        for (const car of this.reader.cars) car.position.y = -5;
+
+        this.playerCar.position.set(-85, 0.4, 21);
+        this.playerCar.rotation.y = Math.PI / 1.7;
+        this.playerCar.angle = Math.PI / 1.7;
+        this.playerCar.updateLights();
+
+        this.autoCar.position.set(-70, 0.4, 60);
+        this.autoCar.rotation.y = Math.PI / 1.6;
+        this.autoCar.angle = Math.PI / 1.6;
+        this.autoCar.updateLights();
+
+        this.gameOver();
     }
 
     createHUD() {
@@ -198,19 +211,19 @@ class MyGame {
     }
 
     updateHUD() {
-        this.elapsedTimeElement.innerText = 'Elapsed Time: ' + Math.round(this.elapsedTime / 1000) + ' s';
-        this.lapsCompletedElement.innerText = 'Laps Completed: ' + this.playerCar.laps + ' / 5';
-        this.currentSpeedElement.innerText = 'Current Speed: ' + Math.round(this.playerCar.speed * 250) + ' km/h';
+        this.elapsedTimeElement.innerText = 'Elapsed Time: ' + Math.floor(this.elapsedTime / 1000) + ' s';
+        this.lapsCompletedElement.innerText = 'Laps Completed: ' + this.playerCar.laps + ' / 1';
+        this.currentSpeedElement.innerText = 'Current Speed: ' + Math.floor(this.playerCar.speed * 250) + ' km/h';
         this.gameStatusElement.innerText = this.paused ? 'Game Status: Paused' : 'Game Status: Running';
     }
 
-    overMenu() {
+    gameOver() {
         this.state = 'over';
         this.app.cameras['Perspective'].position.set(-100, 10, 50);
         this.app.cameras['Perspective'].lookAt(0, 0, 10);
         this.app.deactivateControls();
 
-        this.over = new MyOver(this.app);
+        this.over = new MyOver(this.app, this.difficulty, this.playerTime, this.maxLaps * 31);
         this.over.init();
     }
 
@@ -251,21 +264,9 @@ class MyGame {
 
     lapCompleted() {
         const finishLine = Math.abs(this.playerCar.position.x) < 5 && Math.abs(this.playerCar.position.z) < 1;
-        if (finishLine && Math.round(this.lapCooldown / 1000) > 7) {
+        if (finishLine && Math.floor(this.lapCooldown / 1000) > 10) {
             this.lapCooldown = 0;
             this.playerCar.laps++;
-
-            if (this.playerCar.laps === 5) {
-                document.removeEventListener('keydown', this.accelerateListener);
-                document.removeEventListener('keydown', this.brakeListener);
-                document.removeEventListener('keydown', this.turnLeftListener);
-                document.removeEventListener('keydown', this.turnRightListener);
-                document.removeEventListener('keydown', this.followListener);
-                document.removeEventListener('keydown', this.pauseListener);
-                document.removeEventListener('keydown', this.overListener);
-                this.follow = false;
-                this.overMenu();
-            }
         }
     }
 
@@ -290,26 +291,34 @@ class MyGame {
             }
         }
         else if (this.state === 'gameplay') {
-            this.elapsedTime += 20;
-            this.lapCooldown += 20;
+            this.updateHUD();
+            if (this.app.controls !== null && this.follow) this.followCar();
             if (this.paused) return;
+            this.elapsedTime += 17;
+
+            if (this.playerCar.laps < this.maxLaps) {
+                this.lapCooldown += 17;
+                this.playerTime = Math.floor(this.elapsedTime / 1000);
+                this.lapCompleted();
+            }
+
             let x = this.autoCar.position.x;
             let z = this.autoCar.position.z;
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
             else this.playerCar.update();
-
-            x = this.playerCar.position.x;
-            z = this.playerCar.position.z;
-            if (this.autoCar.checkCollision(x, z)) this.autoCar.collide(x, z);
-            else this.autoCar.update();
-
-            if (this.app.controls !== null && this.follow) this.followCar();
-            this.reader.route.update();
-
             this.offTrack();
-            this.lapCompleted();
             this.speedBoost();
-            this.updateHUD();
+
+            if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
+                x = this.playerCar.position.x;
+                z = this.playerCar.position.z;
+                if (this.autoCar.checkCollision(x, z)) this.autoCar.collide(x, z);
+                else this.autoCar.update();
+                this.reader.route.update();
+            }
+
+            if (this.playerCar.laps === this.maxLaps && Math.floor(this.elapsedTime / 1000) >= this.maxLaps * 31)
+                this.endGameplay();
         }
         else if (this.state === 'over') {
             this.over.update();

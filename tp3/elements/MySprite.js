@@ -84,6 +84,10 @@ class MySprite {
                     if (character === 'H') x += 0.1;
                     else if (character === 'r') x -= 0.05;
                     break;
+                case 'Winner':
+                    if (character === 'W') x += 0.2;
+                    else if (character === 'i') x -= 0.1;
+                    break;
                 default:
                     break;
             }
