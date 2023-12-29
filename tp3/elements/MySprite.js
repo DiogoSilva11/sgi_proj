@@ -84,12 +84,30 @@ class MySprite {
                     if (character === 'H') x += 0.1;
                     else if (character === 'r') x -= 0.05;
                     break;
+                case 'Restart':
+                    if (character === 'R') x += 0.05;
+                    else if (character === 't') x -= 0.1;
+                    else if (character === 'r') x -= 0.05;
+                    break;
+                case 'Return To Menu':
+                    if (character === 'R') x += 0.05;
+                    else if (character === 't') x -= 0.1;
+                    else if (character === 'r') x -= 0.05;
+                    else if (character === 'M') x += 0.1;
+                    break;
                 case 'Winner':
                     if (character === 'W') x += 0.2;
                     else if (character === 'i') x -= 0.1;
                     break;
                 default:
                     break;
+            }
+            if (this.text.startsWith('Time')) {
+                if (character === 'T') x += 0.05;
+                else if (character === 'i') x -= 0.1;
+                else if (character === 'm') x += 0.15;
+                else if (character === 'e') x += 0.05;
+                else if (character === ' ') x -= 0.2;
             }
         }
         
