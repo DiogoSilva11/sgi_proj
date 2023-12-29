@@ -15,7 +15,8 @@ class MyVehicle extends THREE.Group {
         this.left = false;
         this.right = false;
         this.offTrack = false;
-        this.speedBoostTimer = 0;
+        this.specialEffect = null;
+        this.specialEffectTimer = 0;
         this.laps = 0;
         this.maxSpeed = 0.4;
         this.minSpeed = -0.2;
@@ -287,6 +288,25 @@ class MyVehicle extends THREE.Group {
         this.updateLights();
     }
 
+    applySpecialEffect() {
+        switch (this.specialEffect) {
+            case 'Speed Boost':
+                if (this.specialEffectTimer > 0) {
+                    if (this.specialEffectTimer - 1 == 0) this.speed = this.maxSpeed;
+                    else if (this.specialEffectTimer == 150) {
+                        this.speed = this.maxSpeed * 1.7;
+                        this.angle = 0;
+                        this.rotation.y = this.angle;
+                        this.turnWheels();
+                    }
+                    this.specialEffectTimer--;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     update() {
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);
@@ -315,17 +335,7 @@ class MyVehicle extends THREE.Group {
             this.turnWheels();
         }
 
-        if (this.speedBoostTimer > 0) {
-            if (this.speedBoostTimer - 1 == 0) this.speed = this.maxSpeed;
-            else if (this.speedBoostTimer == 150) {
-                this.speed = this.maxSpeed * 1.7;
-                this.angle = 0;
-                this.rotation.y = this.angle;
-                this.turnWheels();
-            }
-            this.speedBoostTimer--;
-        }
-
+        this.applySpecialEffect();
         this.updateLights();
     }
 }

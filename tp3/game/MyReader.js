@@ -16,7 +16,7 @@ class MyReader {
         this.obstaclePark = null;
         this.cars = [];
         this.track = null;
-        this.speedBoost = null;
+        this.powerUps = [];
         this.route = null;
     }
 
@@ -52,12 +52,8 @@ class MyReader {
             this.app.scene.add(this.track);
         }
 
-        if (this.speedBoost === null) {
-            this.speedBoost = new MyPowerUp('speed', 2, 0.01, 80);
-            this.speedBoost.rotation.x = - Math.PI / 2;
-            this.speedBoost.rotation.z = - Math.PI / 15;
-            this.app.scene.add(this.speedBoost);
-        }
+        if (this.powerUps.length === 0)
+            this.createPowerUps();
 
         if (this.route === null)
             this.route = new MyRoute(this.app);
@@ -223,6 +219,16 @@ class MyReader {
 
         for (const car of this.cars)
             this.app.scene.add(car);
+    }
+
+    createPowerUps() {
+        let powerUp = new MyPowerUp('Speed Boost', 2, 0.01, 80);
+        powerUp.mesh.rotation.x = - Math.PI / 2;
+        powerUp.mesh.rotation.z = - Math.PI / 15;
+        this.powerUps.push(powerUp);
+
+        for (const powerUp of this.powerUps)
+            this.app.scene.add(powerUp.mesh);
     }
 }
 

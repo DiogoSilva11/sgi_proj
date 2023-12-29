@@ -2,12 +2,16 @@ import * as THREE from 'three';
 
 class MyPowerUp {
     constructor(type, x, y, z) {
+        this.type = type;
         this.x = x;
         this.y = y;
         this.z = z;
 
-        if (type === 'speed') {
-            return this.speedBoost();
+        this.duration = 0;
+        this.mesh = null;
+        if (this.type === 'Speed Boost') {
+            this.duration = 150;
+            this.speedBoost();
         }
     }
 
@@ -19,9 +23,8 @@ class MyPowerUp {
             shininess: 0
         });
 
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(this.x, this.y, this.z);
-        return mesh;
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.position.set(this.x, this.y, this.z);
     }
 }
 

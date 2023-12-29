@@ -341,10 +341,14 @@ class MyGame {
         }
     }
 
-    speedBoost() {
-        if (this.playerCar.speedBoostTimer == 0 && 
-            this.playerCar.checkCollision(this.reader.speedBoost.position.x, this.reader.speedBoost.position.z)) {
-            this.playerCar.speedBoostTimer = 150;
+    specialEffect() {
+        for (const powerUp of this.reader.powerUps) {
+            if (this.playerCar.checkCollision(powerUp.mesh.position.x, powerUp.mesh.position.z)) {
+                this.playerCar.specialEffect = powerUp.type;
+                this.playerCar.specialEffectTimer = powerUp.duration;
+                console.log(powerUp.type, powerUp.duration);
+                break;
+            }
         }
     }
 
@@ -378,7 +382,7 @@ class MyGame {
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
             else this.playerCar.update();
             this.offTrack();
-            this.speedBoost();
+            this.specialEffect();
 
             if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
                 x = this.playerCar.position.x;
