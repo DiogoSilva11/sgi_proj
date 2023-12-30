@@ -3,6 +3,7 @@ import { MyReader } from "./MyReader.js";
 import { MyMenu } from './MyMenu.js';
 import { MyOver } from "./MyOver.js";
 import { MyRoute } from "../elements/MyRoute.js";
+import { MyObstacle } from "../elements/MyObstacle.js";
 
 class MyGame {
     constructor(app) {
@@ -23,6 +24,8 @@ class MyGame {
         this.playerTime = 0;
         this.lapCooldown = 0;
         this.maxLaps = 1;
+        this.obstacles = [];
+        this.pickingObstacle = false;
     }
 
     init() {
@@ -123,18 +126,21 @@ class MyGame {
         this.reader.route.playAnimation(this.autoCar);
         this.follow = true;        
 
-        this.accelerateListener = (event) => {if (event.key === 'w') this.playerCar.accelerate();};
-        this.brakeListener = (event) => {if (event.key === 's') this.playerCar.brake();};
-        this.turnLeftListener = (event) => {if (event.key === 'a') this.playerCar.turnLeft();};
-        this.turnRightListener = (event) => {if (event.key === 'd') this.playerCar.turnRight();};
+        this.accelerateListener = (event) => {if (event.key === 'w' && !this.paused) this.playerCar.accelerate();};
+        this.brakeListener = (event) => {if (event.key === 's' && !this.paused) this.playerCar.brake();};
+        this.turnLeftListener = (event) => {if (event.key === 'a' && !this.paused) this.playerCar.turnLeft();};
+        this.turnRightListener = (event) => {if (event.key === 'd' && !this.paused) this.playerCar.turnRight();};
         this.gameListener = (event) => {
-            if (event.key === 'e') this.follow = !this.follow;
-            else if (event.key === 'q') {
-                if (this.paused) this.reader.route.clock.start();
-                else this.reader.route.clock.stop();
-                this.paused = !this.paused;
+            if (event.key === 'Escape') this.endGameplay();
+
+            if (!this.pickingObstacle) {
+                if (event.key === 'e') this.follow = !this.follow;
+                else if (event.key === 'q') {
+                    if (this.paused) this.reader.route.clock.start();
+                    else this.reader.route.clock.stop();
+                    this.paused = !this.paused;
+                }
             }
-            else if (event.key === 'Escape') this.endGameplay();
         };
 
         document.addEventListener('keydown', this.accelerateListener);
@@ -142,6 +148,62 @@ class MyGame {
         document.addEventListener('keydown', this.turnLeftListener);
         document.addEventListener('keydown', this.turnRightListener);
         document.addEventListener('keydown', this.gameListener);
+    }
+
+    pickObstacle() {
+        this.paused = true;
+        this.follow = false;
+        this.pickingObstacle = true;
+
+        this.app.cameras['Perspective'].position.set(-25, 20, 65);
+        this.app.cameras['Perspective'].lookAt(-50, 0, 90);
+        this.app.deactivateControls();
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        const pickListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectObstacles = [];
+            for (const obstacle of this.reader.obstacles)
+                intersectObstacles.push(raycaster.intersectObject(obstacle.mesh));
+            for (let i = 0; i < intersectObstacles.length; i++) {
+                if (intersectObstacles[i].length > 0) {
+                    document.removeEventListener('click', pickListener);
+                    this.placeObstacle(i);
+                }
+            }
+        }
+        document.addEventListener('click', pickListener);
+    }
+
+    placeObstacle(index) {
+        this.app.activateControls();
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        this.placeListener = (event) => {
+            event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, this.app.getActiveCamera());
+            const intersectTrack = raycaster.intersectObjects(this.reader.track.children, true);
+            if (intersectTrack.length > 0) {
+                document.removeEventListener('click', this.placeListener);
+                let obstacle = new MyObstacle(this.reader.obstacles[index].type, intersectTrack[0].point.x, 0.3, intersectTrack[0].point.z);
+                this.obstacles.push(obstacle);
+                this.app.scene.add(obstacle.mesh);
+
+                this.paused = false;
+                this.follow = true;
+                this.pickingObstacle = false;
+            }
+        } 
+        document.addEventListener('click', this.placeListener);
     }
 
     endGameplay() {
@@ -341,13 +403,23 @@ class MyGame {
         }
     }
 
-    specialEffect() {
-        for (const powerUp of this.reader.powerUps) {
-            if (this.playerCar.checkCollision(powerUp.mesh.position.x, powerUp.mesh.position.z)) {
-                this.playerCar.specialEffect = powerUp.type;
-                this.playerCar.specialEffectTimer = powerUp.duration;
-                console.log(powerUp.type, powerUp.duration);
-                break;
+    powerUp() {
+        if (this.playerCar.specialEffectTimer === 0) {
+            for (const powerUp of this.reader.powerUps) {
+                if (this.playerCar.checkCollision(powerUp.mesh.position.x, powerUp.mesh.position.z)) {
+                    this.playerCar.specialEffect = powerUp.type;
+                    this.playerCar.specialEffectTimer = powerUp.duration;
+                    this.pickObstacle();
+                    return;
+                }
+            }
+
+            for (const obstacle of this.obstacles) {
+                if (this.playerCar.checkCollision(obstacle.mesh.position.x, obstacle.mesh.position.z)) {
+                    this.playerCar.specialEffect = obstacle.type;
+                    this.playerCar.specialEffectTimer = obstacle.duration;
+                    return;
+                }
             }
         }
     }
@@ -382,7 +454,7 @@ class MyGame {
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
             else this.playerCar.update();
             this.offTrack();
-            this.specialEffect();
+            this.powerUp();
 
             if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
                 x = this.playerCar.position.x;

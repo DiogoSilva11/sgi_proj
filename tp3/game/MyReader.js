@@ -4,6 +4,7 @@ import { MyTrack } from "../elements/MyTrack.js";
 import { MyRoute } from "../elements/MyRoute.js";
 import { MyVehicle } from "../elements/MyVehicle.js";
 import { MyPowerUp } from "../elements/MyPowerUp.js";
+import { MyObstacle } from "../elements/MyObstacle.js";
 
 class MyReader {
     constructor(app) {
@@ -17,6 +18,7 @@ class MyReader {
         this.cars = [];
         this.track = null;
         this.powerUps = [];
+        this.obstacles = [];
         this.route = null;
     }
 
@@ -54,6 +56,9 @@ class MyReader {
 
         if (this.powerUps.length === 0)
             this.createPowerUps();
+
+        if (this.obstacles.length === 0) 
+            this.createObstacles();
 
         if (this.route === null)
             this.route = new MyRoute(this.app);
@@ -181,19 +186,19 @@ class MyReader {
     }
 
     createCars() {
-        let car = new MyVehicle(-85, 0.4, 21);
+        let car = new MyVehicle(-88, 0.4, 17);
+        car.rotation.y = Math.PI / 2;
+        car.angle = Math.PI / 2;
+        car.updateLights();
+        this.cars.push(car);
+
+        car = new MyVehicle(-85, 0.4, 21);
         car.rotation.y = Math.PI / 2;
         car.angle = Math.PI / 2;
         car.updateLights();
         this.cars.push(car);
 
         car = new MyVehicle(-82, 0.4, 25);
-        car.rotation.y = Math.PI / 2;
-        car.angle = Math.PI / 2;
-        car.updateLights();
-        this.cars.push(car);
-
-        car = new MyVehicle(-88, 0.4, 17);
         car.rotation.y = Math.PI / 2;
         car.angle = Math.PI / 2;
         car.updateLights();
@@ -229,6 +234,20 @@ class MyReader {
 
         for (const powerUp of this.powerUps)
             this.app.scene.add(powerUp.mesh);
+    }
+
+    createObstacles() {
+        let obstacle = new MyObstacle('Speed Loss', -55, 0.3, 86);
+        this.obstacles.push(obstacle);
+
+        obstacle = new MyObstacle('Speed Loss', -50, 0.3, 90);
+        this.obstacles.push(obstacle);
+
+        obstacle = new MyObstacle('Speed Loss', -45, 0.3, 94);
+        this.obstacles.push(obstacle);
+
+        for (const obstacle of this.obstacles)
+            this.app.scene.add(obstacle.mesh);
     }
 }
 

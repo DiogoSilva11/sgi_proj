@@ -16,7 +16,7 @@ class MyObstacle {
     }
 
     speedLoss() {
-        const geometry = new THREE.CylinderGeometry(1, 0.8, 0.1);
+        const geometry = new THREE.CylinderGeometry(1, 1, 0.5);
         const material = new THREE.MeshPhongMaterial({
             color: 0x803030,
             specular: 0x999999,
