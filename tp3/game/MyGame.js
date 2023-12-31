@@ -156,6 +156,7 @@ class MyGame {
 
     pickObstacle() {
         this.paused = true;
+        this.route.clock.stop();
         this.follow = false;
         this.pickingObstacle = true;
 
@@ -203,6 +204,7 @@ class MyGame {
                 this.app.scene.add(obstacle.mesh);
 
                 this.paused = false;
+                this.route.clock.start();
                 this.follow = true;
                 this.pickingObstacle = false;
             }
@@ -218,9 +220,14 @@ class MyGame {
         document.removeEventListener('keydown', this.gameListener);
 
         this.follow = false;
-        document.body.removeChild(this.hud);
+        this.deleteHUD();
 
-        for (const car of this.reader.cars) car.position.y = -5;
+        for (const obstacle of this.obstacles) 
+            this.app.scene.remove(obstacle.mesh);
+        this.obstacles = [];
+
+        for (const car of this.reader.cars) 
+            car.position.y = -5;
 
         this.playerCar.position.set(-85, 0.4, 21);
         this.playerCar.rotation.y = Math.PI / 1.7;
@@ -318,58 +325,119 @@ class MyGame {
     }
 
     createHUD() {
-        this.hud = document.createElement('div');
-        this.hud.style.position = 'absolute';
-        this.hud.style.top = '1vw';
-        this.hud.style.left = '45vw';
-        this.hud.style.width = '200px';
-        this.hud.style.height = 'auto';
-        this.hud.style.backgroundColor = '#000';
-        this.hud.style.color = '#fff';
-        document.body.appendChild(this.hud);
+        this.statusElement = document.createElement('div');
+        this.statusElement.style.position = 'absolute';
+        this.statusElement.style.bottom = '4vw';
+        this.statusElement.style.left = '45vw';
+        this.statusElement.style.width = '150px';
+        this.statusElement.style.height = 'auto';
+        this.statusElement.style.backgroundColor = '#000';
+        this.statusElement.style.opacity = '0.8';
+        this.statusElement.style.color = '#aaa';
+        this.statusElement.style.padding = '10px';
+        this.statusElement.style.textAlign = 'center';
+        this.statusElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.statusElement);
 
-        const title = document.createElement('div');
-        title.innerText = 'GAME STATS';
-        title.style.margin = '5px';
-        title.style.textAlign = 'center';
-        this.hud.appendChild(title);
+        this.lapsElement = document.createElement('div');
+        this.lapsElement.style.position = 'absolute';
+        this.lapsElement.style.bottom = '1vw';
+        this.lapsElement.style.left = '45vw';
+        this.lapsElement.style.width = '150px';
+        this.lapsElement.style.height = 'auto';
+        this.lapsElement.style.backgroundColor = '#000';
+        this.lapsElement.style.opacity = '0.8';
+        this.lapsElement.style.color = '#bd8b02';
+        this.lapsElement.style.padding = '10px';
+        this.lapsElement.style.textAlign = 'center';
+        this.lapsElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.lapsElement);
 
-        this.elapsedTimeElement = document.createElement('div');
-        this.elapsedTimeElement.style.margin = '5px';
-        this.hud.appendChild(this.elapsedTimeElement);
+        this.timeElement = document.createElement('div');
+        this.timeElement.style.position = 'absolute';
+        this.timeElement.style.bottom = '4vw';
+        this.timeElement.style.left = '1vw';
+        this.timeElement.style.width = '115px';
+        this.timeElement.style.height = 'auto';
+        this.timeElement.style.backgroundColor = '#000';
+        this.timeElement.style.opacity = '0.8';
+        this.timeElement.style.color = '#bd8b02';
+        this.timeElement.style.padding = '10px';
+        this.timeElement.style.textAlign = 'center';
+        this.timeElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.timeElement);
 
-        this.lapsCompletedElement = document.createElement('div');
-        this.lapsCompletedElement.style.margin = '5px';
-        this.hud.appendChild(this.lapsCompletedElement);
+        this.speedElement = document.createElement('div');
+        this.speedElement.style.position = 'absolute';
+        this.speedElement.style.bottom = '1vw';
+        this.speedElement.style.left = '1vw';
+        this.speedElement.style.width = '200px';
+        this.speedElement.style.height = 'auto';
+        this.speedElement.style.backgroundColor = '#000';
+        this.speedElement.style.opacity = '0.8';
+        this.speedElement.style.color = '#bd8b02';
+        this.speedElement.style.padding = '10px';
+        this.speedElement.style.textAlign = 'center';
+        this.speedElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.speedElement);
 
-        this.currentSpeedElement = document.createElement('div');
-        this.currentSpeedElement.style.margin = '5px';
-        this.hud.appendChild(this.currentSpeedElement);
+        this.specialEffectElement = document.createElement('div');
+        this.specialEffectElement.style.position = 'absolute';
+        this.specialEffectElement.style.bottom = '4vw';
+        this.specialEffectElement.style.right = '1vw';
+        this.specialEffectElement.style.width = '200px';
+        this.specialEffectElement.style.height = 'auto';
+        this.specialEffectElement.style.backgroundColor = '#000';
+        this.specialEffectElement.style.opacity = '0.8';
+        this.specialEffectElement.style.color = '#bd8b02';
+        this.specialEffectElement.style.padding = '10px';
+        this.specialEffectElement.style.textAlign = 'center';
+        this.specialEffectElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.specialEffectElement);
 
-        this.maxSpeedElement = document.createElement('div');
-        this.maxSpeedElement.innerText = 'Max Speed: 100 km/h';
-        this.maxSpeedElement.style.margin = '5px';
-        this.hud.appendChild(this.maxSpeedElement);
-
-        this.remainingTimeElement = document.createElement('div');
-        this.remainingTimeElement.innerText = 'Remaining Time: 0 ms';
-        this.remainingTimeElement.style.margin = '5px';
-        this.hud.appendChild(this.remainingTimeElement);
-
-        this.gameStatusElement = document.createElement('div');
-        this.gameStatusElement.style.margin = '5px';
-        this.hud.appendChild(this.gameStatusElement);
+        this.specialTimeElement = document.createElement('div');
+        this.specialTimeElement.style.position = 'absolute';
+        this.specialTimeElement.style.bottom = '1vw';
+        this.specialTimeElement.style.right = '1vw';
+        this.specialTimeElement.style.width = '150px';
+        this.specialTimeElement.style.height = 'auto';
+        this.specialTimeElement.style.backgroundColor = '#000';
+        this.specialTimeElement.style.opacity = '0.8';
+        this.specialTimeElement.style.color = '#bd8b02';
+        this.specialTimeElement.style.padding = '10px';
+        this.specialTimeElement.style.textAlign = 'center';
+        this.specialTimeElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.specialTimeElement);
     }
 
     updateHUD() {
-        this.elapsedTimeElement.innerText = 'Elapsed Time: ' + Math.floor(this.elapsedTime / 1000) + ' s';
-        this.lapsCompletedElement.innerText = 'Laps Completed: ' + this.playerCar.laps + ' / 1';
-        this.currentSpeedElement.innerText = 'Current Speed: ' + Math.floor(this.playerCar.speed * 250) + ' km/h';
-        this.gameStatusElement.innerText = this.paused ? 'Game Status: Paused' : 'Game Status: Running';
+        this.statusElement.innerText = this.paused ? '[STATUS] Paused' : '[STATUS] Running';
+        this.lapsElement.innerText = '[LAPS] ' + this.playerCar.laps + ' / ' + this.maxLaps;
+        this.timeElement.innerText = '[TIME] ' + Math.floor(this.elapsedTime / 1000) + ' s';
+        this.speedElement.innerText = '[SPEED] ' + Math.floor(this.playerCar.speed * 250) + ' / 100 (km/h)';
+        
+        if (this.playerCar.specialEffectTimer > 0) {
+            this.specialEffectElement.innerText = '[EFFECT] ' + this.playerCar.specialEffect;
+            this.specialTimeElement.innerText = '[REMAINING] ' + this.playerCar.specialEffectTimer + ' s';
+        }
+        else {
+            this.specialEffectElement.innerText = '[EFFECT] None';
+            this.specialTimeElement.innerText = '[REMAINING] 0 s';
+        }
+    }
+
+    deleteHUD() {
+        document.body.removeChild(this.statusElement);
+        document.body.removeChild(this.lapsElement);
+        document.body.removeChild(this.timeElement);
+        document.body.removeChild(this.speedElement);
+        document.body.removeChild(this.specialEffectElement);
+        document.body.removeChild(this.specialTimeElement);
     }
 
     followCar() {
         this.app.controls.target.x = this.playerCar.position.x;
+        this.app.controls.target.y = this.playerCar.position.y;
         this.app.controls.target.z = this.playerCar.position.z;
 
         this.app.cameras['Perspective'].position.x = this.playerCar.position.x - 10;
