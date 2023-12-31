@@ -2,10 +2,11 @@ import * as THREE from 'three';
 import { MyPolygon } from './MyPolygon.js';
 
 class MyVehicle extends THREE.Group {
-    constructor(x = 9, y = 0.6, z = 0) {
+    constructor(model, x = 9, y = 0.6, z = 0) {
         super();
         this.type = 'Group';
 
+        this.model = model;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -33,17 +34,57 @@ class MyVehicle extends THREE.Group {
     }
 
     createStructure() {
-        const texture = new THREE.TextureLoader().load("./images/car.jpg");
-        const material = new THREE.MeshPhongMaterial({
-            map: texture,
-            specular: 0x999999,
+        let texfile = null;
+        let color = 0xffffff;
+        let repeatX = 1;
+        let repeatY = 1;
+        switch (this.model) {
+            case "Azure Blitz":
+                texfile = "azure_blitz.jpg";
+                color = 0x6666ff;
+                break;
+            case "Street Blue":
+                texfile = "street_blue.jpg";
+                color = 0x91a0e6;
+                break;
+            case "Aquamarine":
+                texfile = "aquamarine.jpg";
+                color = 0x00ffff;
+                break;
+            case "Crimson Comet":
+                texfile = "crimson_comet.jpg";
+                color = 0xc9406e;
+                break;
+            case "Blood Bullet":
+                texfile = "blood_bullet.jpg";
+                color = 0xff2222;
+                break;
+            case "Flame Cruiser":
+                texfile = "flame_cruiser.jpg";
+                color = 0xd66904;
+                break;
+            default:
+                break;
+        }
+
+        let material = new THREE.MeshPhongMaterial({
+            color: color,
             shininess: 30
         });
-
         let geometry = new THREE.BoxGeometry(1, 0.5, 2);
         this.body = new THREE.Mesh(geometry, material);
         this.add(this.body);
 
+        const texture = new THREE.TextureLoader().load("./images/" + texfile);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(repeatX, repeatY);
+
+        material = new THREE.MeshPhongMaterial({
+            map: texture,
+            //color: 0xffffff,
+            shininess: 30
+        });
         geometry = new THREE.BoxGeometry(1, 0.05, 0.77);
         this.roof = new THREE.Mesh(geometry, material);
         this.roof.position.set(0, 0.5, 0.1);

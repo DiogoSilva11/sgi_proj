@@ -186,37 +186,37 @@ class MyReader {
     }
 
     createCars() {
-        let car = new MyVehicle(-88, 0.4, 17);
+        let car = new MyVehicle("Aquamarine", -88, 0.4, 17);
         car.rotation.y = Math.PI / 2;
         car.angle = Math.PI / 2;
         car.updateLights();
         this.cars.push(car);
 
-        car = new MyVehicle(-85, 0.4, 21);
+        car = new MyVehicle("Street Blue", -85, 0.4, 21);
         car.rotation.y = Math.PI / 2;
         car.angle = Math.PI / 2;
         car.updateLights();
         this.cars.push(car);
 
-        car = new MyVehicle(-82, 0.4, 25);
+        car = new MyVehicle("Azure Blitz", -82, 0.4, 25);
         car.rotation.y = Math.PI / 2;
         car.angle = Math.PI / 2;
         car.updateLights();
         this.cars.push(car);
 
-        car = new MyVehicle(-71, 0.4, 55);
+        car = new MyVehicle("Flame Cruiser", -71, 0.4, 55);
         car.rotation.y = Math.PI / 1.3;
         car.angle = Math.PI / 1.3;
         car.updateLights();
         this.cars.push(car);
 
-        car = new MyVehicle(-70, 0.4, 60);
+        car = new MyVehicle("Crimson Comet", -70, 0.4, 60);
         car.rotation.y = Math.PI / 1.3;
         car.angle = Math.PI / 1.3;
         car.updateLights();
         this.cars.push(car);
 
-        car = new MyVehicle(-69, 0.4, 65);
+        car = new MyVehicle("Blood Bullet", -69, 0.4, 65);
         car.rotation.y = Math.PI / 1.3;
         car.angle = Math.PI / 1.3;
         car.updateLights();
