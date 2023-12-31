@@ -268,7 +268,7 @@ class MyGame {
                 this.app.scene.remove(this.over);
                 this.over = null;
 
-                this.route = new MyRoute(this.app);
+                this.route = new MyRoute(this.app, this.difficulty);
                 for (const car of this.reader.cars) this.app.scene.remove(car);
                 this.reader.cars = [];
                 this.reader.createCars();

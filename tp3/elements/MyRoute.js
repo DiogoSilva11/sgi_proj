@@ -20,7 +20,10 @@ class MyRoute {
         this.mixerTime = 0;
         this.mixerPause = false;
         this.enableAnimationPosition = true;
-        this.animationMaxDuration = 30; //seconds
+
+        this.animationMaxDuration = 0;
+        if (this.difficulty === 'normal') this.animationMaxDuration = 22;
+        else if (this.difficulty === 'hard') this.animationMaxDuration = 18;
 
         //this.debugKeyFrames();
     }
@@ -44,10 +47,21 @@ class MyRoute {
         this.app.scene.add(tubeMesh)
     }
 
+    generateTimes(durations) {
+        let times = [];
+        let sum = 0;
+        for (let i = 0; i < durations.length; i++) {
+            sum += durations[i];
+            times.push(sum);
+        }
+        console.log(times);
+        return times;
+    }
+
     playAnimation(car) {
         let times = [];
-        if (this.difficulty === 'normal') times = [0, 5, 9, 13, 16, 19, 22, 25, 30]; // [0, 5, 4, 4, 3, 3, 3, 3, 5]
-        else if (this.difficulty === 'hard') times = [0, 5, 9, 13, 16, 19, 22, 25, 30]; // [0, 5, 4, 4, 3, 3, 3, 3, 5]
+        if (this.difficulty === 'normal') times = this.generateTimes([0, 4, 3, 3, 2, 2, 2, 2, 4]);
+        else if (this.difficulty === 'hard') times = this.generateTimes([0, 3.5, 2.5, 2.5, 1.5, 1.5, 1.5, 1.5, 3.5]);
 
         const positionKF = new THREE.VectorKeyframeTrack(
             '.position',
@@ -65,21 +79,21 @@ class MyRoute {
             ],
             THREE.InterpolateSmooth
         )
-/*
+
         const yAxis = new THREE.Vector3(0, 1, 0)
         const q1 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(0))
-        const q2 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(-90))
-        const q3 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(0))
+        const q2 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(90))
+        const q3 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(180))
         const q4 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(90))
-        const q5 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(180))
-        const q6 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(180))
-        const q7 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(90))
-        const q8 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(180))
-        const q9 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(-90))
+        const q5 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(200))
+        const q6 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(220))
+        const q7 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(250))
+        const q8 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(0))
+        const q9 = new THREE.Quaternion().setFromAxisAngle(yAxis, THREE.MathUtils.degToRad(0))
 
         const quaternionKF = new THREE.QuaternionKeyframeTrack(
             '.quaternion',
-            [0, 1, 2, 3, 4, 5, 6, 7, 8],
+            times,
             [
                 q1.x, q1.y, q1.z, q1.w,
                 q2.x, q2.y, q2.z, q2.w,
@@ -91,21 +105,21 @@ class MyRoute {
                 q8.x, q8.y, q8.z, q8.w,
                 q9.x, q9.y, q9.z, q9.w
             ]
-        );*/
+        );
 
         const positionClip = new THREE.AnimationClip('positionAnimation', this.animationMaxDuration, [positionKF])
-        //const rotationClip = new THREE.AnimationClip('rotationAnimation', this.animationMaxDuration, [quaternionKF])
+        const rotationClip = new THREE.AnimationClip('rotationAnimation', this.animationMaxDuration, [quaternionKF])
 
         // Create an AnimationMixer
         this.mixer = new THREE.AnimationMixer(car)
 
         // Create AnimationActions for each clip
         const positionAction = this.mixer.clipAction(positionClip)
-        //const rotationAction = this.mixer.clipAction(rotationClip)
+        const rotationAction = this.mixer.clipAction(rotationClip)
 
         // Play both animations
         positionAction.play()
-        //rotationAction.play()
+        rotationAction.play()
     }
 
     /**
