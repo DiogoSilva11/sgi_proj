@@ -26,6 +26,7 @@ class MyGame {
         this.maxLaps = 1;
         this.obstacles = [];
         this.pickingObstacle = false;
+        this.route = null;
     }
 
     init() {
@@ -111,6 +112,9 @@ class MyGame {
     }
 
     gameplay() {
+        if (this.route === null)
+            this.route = new MyRoute(this.app, this.difficulty);
+
         this.playerCar.position.set(-2, 0.4, 8);
         this.playerCar.rotation.y = 0;
         this.playerCar.angle = 0;
@@ -123,7 +127,7 @@ class MyGame {
         this.app.activateControls();
         this.createHUD();
 
-        this.reader.route.playAnimation(this.autoCar);
+        this.route.playAnimation(this.autoCar);
         this.follow = true;        
 
         this.accelerateListener = (event) => {if (event.key === 'w' && !this.paused) this.playerCar.accelerate();};
@@ -136,8 +140,8 @@ class MyGame {
             if (!this.pickingObstacle) {
                 if (event.key === 'e') this.follow = !this.follow;
                 else if (event.key === 'q') {
-                    if (this.paused) this.reader.route.clock.start();
-                    else this.reader.route.clock.stop();
+                    if (this.paused) this.route.clock.start();
+                    else this.route.clock.stop();
                     this.paused = !this.paused;
                 }
             }
@@ -238,10 +242,14 @@ class MyGame {
         this.app.deactivateControls();
 
         let autoTime = 0;
-        if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
+        if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * (this.route.animationMaxDuration + 1)) {
             autoTime = Math.floor(this.elapsedTime / 1000);
             this.playerTime = 999;
         }
+        else {
+            autoTime = this.maxLaps * (this.route.animationMaxDuration + 1);
+        }
+
         this.over = new MyOver(this.app, this.difficulty, this.playerTime, autoTime);
         this.over.init();
 
@@ -260,7 +268,7 @@ class MyGame {
                 this.app.scene.remove(this.over);
                 this.over = null;
 
-                this.reader.route = new MyRoute(this.app);
+                this.route = new MyRoute(this.app);
                 for (const car of this.reader.cars) this.app.scene.remove(car);
                 this.reader.cars = [];
                 this.reader.createCars();
@@ -291,7 +299,7 @@ class MyGame {
                 this.app.scene.remove(this.over);
                 this.over = null;
 
-                this.reader.route = new MyRoute(this.app);
+                this.route = new MyRoute(this.app, this.difficulty);
                 for (const car of this.reader.cars) this.app.scene.remove(car);
                 this.reader.cars = [];
                 this.reader.createCars();
@@ -456,15 +464,15 @@ class MyGame {
             this.offTrack();
             this.powerUp();
 
-            if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * 31) {
+            if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * (this.route.animationMaxDuration + 1)) {
                 x = this.playerCar.position.x;
                 z = this.playerCar.position.z;
                 if (this.autoCar.checkCollision(x, z)) this.autoCar.collide(x, z);
                 else this.autoCar.update();
-                this.reader.route.update();
+                this.route.update();
             }
 
-            if (this.playerCar.laps === this.maxLaps && Math.floor(this.elapsedTime / 1000) >= this.maxLaps * 31)
+            if (this.playerCar.laps === this.maxLaps && Math.floor(this.elapsedTime / 1000) >= this.maxLaps * (this.route.animationMaxDuration + 1))
                 this.endGameplay();
         }
         else if (this.state === 'over') {

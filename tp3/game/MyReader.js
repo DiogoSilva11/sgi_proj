@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { MyParkingLot } from "../elements/MyParkingLot.js";
 import { MyTrack } from "../elements/MyTrack.js";
-import { MyRoute } from "../elements/MyRoute.js";
 import { MyVehicle } from "../elements/MyVehicle.js";
 import { MyPowerUp } from "../elements/MyPowerUp.js";
 import { MyObstacle } from "../elements/MyObstacle.js";
@@ -59,9 +58,6 @@ class MyReader {
 
         if (this.obstacles.length === 0) 
             this.createObstacles();
-
-        if (this.route === null)
-            this.route = new MyRoute(this.app);
     }
 
     createGround() {

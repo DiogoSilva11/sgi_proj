@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 
 class MyRoute {
-    constructor(app) {
+    constructor(app, difficulty) {
         this.app = app;
+        this.difficulty = difficulty;
+
         this.keyPoints = [
             new THREE.Vector3(2, 0.4, 5),
             new THREE.Vector3(2, 0.4, -51),
@@ -43,9 +45,13 @@ class MyRoute {
     }
 
     playAnimation(car) {
+        let times = [];
+        if (this.difficulty === 'normal') times = [0, 5, 9, 13, 16, 19, 22, 25, 30]; // [0, 5, 4, 4, 3, 3, 3, 3, 5]
+        else if (this.difficulty === 'hard') times = [0, 5, 9, 13, 16, 19, 22, 25, 30]; // [0, 5, 4, 4, 3, 3, 3, 3, 5]
+
         const positionKF = new THREE.VectorKeyframeTrack(
             '.position',
-            [0, 5, 9, 13, 16, 19, 22, 25, 30], // [0, 5, 4, 4, 3, 3, 3, 3, 5]
+            times, 
             [
                 ...this.keyPoints[0],
                 ...this.keyPoints[1],
