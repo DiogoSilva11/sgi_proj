@@ -21,6 +21,7 @@ class MyVehicle extends THREE.Group {
         this.laps = 0;
         this.maxSpeed = 0.4;
         this.minSpeed = -0.2;
+        this.dizzy = false;
 
         this.buildVehicle();
     }
@@ -358,6 +359,13 @@ class MyVehicle extends THREE.Group {
                         this.rotation.y = this.angle;
                         this.turnWheels();
                     }
+                    this.specialEffectTimer--;
+                }
+                break;
+            case 'Dizzy':
+                if (this.specialEffectTimer > 0) {
+                    if (this.specialEffectTimer - 1 == 0) this.dizzy = false;
+                    else if (this.specialEffectTimer == 200) this.dizzy = true;
                     this.specialEffectTimer--;
                 }
                 break;

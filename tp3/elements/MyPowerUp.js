@@ -28,7 +28,7 @@ class MyPowerUp {
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.position.set(this.x, this.y, this.z);
+        this.mesh.position.set(this.x, this.y + 0.01, this.z);
     }
 
     portal() {
@@ -40,7 +40,7 @@ class MyPowerUp {
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.position.set(this.x, this.y, this.z);
+        this.mesh.position.set(this.x, this.y + 0.01, this.z);
     }
 }
 

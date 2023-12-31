@@ -132,8 +132,18 @@ class MyGame {
 
         this.accelerateListener = (event) => {if (event.key === 'w' && !this.paused) this.playerCar.accelerate();};
         this.brakeListener = (event) => {if (event.key === 's' && !this.paused) this.playerCar.brake();};
-        this.turnLeftListener = (event) => {if (event.key === 'a' && !this.paused) this.playerCar.turnLeft();};
-        this.turnRightListener = (event) => {if (event.key === 'd' && !this.paused) this.playerCar.turnRight();};
+        this.turnLeftListener = (event) => {
+            if (event.key === 'a' && !this.paused) {
+                if (!this.playerCar.dizzy) this.playerCar.turnLeft();
+                else this.playerCar.turnRight();
+            }
+        };
+        this.turnRightListener = (event) => {
+            if (event.key === 'd' && !this.paused) {
+                if (!this.playerCar.dizzy) this.playerCar.turnRight();
+                else this.playerCar.turnLeft();
+            }
+        };
         this.gameListener = (event) => {
             if (event.key === 'Escape') this.endGameplay();
 
@@ -199,7 +209,7 @@ class MyGame {
             const intersectTrack = raycaster.intersectObjects(this.reader.track.children, true);
             if (intersectTrack.length > 0) {
                 document.removeEventListener('click', this.placeListener);
-                let obstacle = new MyObstacle(this.reader.obstacles[index].type, intersectTrack[0].point.x, 0.3, intersectTrack[0].point.z);
+                let obstacle = new MyObstacle(this.reader.obstacles[index].type, intersectTrack[0].point.x, 0, intersectTrack[0].point.z);
                 this.obstacles.push(obstacle);
                 this.app.scene.add(obstacle.mesh);
 
