@@ -228,6 +228,9 @@ class MyReader {
         powerUp.mesh.rotation.z = - Math.PI / 15;
         this.powerUps.push(powerUp);
 
+        powerUp = new MyPowerUp('Portal', -44, 0.01, 0.5);
+        this.powerUps.push(powerUp);
+
         for (const powerUp of this.powerUps)
             this.app.scene.add(powerUp.mesh);
     }

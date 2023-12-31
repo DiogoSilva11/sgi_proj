@@ -349,6 +349,18 @@ class MyVehicle extends THREE.Group {
                     this.specialEffectTimer--;
                 }
                 break;
+            case 'Portal':
+                if (this.specialEffectTimer > 0) {
+                    if (this.specialEffectTimer == 10) {
+                        this.position.x = -65;
+                        this.position.z = 30;
+                        this.angle = THREE.MathUtils.degToRad(200);
+                        this.rotation.y = this.angle;
+                        this.turnWheels();
+                    }
+                    this.specialEffectTimer--;
+                }
+                break;
             default:
                 break;
         }

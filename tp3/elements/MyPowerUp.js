@@ -13,6 +13,10 @@ class MyPowerUp {
             this.duration = 100;
             this.speedBoost();
         }
+        else if (this.type === 'Portal') {
+            this.duration = 10;
+            this.portal();
+        }
     }
 
     speedBoost() {
@@ -21,6 +25,18 @@ class MyPowerUp {
         const material = new THREE.MeshPhongMaterial({
             map: texture,
             shininess: 0
+        });
+
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.position.set(this.x, this.y, this.z);
+    }
+
+    portal() {
+        const geometry = new THREE.CylinderGeometry(1.5, 1.5, 0.1);
+        const texture = new THREE.TextureLoader().load('./images/portal.jpg');
+        const material = new THREE.MeshPhongMaterial({
+            map: texture,
+            shininess: 50
         });
 
         this.mesh = new THREE.Mesh(geometry, material);
