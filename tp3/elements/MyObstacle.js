@@ -19,6 +19,10 @@ class MyObstacle {
                 texFile = 'dizzy.png';
                 this.duration = 200;
                 break;
+            case "Block":
+                texFile = 'block.jpg';
+                this.duration = 150;
+                break;
             default:
                 break;
         }
@@ -33,7 +37,12 @@ class MyObstacle {
         this.mesh = new THREE.Mesh(geometry, material);
         this.mesh.rotation.x = Math.PI / 2;
         this.mesh.rotation.z = Math.PI / 4;
+        this.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
         this.mesh.position.set(this.x, this.y + 1, this.z);
+    }
+
+    update() {
+        this.mesh.rotation.y += 0.01;
     }
 }
 

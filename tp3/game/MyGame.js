@@ -540,7 +540,7 @@ class MyGame {
         }
     }
 
-    powerUp() {
+    specialEffect() {
         if (this.playerCar.specialEffectTimer === 0) {
             for (const powerUp of this.reader.powerUps) {
                 if (this.playerCar.checkCollision(powerUp.mesh.position.x, powerUp.mesh.position.z)) {
@@ -553,6 +553,7 @@ class MyGame {
 
             for (const obstacle of this.obstacles) {
                 if (this.playerCar.checkCollision(obstacle.mesh.position.x, obstacle.mesh.position.z)) {
+                    if (this.playerCar.specialEffect === 'Block' && obstacle.type === 'Block') return;
                     this.playerCar.specialEffect = obstacle.type;
                     this.playerCar.specialEffectTimer = obstacle.duration;
                     return;
@@ -591,7 +592,7 @@ class MyGame {
             if (this.playerCar.checkCollision(x, z)) this.playerCar.collide(x, z);
             else this.playerCar.update();
             this.offTrack();
-            this.powerUp();
+            this.specialEffect();
 
             if (Math.floor(this.elapsedTime / 1000) < this.maxLaps * (this.route.animationMaxDuration + 1)) {
                 x = this.playerCar.position.x;
@@ -600,6 +601,9 @@ class MyGame {
                 else this.autoCar.update();
                 this.route.update();
             }
+
+            for (const obstacle of this.obstacles)
+                obstacle.update();
 
             if (this.playerCar.laps === this.maxLaps && 
                 Math.floor(this.elapsedTime / 1000) >= this.maxLaps * (this.route.animationMaxDuration + 1))

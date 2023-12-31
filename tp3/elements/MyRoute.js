@@ -54,7 +54,6 @@ class MyRoute {
             sum += durations[i];
             times.push(sum);
         }
-        console.log(times);
         return times;
     }
 

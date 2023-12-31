@@ -22,6 +22,7 @@ class MyVehicle extends THREE.Group {
         this.maxSpeed = 0.4;
         this.minSpeed = -0.2;
         this.dizzy = false;
+        this.block = false;
 
         this.buildVehicle();
     }
@@ -369,12 +370,22 @@ class MyVehicle extends THREE.Group {
                     this.specialEffectTimer--;
                 }
                 break;
+            case 'Block':
+                if (this.specialEffectTimer > 0) {
+                    if (this.specialEffectTimer - 1 == 0) this.block = false;
+                    else if (this.specialEffectTimer == 150) this.block = true;
+                    this.specialEffectTimer--;
+                }
+                break;
             default:
                 break;
         }
     }
 
     update() {
+        this.applySpecialEffect();
+        if (this.block) return;
+
         this.position.x -= this.speed * Math.sin(this.angle);
         this.position.z -= this.speed * Math.cos(this.angle);
 
@@ -402,7 +413,6 @@ class MyVehicle extends THREE.Group {
             this.turnWheels();
         }
 
-        this.applySpecialEffect();
         this.updateLights();
     }
 }

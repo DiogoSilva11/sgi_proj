@@ -239,7 +239,7 @@ class MyReader {
         let obstacle = new MyObstacle('Dizzy', -55, 0, 86);
         this.obstacles.push(obstacle);
 
-        obstacle = new MyObstacle('Dizzy', -50, 0, 90);
+        obstacle = new MyObstacle('Block', -50, 0, 90);
         this.obstacles.push(obstacle);
 
         obstacle = new MyObstacle('Dizzy', -45, 0, 94);
