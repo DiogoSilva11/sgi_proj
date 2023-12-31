@@ -232,29 +232,33 @@ class MyVehicle extends THREE.Group {
         light1.position.set(-0.35, 0.1, -1.01);
         this.lights.push(light1);
 
-        const spotLight1 = new THREE.SpotLight(0xfad961, 100, 6, Math.PI / 12, 1);
-        spotLight1.position.x = -0.35;
-        spotLight1.position.y = 0.1;
-        spotLight1.position.z = -1.01;
-        spotLight1.target.position.x = this.x - 0.35;
-        spotLight1.target.position.y = 0;
-        spotLight1.target.position.z = this.z - 4;
-        this.lightHelper1 = new THREE.SpotLightHelper(spotLight1); 
-        this.lights.push(spotLight1);
+        if (this.model != "Crimson Comet" && this.model != "Blood Bullet" && this.model != "Flame Cruiser") {
+            const spotLight1 = new THREE.SpotLight(0xfad961, 100, 6, Math.PI / 12, 1);
+            spotLight1.position.x = -0.35;
+            spotLight1.position.y = 0.1;
+            spotLight1.position.z = -1.01;
+            spotLight1.target.position.x = this.x - 0.35;
+            spotLight1.target.position.y = 0;
+            spotLight1.target.position.z = this.z - 4;
+            this.lightHelper1 = new THREE.SpotLightHelper(spotLight1); 
+            this.lights.push(spotLight1);
+        }
 
         const light2 = new THREE.Mesh(geometry, material);
         light2.position.set(0.35, 0.1, -1.01);
         this.lights.push(light2);
 
-        const spotLight2 = new THREE.SpotLight(0xfad961, 100, 6, Math.PI / 12, 1);
-        spotLight2.position.x = 0.35;
-        spotLight2.position.y = 0.1;
-        spotLight2.position.z = -1.01;
-        spotLight2.target.position.x = this.x + 0.35;
-        spotLight2.target.position.y = 0;
-        spotLight2.target.position.z = this.z - 4;
-        this.lightHelper2 = new THREE.SpotLightHelper(spotLight2);
-        this.lights.push(spotLight2);
+        if (this.model != "Crimson Comet" && this.model != "Blood Bullet" && this.model != "Flame Cruiser") {
+            const spotLight2 = new THREE.SpotLight(0xfad961, 100, 6, Math.PI / 12, 1);
+            spotLight2.position.x = 0.35;
+            spotLight2.position.y = 0.1;
+            spotLight2.position.z = -1.01;
+            spotLight2.target.position.x = this.x + 0.35;
+            spotLight2.target.position.y = 0;
+            spotLight2.target.position.z = this.z - 4;
+            this.lightHelper2 = new THREE.SpotLightHelper(spotLight2);
+            this.lights.push(spotLight2);
+        }
 
         material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
         const light3 = new THREE.Mesh(geometry, material);
@@ -304,6 +308,8 @@ class MyVehicle extends THREE.Group {
     }
 
     updateLights() {
+        if (this.model == "Crimson Comet" || this.model == "Blood Bullet" || this.model == "Flame Cruiser") return;
+
         this.lights[1].target.position.x = this.position.x - 0.35 * Math.cos(this.angle) - 4 * Math.sin(this.angle);
         this.lights[1].target.position.z = this.position.z + 0.35 * Math.sin(this.angle) - 4 * Math.cos(this.angle);
         this.lights[1].lightHelper1 = new THREE.SpotLightHelper(this.lights[1]);
@@ -334,7 +340,7 @@ class MyVehicle extends THREE.Group {
             case 'Speed Boost':
                 if (this.specialEffectTimer > 0) {
                     if (this.specialEffectTimer - 1 == 0) this.speed = this.maxSpeed;
-                    else if (this.specialEffectTimer == 150) {
+                    else if (this.specialEffectTimer == 100) {
                         this.speed = this.maxSpeed * 1.7;
                         this.angle = 0;
                         this.rotation.y = this.angle;

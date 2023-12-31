@@ -325,6 +325,28 @@ class MyGame {
     }
 
     createHUD() {
+        this.controlsElement = document.createElement('div');
+        this.controlsElement.style.position = 'absolute';
+        this.controlsElement.style.top = '5vw';
+        this.controlsElement.style.left = '1vw';
+        this.controlsElement.style.width = '150px';
+        this.controlsElement.style.height = 'auto';
+        this.controlsElement.style.backgroundColor = '#000';
+        this.controlsElement.style.opacity = '0.8';
+        this.controlsElement.style.color = '#aaa';
+        this.controlsElement.style.padding = '10px';
+        this.controlsElement.style.fontFamily = 'monospace';
+        this.controlsElement.innerHTML = '[CONTROLS] \
+                                          <br> \
+                                          <br>[W] Accelerate \
+                                          <br>[S] Brake/Reverse \
+                                          <br>[A] Turn Left \
+                                          <br>[D] Turn Right \
+                                          <br> \
+                                          <br>[Q] Pause \
+                                          <br>[E] Camera Mode';
+        document.body.appendChild(this.controlsElement);
+
         this.statusElement = document.createElement('div');
         this.statusElement.style.position = 'absolute';
         this.statusElement.style.bottom = '4vw';
@@ -408,6 +430,19 @@ class MyGame {
         this.specialTimeElement.style.textAlign = 'center';
         this.specialTimeElement.style.fontFamily = 'monospace';
         document.body.appendChild(this.specialTimeElement);
+
+        this.ranksElement = document.createElement('div');
+        this.ranksElement.style.position = 'absolute';
+        this.ranksElement.style.top = '7vw';
+        this.ranksElement.style.right = '1vw';
+        this.ranksElement.style.width = '250px';
+        this.ranksElement.style.height = 'auto';
+        this.ranksElement.style.backgroundColor = '#000';
+        this.ranksElement.style.opacity = '0.8';
+        this.ranksElement.style.color = '#bd8b02';
+        this.ranksElement.style.padding = '10px';
+        this.ranksElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.ranksElement);
     }
 
     updateHUD() {
@@ -418,21 +453,37 @@ class MyGame {
         
         if (this.playerCar.specialEffectTimer > 0) {
             this.specialEffectElement.innerText = '[EFFECT] ' + this.playerCar.specialEffect;
-            this.specialTimeElement.innerText = '[REMAINING] ' + this.playerCar.specialEffectTimer + ' s';
+            this.specialTimeElement.innerText = '[REMAINING] ' + (this.playerCar.specialEffectTimer / 50).toFixed(2) + ' s';
         }
         else {
             this.specialEffectElement.innerText = '[EFFECT] None';
             this.specialTimeElement.innerText = '[REMAINING] 0 s';
         }
+
+        const playerLabel = this.playerName + ' (' + this.playerCar.model + ')';
+        const autoLabel = 'Opponent (' + this.autoCar.model + ')';
+        const autoLaps = Math.floor(Math.floor(this.elapsedTime / 1000) / (this.route.animationMaxDuration + 1));
+        if (this.playerCar.laps > this.maxLaps) {
+            this.ranksElement.innerHTML = '[POSITIONS]<br> \
+                                        <br>[1] ' + playerLabel +
+                                        '<br>[2] ' + autoLabel; 
+        }
+        else {
+            this.ranksElement.innerHTML = '[POSITIONS]<br> \
+                                        <br>[1] ' + autoLabel +
+                                        '<br>[2] ' + playerLabel; 
+        }
     }
 
     deleteHUD() {
+        document.body.removeChild(this.controlsElement);
         document.body.removeChild(this.statusElement);
         document.body.removeChild(this.lapsElement);
         document.body.removeChild(this.timeElement);
         document.body.removeChild(this.speedElement);
         document.body.removeChild(this.specialEffectElement);
         document.body.removeChild(this.specialTimeElement);
+        document.body.removeChild(this.ranksElement);
     }
 
     followCar() {
@@ -540,7 +591,8 @@ class MyGame {
                 this.route.update();
             }
 
-            if (this.playerCar.laps === this.maxLaps && Math.floor(this.elapsedTime / 1000) >= this.maxLaps * (this.route.animationMaxDuration + 1))
+            if (this.playerCar.laps === this.maxLaps && 
+                Math.floor(this.elapsedTime / 1000) >= this.maxLaps * (this.route.animationMaxDuration + 1))
                 this.endGameplay();
         }
         else if (this.state === 'over') {

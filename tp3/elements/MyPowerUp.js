@@ -10,7 +10,7 @@ class MyPowerUp {
         this.duration = 0;
         this.mesh = null;
         if (this.type === 'Speed Boost') {
-            this.duration = 150;
+            this.duration = 100;
             this.speedBoost();
         }
     }
