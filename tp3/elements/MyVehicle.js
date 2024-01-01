@@ -339,7 +339,7 @@ class MyVehicle extends THREE.Group {
 
     applySpecialEffect() {
         switch (this.specialEffect) {
-            case 'Speed Boost':
+            case 'Speed':
                 if (this.specialEffectTimer > 0) {
                     if (this.specialEffectTimer - 1 == 0) this.speed = this.maxSpeed;
                     else if (this.specialEffectTimer == 100) {
@@ -374,6 +374,20 @@ class MyVehicle extends THREE.Group {
                 if (this.specialEffectTimer > 0) {
                     if (this.specialEffectTimer - 1 == 0) this.block = false;
                     else if (this.specialEffectTimer == 150) this.block = true;
+                    this.specialEffectTimer--;
+                }
+                break;
+            case 'Slow':
+                if (this.specialEffectTimer > 0) {
+                    if (this.specialEffectTimer - 1 == 0) {
+                        this.maxSpeed = 0.4;
+                        this.minSpeed = -0.2;
+                    }
+                    else if (this.specialEffectTimer == 200) {
+                        this.speed *= 0.4;
+                        this.maxSpeed *= 0.4;
+                        this.minSpeed *= 0.4;
+                    }
                     this.specialEffectTimer--;
                 }
                 break;

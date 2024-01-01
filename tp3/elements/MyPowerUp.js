@@ -9,9 +9,9 @@ class MyPowerUp {
 
         this.duration = 0;
         this.mesh = null;
-        if (this.type === 'Speed Boost') {
+        if (this.type === 'Speed') {
             this.duration = 100;
-            this.speedBoost();
+            this.speed();
         }
         else if (this.type === 'Portal') {
             this.duration = 10;
@@ -19,7 +19,7 @@ class MyPowerUp {
         }
     }
 
-    speedBoost() {
+    speed() {
         const geometry = new THREE.PlaneGeometry(2, 4.5);
         const texture = new THREE.TextureLoader().load('./images/speed.jpg');
         const material = new THREE.MeshPhongMaterial({

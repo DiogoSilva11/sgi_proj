@@ -223,7 +223,7 @@ class MyReader {
     }
 
     createPowerUps() {
-        let powerUp = new MyPowerUp('Speed Boost', 2, 0, 80);
+        let powerUp = new MyPowerUp('Speed', 2, 0, 80);
         powerUp.mesh.rotation.x = - Math.PI / 2;
         powerUp.mesh.rotation.z = - Math.PI / 15;
         this.powerUps.push(powerUp);
@@ -236,7 +236,7 @@ class MyReader {
     }
 
     createObstacles() {
-        let obstacle = new MyObstacle('Dizzy', -55, 0, 86);
+        let obstacle = new MyObstacle('Slow', -55, 0, 86);
         this.obstacles.push(obstacle);
 
         obstacle = new MyObstacle('Block', -50, 0, 90);

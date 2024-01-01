@@ -23,11 +23,16 @@ class MyObstacle {
                 texFile = 'block.jpg';
                 this.duration = 150;
                 break;
+            case "Slow":
+                texFile = 'slow.jpg';
+                this.duration = 200;
+                break;
             default:
                 break;
         }
 
         const texture = new THREE.TextureLoader().load('./images/' + texFile);
+        texture.flipY = false;
         const material = new THREE.MeshPhongMaterial({
             map: texture,
             shininess: 0
