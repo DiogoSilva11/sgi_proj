@@ -56,8 +56,39 @@ class MyFirework {
      * @param {*} vector 
      */
     explode(origin, n, rangeBegin, rangeEnd) {
-        this.parent.remove(this.points);
-        this.points.geometry.dispose();
+        this.parent.remove(this.points)
+        this.points.geometry.dispose()
+
+        let vertices = []
+        let colors = []
+        this.dest = []
+
+        for(let i=0; i<n; i++) {
+            vertices.push(origin[0], origin[1], origin[2])
+            
+            let angle1 = Math.random() * 2*Math.PI
+            let angle2 = Math.random() * 2*Math.PI
+            let distance = rangeBegin + Math.random() * (rangeEnd-rangeBegin)
+
+            this.dest.push(
+                origin[0] + distance * Math.cos(angle1) * Math.cos(angle2),
+                origin[1] + distance * Math.sin(angle1) * Math.cos(angle2),
+                origin[2] + distance * Math.cos(angle1) * Math.sin(angle2)
+            )
+
+            let color = new THREE.Color()
+            color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9)
+            colors.push(color.r, color.g, color.b)
+        }
+        
+
+        this.geometry = new THREE.BufferGeometry()
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3));
+        this.geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3));
+        this.points = new THREE.Points(this.geometry, this.material)
+        //this.points.castShadow = true;
+        //this.points.receiveShadow = true;
+        this.parent.add(this.points)  
     }
     
     /**
@@ -97,7 +128,7 @@ class MyFirework {
                 //is YY coordinate higher close to destination YY? 
                 if (Math.ceil(vertices[1]) > (this.dest[1] * 0.95)) {
                     // add n particles departing from the location at (vertices[0], vertices[1], vertices[2])
-                    this.explode(vertices, 80, this.height * 0.05, this.height * 0.8) 
+                    this.explode(vertices, 32, this.height * 0.05, this.height * 0.8) 
                     return 
                 }
             }
