@@ -33,13 +33,43 @@ class MyObstacle {
 
         const texture = new THREE.TextureLoader().load('./images/' + texFile);
         texture.flipY = false;
-        const material = new THREE.MeshPhongMaterial({
-            map: texture,
-            shininess: 0
-        });
-        const geometry = new THREE.CylinderGeometry(1, 1, 0.3);
 
-        this.mesh = new THREE.Mesh(geometry, material);
+        const shaderMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                time: { value: 0.0 },
+                textureSampler: { value: texture },
+            },
+            vertexShader: `
+                uniform float time;
+                varying vec2 vUv;
+            
+                void main() {
+                    vUv = uv;
+            
+                    vec3 newPosition = position;
+            
+                    float pulse = sin(time) * 0.2;
+                    newPosition.x *= 1.0 + pulse;
+                    newPosition.y *= 1.0 + pulse;
+                    newPosition.z *= 1.0 + pulse;
+            
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D textureSampler;
+                varying vec2 vUv;
+            
+                void main() {
+                    vec4 textureColor = texture2D(textureSampler, vUv);
+                    gl_FragColor = textureColor;
+                }
+            `
+        });
+
+        const geometry = new THREE.CylinderGeometry(1, 1, 0.3, 32);
+
+        this.mesh = new THREE.Mesh(geometry, shaderMaterial);
         this.mesh.rotation.x = Math.PI / 2;
         this.mesh.rotation.z = Math.PI / 4;
         this.mesh.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
@@ -47,6 +77,7 @@ class MyObstacle {
     }
 
     update() {
+        this.mesh.material.uniforms.time.value = performance.now() / 1000;
         this.mesh.rotation.y += 0.01;
     }
 }
