@@ -155,7 +155,7 @@ class MyGame {
         this.gameListener = (event) => {
             if (event.key === 'Escape') this.endGameplay();
 
-            if (!this.pickingObstacle) {
+            if (!this.pickingObstacle && Math.floor(this.startTime / 1000) > 3) {
                 if (event.key === 'e') this.follow = !this.follow;
                 else if (event.key === 'q') {
                     if (this.paused) this.route.clock.start();

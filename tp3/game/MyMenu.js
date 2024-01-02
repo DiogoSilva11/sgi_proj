@@ -82,13 +82,13 @@ class MyMenu extends THREE.Group {
     }
 
     carLabels() {
-        let sprite = new MySprite('Pick Your Car', 0x999999, 0, 0.4, 0.6, 7, 1.2);
+        let sprite = new MySprite('Pick Your Car', 0x082996, 0, 0.4, 0.6, 7, 1.2);
         let label = sprite.build();
         label.position.set(-92, 1, 29);
         label.rotation.y = - Math.PI / 2.6;
         this.add(label);
 
-        sprite = new MySprite('Pick Opponent Car', 0x999999, -0.2, 0.4, 0.6, 8.5, 1.2);
+        sprite = new MySprite('Pick Opponent Car', 0x960808, -0.2, 0.4, 0.6, 8.5, 1.2);
         label = sprite.build();
         label.position.set(-80.7, 1, 59);
         label.rotation.y = - Math.PI / 2.6;
