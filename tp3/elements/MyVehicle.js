@@ -23,6 +23,7 @@ class MyVehicle extends THREE.Group {
         this.minSpeed = -0.2;
         this.dizzy = false;
         this.block = false;
+        this.selector = null;
 
         this.buildVehicle();
     }
@@ -84,7 +85,6 @@ class MyVehicle extends THREE.Group {
 
         material = new THREE.MeshPhongMaterial({
             map: texture,
-            //color: 0xffffff,
             shininess: 30
         });
         geometry = new THREE.BoxGeometry(1, 0.05, 0.77);
@@ -99,6 +99,21 @@ class MyVehicle extends THREE.Group {
         this.add(this.spoiler);
 
         this.position.set(this.x, this.y, this.z);
+    }
+
+    addSelector(color) {
+        const material = new THREE.MeshBasicMaterial({ color: color });
+        const geometry = new THREE.SphereGeometry(0.3);
+        this.selector = new THREE.Mesh(geometry, material);
+        this.selector.position.set(0, 2.5, 0);
+        this.add(this.selector);
+    }
+
+    removeSelector() {
+        if (this.selector !== null) {
+            this.remove(this.selector);
+            this.selector = null;
+        }
     }
 
     createBars() {

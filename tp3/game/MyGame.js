@@ -81,12 +81,16 @@ class MyGame {
             for (let i = 0; i < intersectCars.length; i++) {
                 if (intersectCars[i].length > 0) {
                     if (i < 3) {
+                        if (this.playerCar !== null) this.playerCar.removeSelector();
                         this.playerCar = this.reader.cars[i];
                         this.playerIndex = i;
+                        this.playerCar.addSelector(0x0000ff);
                     }
                     else if (i >= 3) {
+                        if (this.autoCar !== null) this.autoCar.removeSelector();
                         this.autoCar = this.reader.cars[i];
                         this.autoIndex = i;
+                        this.autoCar.addSelector(0xff0000);
                     }
                 }
             }
@@ -103,6 +107,7 @@ class MyGame {
                 document.removeEventListener('click', this.difficultyListener);
                 document.removeEventListener('click', this.carSelector);
                 document.removeEventListener('click', this.startListener);
+
                 this.menu.removeInput();
                 this.app.scene.remove(this.menu);
                 this.menu = null;
@@ -116,10 +121,12 @@ class MyGame {
         if (this.route === null)
             this.route = new MyRoute(this.app, this.difficulty);
 
+        this.playerCar.removeSelector();
         this.playerCar.position.set(-2, 0.4, 8);
         this.playerCar.rotation.y = 0;
         this.playerCar.angle = 0;
 
+        this.autoCar.removeSelector();
         this.autoCar.position.set(2, 0.4, 5);
         this.autoCar.rotation.y = 0;
         this.autoCar.angle = 0;
