@@ -21,9 +21,10 @@ class MyGame {
         this.follow = false;
         this.paused = false;
         this.elapsedTime = 0;
+        this.startTime = 0;
         this.playerTime = 0;
         this.lapCooldown = 0;
-        this.maxLaps = 1;
+        this.maxLaps = 3;
         this.obstacles = [];
         this.pickingObstacle = false;
         this.route = null;
@@ -127,8 +128,8 @@ class MyGame {
         this.app.activateControls();
         this.createHUD();
 
-        this.route.playAnimation(this.autoCar);
-        this.follow = true;        
+        this.follow = true;
+        this.paused = true;      
 
         this.accelerateListener = (event) => {if (event.key === 'w' && !this.paused) this.playerCar.accelerate();};
         this.brakeListener = (event) => {if (event.key === 's' && !this.paused) this.playerCar.brake();};
@@ -296,6 +297,7 @@ class MyGame {
                 this.follow = false;
                 this.paused = false;
                 this.elapsedTime = 0;
+                this.startTime = 0;
                 this.playerTime = 0;
                 this.lapCooldown = 0;
 
@@ -325,6 +327,7 @@ class MyGame {
                 this.follow = false;
                 this.paused = false;
                 this.elapsedTime = 0;
+                this.startTime = 0;
                 this.playerTime = 0;
                 this.lapCooldown = 0;
 
@@ -354,7 +357,8 @@ class MyGame {
                                           <br>[D] Turn Right \
                                           <br> \
                                           <br>[Q] Pause \
-                                          <br>[E] Camera Mode';
+                                          <br>[E] Camera Mode \
+                                          <br>[ESC] Quit Race';
         document.body.appendChild(this.controlsElement);
 
         this.statusElement = document.createElement('div');
@@ -453,6 +457,19 @@ class MyGame {
         this.ranksElement.style.padding = '10px';
         this.ranksElement.style.fontFamily = 'monospace';
         document.body.appendChild(this.ranksElement);
+
+        this.extraElement = document.createElement('div');
+        this.extraElement.style.position = 'absolute';
+        this.extraElement.style.top = '14vw';
+        this.extraElement.style.right = '1vw';
+        this.extraElement.style.width = '200px';
+        this.extraElement.style.height = 'auto';
+        this.extraElement.style.backgroundColor = '#000';
+        this.extraElement.style.opacity = '0.8';
+        this.extraElement.style.color = '#bd8b02';
+        this.extraElement.style.padding = '10px';
+        this.extraElement.style.fontFamily = 'monospace';
+        document.body.appendChild(this.extraElement);
     }
 
     updateHUD() {
@@ -473,7 +490,7 @@ class MyGame {
         const playerLabel = this.playerName + ' (' + this.playerCar.model + ')';
         const autoLabel = 'Opponent (' + this.autoCar.model + ')';
         const autoLaps = Math.floor(Math.floor(this.elapsedTime / 1000) / (this.route.animationMaxDuration + 1));
-        if (this.playerCar.laps > this.maxLaps) {
+        if (this.playerCar.laps > autoLaps) {
             this.ranksElement.innerHTML = '[POSITIONS]<br> \
                                         <br>[1] ' + playerLabel +
                                         '<br>[2] ' + autoLabel; 
@@ -482,6 +499,15 @@ class MyGame {
             this.ranksElement.innerHTML = '[POSITIONS]<br> \
                                         <br>[1] ' + autoLabel +
                                         '<br>[2] ' + playerLabel; 
+        }
+
+        const startCount = Math.floor(this.startTime / 1000);
+        if (startCount <= 3) {
+            this.extraElement.innerText = 'Starting in... [' + (3 - startCount) + ']';
+        }
+        else if (this.extraElement !== null) {
+            document.body.removeChild(this.extraElement);
+            this.extraElement = null;
         }
     }
 
@@ -494,6 +520,7 @@ class MyGame {
         document.body.removeChild(this.specialEffectElement);
         document.body.removeChild(this.specialTimeElement);
         document.body.removeChild(this.ranksElement);
+        if (this.extraElement !== null) document.body.removeChild(this.extraElement);
     }
 
     followCar() {
@@ -578,6 +605,13 @@ class MyGame {
         else if (this.state === 'gameplay') {
             this.updateHUD();
             if (this.app.controls !== null && this.follow) this.followCar();
+
+            this.startTime += 17;
+            if (Math.floor(this.startTime / 1000) === 3) {
+                this.paused = false;
+                this.route.playAnimation(this.autoCar);
+            }
+
             if (this.paused) return;
             this.elapsedTime += 17;
 
