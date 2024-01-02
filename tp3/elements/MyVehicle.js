@@ -387,8 +387,8 @@ class MyVehicle extends THREE.Group {
                 break;
             case 'Block':
                 if (this.specialEffectTimer > 0) {
-                    if (this.specialEffectTimer - 1 == 0) this.block = false;
-                    else if (this.specialEffectTimer == 150) this.block = true;
+                    if (this.specialEffectTimer == 100) this.block = false;
+                    else if (this.specialEffectTimer == 250) this.block = true;
                     this.specialEffectTimer--;
                 }
                 break;

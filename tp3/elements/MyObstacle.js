@@ -21,7 +21,7 @@ class MyObstacle {
                 break;
             case "Block":
                 texFile = 'block.jpg';
-                this.duration = 150;
+                this.duration = 250;
                 break;
             case "Slow":
                 texFile = 'slow.jpg';

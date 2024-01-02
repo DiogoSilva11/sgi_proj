@@ -587,7 +587,6 @@ class MyGame {
 
             for (const obstacle of this.obstacles) {
                 if (this.playerCar.checkCollision(obstacle.mesh.position.x, obstacle.mesh.position.z)) {
-                    if (this.playerCar.specialEffect === 'Block' && obstacle.type === 'Block') return;
                     this.playerCar.specialEffect = obstacle.type;
                     this.playerCar.specialEffectTimer = obstacle.duration;
                     return;
