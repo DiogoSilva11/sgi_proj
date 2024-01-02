@@ -15,7 +15,6 @@ class MyFirework {
         
         this.material = new THREE.PointsMaterial({
             size: 0.1,
-            color: 0xffffff,
             opacity: 1,
             vertexColors: true,
             transparent: true,
@@ -33,7 +32,7 @@ class MyFirework {
      */
     launch() {
         let color = new THREE.Color()
-        color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9)
+        color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.5)
         let colors = [color.r, color.g, color.b]
 
         let x = this.origin.x + THREE.MathUtils.randFloat(-5, 5) 
@@ -77,7 +76,7 @@ class MyFirework {
             )
 
             let color = new THREE.Color()
-            color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.9)
+            color.setHSL(THREE.MathUtils.randFloat( 0.1, 0.9 ), 1, 0.5)
             colors.push(color.r, color.g, color.b)
         }
         
