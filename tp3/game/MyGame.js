@@ -206,6 +206,13 @@ class MyGame {
     placeObstacle(index) {
         this.app.activateControls();
 
+        this.app.cameras['Perspective'].position.x = -30;
+        this.app.cameras['Perspective'].position.y = 110;
+        this.app.cameras['Perspective'].position.z = 20;
+        this.app.controls.target.x = -30;
+        this.app.controls.target.y = 0;
+        this.app.controls.target.z = 20;
+
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
