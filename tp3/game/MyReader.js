@@ -4,6 +4,7 @@ import { MyTrack } from "../elements/MyTrack.js";
 import { MyVehicle } from "../elements/MyVehicle.js";
 import { MyPowerUp } from "../elements/MyPowerUp.js";
 import { MyObstacle } from "../elements/MyObstacle.js";
+import { MyBillboard } from "../elements/MyBillboard.js";
 
 /**
  * This class contains the game elements
@@ -18,6 +19,7 @@ class MyReader {
         this.ground = null;
         this.poles = [];
         this.stadium = null;
+        this.billboard = null;
         this.playerPark = null;
         this.autoPark = null;
         this.obstaclePark = null;
@@ -39,6 +41,12 @@ class MyReader {
 
         if (this.stadium === null)
             this.createStadium();
+
+        if (this.billboard === null) {
+            this.billboard = new MyBillboard(15, 0, -55);
+            this.billboard.rotation.y = Math.PI / 5;
+            this.app.scene.add(this.billboard);
+        }
 
         if (this.playerPark === null && this.autoPark === null && this.obstaclePark === null)
             this.createParkingLots();
