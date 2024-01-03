@@ -31,7 +31,7 @@ class MyGame {
         this.startTime = 0;
         this.playerTime = 0;
         this.lapCooldown = 0;
-        this.maxLaps = 5;
+        this.maxLaps = 3;
         this.obstacles = [];
         this.pickingObstacle = false;
         this.route = null;
