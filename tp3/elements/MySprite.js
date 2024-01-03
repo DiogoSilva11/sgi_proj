@@ -1,6 +1,19 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains a sprite
+ */
 class MySprite {
+    /**
+     * constructor
+     * @param {string} text The text to be displayed
+     * @param {number} color The color of the text
+     * @param {number} pos The initial offset position of the text in the object
+     * @param {number} offset The offset between each character
+     * @param {number} scale The scale of the text
+     * @param {number} width The width of the text object
+     * @param {number} height The height of the text object
+     */
     constructor(text, color, pos, offset, scale, width, height) {
         this.text = text;
         this.color = color;
@@ -14,6 +27,10 @@ class MySprite {
         this.build();
     }
 
+    /**
+     * Builds the text object
+     * @returns {THREE.Group} The text object
+     */
     build() {
         const sprites = new THREE.Group();
         let x = this.pos;

@@ -1,7 +1,15 @@
 import * as THREE from 'three';
 import { MySprite } from '../elements/MySprite.js';
 
+/**
+ * This class contains the menu object
+ * @extends THREE.Group
+ */
 class MyMenu extends THREE.Group {
+    /**
+     * constructor
+     * @param {MyApp} app The application object
+     */
     constructor(app) {
         super();
         this.type = 'Group';
@@ -13,6 +21,9 @@ class MyMenu extends THREE.Group {
         this.start = null;
     }
 
+    /**
+     * Initializes the menu
+     */
     init() {
         let sprite = new MySprite('TURBO RACERS', 0xbd8b02, -0.2, 0.7, 1, 10, 2);
         let label = sprite.build();
@@ -45,6 +56,9 @@ class MyMenu extends THREE.Group {
         this.app.scene.add(this);
     }
 
+    /**
+     * Adds the necessary elements for the difficulty levels
+     */
     difficultyLevels() {
         let sprite = new MySprite('DIFFICULTY', 0xa35426, 0, 0.5, 0.7, 6, 1.2);
         let label = sprite.build();
@@ -55,6 +69,10 @@ class MyMenu extends THREE.Group {
         this.setDifficulty('normal');
     }
 
+    /**
+     * Sets the difficulty level
+     * @param {string} level The difficulty level
+     */
     setDifficulty(level) {
         if (this.normal !== null && this.hard !== null) {
             this.app.scene.remove(this.normal);
@@ -81,6 +99,9 @@ class MyMenu extends THREE.Group {
         this.add(this.hard);
     }
 
+    /**
+     * Adds the necessary elements for the car labels
+     */
     carLabels() {
         let sprite = new MySprite('Pick Your Car', 0x082996, 0, 0.4, 0.6, 7, 1.2);
         let label = sprite.build();
@@ -95,6 +116,9 @@ class MyMenu extends THREE.Group {
         this.add(label);
     }
 
+    /**
+     * Creates the input element
+     */
     createInput() {
         const sprite = new MySprite('Player Name', 0xbbbbbb, -0.2, 0.35, 0.6, 6, 1.6);
         const label = sprite.build();
@@ -117,10 +141,16 @@ class MyMenu extends THREE.Group {
         document.body.appendChild(this.input);
     }
 
+    /**
+     * Removes the input element
+     */
     removeInput() {
         document.body.removeChild(this.input);
     }
 
+    /**
+     * Adds the start label
+     */
     startLabel() {
         const sprite = new MySprite('Start', 0x089611, -0.05, 0.4, 0.7, 3.5, 1.2);
         this.start = sprite.build();

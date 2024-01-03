@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains an obstacle
+ */
 class MyObstacle {
+    /**
+     * Constructs the object
+     * @param {string} type The type of the obstacle
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} z The z coordinate
+     */
     constructor(type, x, y, z) {
         this.type = type;
         this.x = x;
@@ -12,6 +22,9 @@ class MyObstacle {
         this.buildObstacle();
     }
 
+    /**
+     * Builds the obstacle
+     */
     buildObstacle() {
         let texFile = null;
         switch (this.type) {
@@ -76,6 +89,9 @@ class MyObstacle {
         this.mesh.position.set(this.x, this.y + 1, this.z);
     }
 
+    /**
+     * Updates the obstacle
+     */
     update() {
         this.mesh.material.uniforms.time.value = performance.now() / 1000;
         this.mesh.rotation.y += 0.01;

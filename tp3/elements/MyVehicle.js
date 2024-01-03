@@ -1,7 +1,18 @@
 import * as THREE from 'three';
 import { MyPolygon } from './MyPolygon.js';
 
+/**
+ * This class contains a vehicle
+ * @extends THREE.Group
+ */
 class MyVehicle extends THREE.Group {
+    /**
+     * constructor
+     * @param {string} model The model of the vehicle
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} z The z coordinate
+     */
     constructor(model, x = 9, y = 0.6, z = 0) {
         super();
         this.type = 'Group';
@@ -28,6 +39,9 @@ class MyVehicle extends THREE.Group {
         this.buildVehicle();
     }
 
+    /**
+     * Creates the vehicle
+     */
     buildVehicle() {
         this.createStructure();
         this.createBars();
@@ -36,6 +50,9 @@ class MyVehicle extends THREE.Group {
         this.createLights();
     }
 
+    /**
+     * Creates the vehicle structure
+     */
     createStructure() {
         let texfile = null;
         let color = 0xffffff;
@@ -101,6 +118,10 @@ class MyVehicle extends THREE.Group {
         this.position.set(this.x, this.y, this.z);
     }
 
+    /**
+     * Adds a selected indicator to the vehicle
+     * @param {number} color The color of the selector
+     */
     addSelector(color) {
         const material = new THREE.MeshBasicMaterial({ color: color });
         const geometry = new THREE.SphereGeometry(0.3);
@@ -109,6 +130,9 @@ class MyVehicle extends THREE.Group {
         this.add(this.selector);
     }
 
+    /**
+     * Removes the selected indicator from the vehicle
+     */
     removeSelector() {
         if (this.selector !== null) {
             this.remove(this.selector);
@@ -116,6 +140,9 @@ class MyVehicle extends THREE.Group {
         }
     }
 
+    /**
+     * Creates the vehicle bars
+     */
     createBars() {
         this.bars = []
         const material = new THREE.MeshBasicMaterial({ color: 0x111111 });
@@ -161,6 +188,9 @@ class MyVehicle extends THREE.Group {
             this.roof.add(bar);
     }
 
+    /**
+     * Creates the vehicle windows
+     */
     createWindows() {
         this.windows = []
         const material = new THREE.MeshPhongMaterial({
@@ -210,6 +240,9 @@ class MyVehicle extends THREE.Group {
             this.roof.add(window);
     }
 
+    /**
+     * Creates the vehicle wheels
+     */
     createWheels() {
         this.wheels = []
         const texture = new THREE.TextureLoader().load("./images/tire.png");
@@ -240,6 +273,9 @@ class MyVehicle extends THREE.Group {
             this.body.add(wheel);
     }
 
+    /**
+     * Creates the vehicle lights
+     */
     createLights() {
         this.lights = []
         let material = new THREE.MeshBasicMaterial({ color: 0xfad961 });
@@ -290,26 +326,41 @@ class MyVehicle extends THREE.Group {
             this.body.add(light);
     }
 
+    /**
+     * Accelerates the vehicle, increasing its speed
+     */
     accelerate() {
         if (this.speed < this.maxSpeed) this.speed += 0.01;
     }
 
+    /**
+     * Decelerates the vehicle, decreasing its speed
+     */
     brake() {
         if (this.speed > this.minSpeed) this.speed -= 0.01;
     }
 
+    /**
+     * Turns the vehicle left
+     */
     turnLeft() {
         this.left = true;
         this.right = false;
         this.angleOffset = 8;
     }
 
+    /**
+     * Turns the vehicle right
+     */
     turnRight() {
         this.right = true;
         this.left = false;
         this.angleOffset = 8;
     }
 
+    /**
+     * Turns the vehicle left
+     */
     turnWheels() {
         if (!this.left && !this.right) {
             this.wheels[0].rotation.y = 0;
@@ -324,6 +375,9 @@ class MyVehicle extends THREE.Group {
         this.wheels[1].rotation.y = THREE.MathUtils.degToRad(value);
     }
 
+    /**
+     * Updates the vehicle lights
+     */
     updateLights() {
         if (this.model == "Crimson Comet" || this.model == "Blood Bullet" || this.model == "Flame Cruiser") return;
 
@@ -336,10 +390,21 @@ class MyVehicle extends THREE.Group {
         this.lights[3].lightHelper1 = new THREE.SpotLightHelper(this.lights[3]);
     }
 
+    /**
+     * Checks if the vehicle is colliding with a given position
+     * @param {number} x The x coordinate
+     * @param {number} z The z coordinate
+     * @returns {boolean} True if the vehicle is colliding with the given position, false otherwise
+     */
     checkCollision(x, z) {
         return (Math.abs(this.position.x - x) < 1 && Math.abs(this.position.z - z) < 1);
     }
     
+    /**
+     * Acts upon a vehicle collision with another vehicle
+     * @param {number} x The x coordinate
+     * @param {number} z The z coordinate
+     */
     collide(x, z) {
         const avoidanceDistance = 1.5;
         const moveX = this.position.x < x ? -avoidanceDistance : avoidanceDistance;
@@ -352,6 +417,9 @@ class MyVehicle extends THREE.Group {
         this.updateLights();
     }
 
+    /**
+     * Applies a special effect (power up or obstacle) to the vehicle
+     */
     applySpecialEffect() {
         switch (this.specialEffect) {
             case 'Speed':
@@ -411,6 +479,9 @@ class MyVehicle extends THREE.Group {
         }
     }
 
+    /**
+     * Updates the vehicle
+     */
     update() {
         this.applySpecialEffect();
         if (this.block) return;

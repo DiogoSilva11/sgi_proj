@@ -1,7 +1,24 @@
 import * as THREE from 'three';
 
-// MyTriangle class, which extends the BufferGeometry class
+/** 
+ * This class contains a triangle
+ * @extends THREE.BufferGeometry
+ */
 class MyTriangle extends THREE.BufferGeometry {
+	/**
+	 * constructor
+	 * @param {number} x1 The x coordinate of the first vertex
+	 * @param {number} y1 The y coordinate of the first vertex
+	 * @param {number} z1 The z coordinate of the first vertex
+	 * @param {number} x2 The x coordinate of the second vertex
+	 * @param {number} y2 The y coordinate of the second vertex
+	 * @param {number} z2 The z coordinate of the second vertex
+	 * @param {number} x3 The x coordinate of the third vertex
+	 * @param {number} y3 The y coordinate of the third vertex
+	 * @param {number} z3 The z coordinate of the third vertex
+	 * @param {number} afs The horizontal texture scale factor
+	 * @param {number} aft The vertical texture scale factor
+	 */
 	constructor(x1, y1, z1, x2, y2, z2, x3, y3, z3, afs = 1, aft = 1) {
 		super()
         this.p1 = new THREE.Vector3(x1, y1, z1)

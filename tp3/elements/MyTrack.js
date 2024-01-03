@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains the track object
+ * @extends THREE.Group
+ */
 class MyTrack extends THREE.Group {
+    /**
+     * constructor
+     * @param {THREE.CatmullRomCurve3} path The points that define the curve
+     * @param {number} segments The number of segments of the curve
+     * @param {number} width The width of the curve
+     */
     constructor(path, segments = 1000, width = 5) {
         super();
         this.type = 'Group';
@@ -18,6 +28,9 @@ class MyTrack extends THREE.Group {
         this.position.y -= 0.5;
     }
 
+    /**
+     * Creates the finish line
+     */
     buildFinishLine() {
         let material = new THREE.MeshPhongMaterial({ color: 0x000000 });
         let geometry = new THREE.CylinderGeometry(0.1, 0.1, 4);
@@ -49,26 +62,6 @@ class MyTrack extends THREE.Group {
     buildCurve() {
         this.createCurveMaterialsTextures();
         this.createCurveObjects();
-    }
-
-    generateList(startX, endX, startZ, endZ) {
-        const list = [];
-        const xDiff = Math.abs(endX - startX);
-        const zDiff = Math.abs(endZ - startZ);
-        const steps = Math.max(xDiff, zDiff);
-      
-        let currentX = startX;
-        let currentZ = startZ;
-        const xStep = xDiff !== 0 ? (endX - startX) / steps : 0;
-        const zStep = zDiff !== 0 ? (endZ - startZ) / steps : 0;
-      
-        for (let i = 0; i <= steps; i++) {
-            list.push({ x: Math.round(currentX), z: Math.round(currentZ) });
-            currentX += xStep;
-            currentZ += zStep;
-        }
-      
-        return list;
     }
 
     /**

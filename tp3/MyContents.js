@@ -29,6 +29,9 @@ class MyContents {
     this.app.scene.add(ambientLight);
   }
 
+  /**
+   * creates the skybox
+   */
   createSkybox() {
     const geometry = new THREE.BoxGeometry(1000, 1000, 1000);
     let texture = new THREE.CubeTextureLoader().load([

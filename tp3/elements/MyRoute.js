@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains the automated car route
+ */
 class MyRoute {
+    /**
+     * constructor
+     * @param {MyApp} app The application object
+     * @param {string} difficulty The race difficulty level
+     */
     constructor(app, difficulty) {
         this.app = app;
         this.difficulty = difficulty;
@@ -47,6 +55,11 @@ class MyRoute {
         this.app.scene.add(tubeMesh)
     }
 
+    /**
+     * Generate times for the animation
+     * @param {Array} durations
+     * @returns {Array} times
+     */
     generateTimes(durations) {
         let times = [];
         let sum = 0;
@@ -57,6 +70,10 @@ class MyRoute {
         return times;
     }
 
+    /**
+     * Play the animation
+     * @param {THREE.Group} car
+     */
     playAnimation(car) {
         let times = [];
         if (this.difficulty === 'normal') times = this.generateTimes([0, 4, 3, 3, 2, 2, 2, 2, 4]);
@@ -155,6 +172,9 @@ class MyRoute {
         }
     }
 
+    /**
+     * Update the animation
+     */
     update() {
         if (this.mixer !== undefined) {
             const delta = this.clock.getDelta()

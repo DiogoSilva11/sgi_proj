@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 
+/**
+ * This class contains a parking lot
+ * @extends THREE.Group
+ */
 class MyParkingLot extends THREE.Group {
+    /**
+     * constructor
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} z The z coordinate
+     */
     constructor(x, y, z) {
         super();
         this.type = 'Group';
@@ -11,6 +21,9 @@ class MyParkingLot extends THREE.Group {
         this.rotation.y = Math.PI / 8;
     }
 
+    /**
+     * Creates the parking lot
+     */
     createParkingLot() {
         const material = new THREE.MeshPhongMaterial({
             color: 0x000000,

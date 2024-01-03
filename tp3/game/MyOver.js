@@ -2,7 +2,18 @@ import * as THREE from 'three';
 import { MySprite } from '../elements/MySprite.js';
 import { MyFirework } from '../elements/MyFirework.js';
 
+/**
+ * This class contains the game over menu
+ * @extends THREE.Group
+ */
 class MyOver extends THREE.Group {
+    /**
+     * constructor
+     * @param {MyApp} app The application object
+     * @param {string} difficulty The difficulty level
+     * @param {number} playerTime The player time
+     * @param {number} autoTime The auto time
+     */
     constructor(app, difficulty, playerTime, autoTime) {
         super();
         this.type = 'Group';
@@ -18,6 +29,9 @@ class MyOver extends THREE.Group {
         this.returnMenu = null;
     }
 
+    /**
+     * Initializes the game over menu
+     */
     init() {
         this.difficultyLabels();
         this.timeLabels();
@@ -27,6 +41,9 @@ class MyOver extends THREE.Group {
         this.app.scene.add(this);
     }
 
+    /**
+     * Adds the necessary elements for the difficulty levels
+     */
     difficultyLabels() {
         let sprite = new MySprite('DIFFICULTY', 0xa35426, 0, 0.5, 0.7, 6, 1.2);
         let label = sprite.build();
@@ -44,6 +61,9 @@ class MyOver extends THREE.Group {
         this.add(label);
     }
 
+    /**
+     * Adds the necessary elements for the time labels
+     */
     timeLabels() {
         let sprite = new MySprite('Time: ' + this.playerTime + ' s', 0x999999, 0.2, 0.3, 0.5, 5, 1.2);
         let label = sprite.build();
@@ -58,6 +78,9 @@ class MyOver extends THREE.Group {
         this.add(label);
     }
 
+    /**
+     * Adds the necessary elements for the result labels
+     */
     resultLabels() {
         let sprite = null;
         let x = 0;
@@ -95,6 +118,9 @@ class MyOver extends THREE.Group {
         this.add(label);
     }
 
+    /**
+     * Adds the restart and return to menu buttons
+     */
     buttons() {
         let sprite = new MySprite('Restart', 0x999999, 0, 0.35, 0.6, 4, 1.2);
         this.restart = sprite.build();
@@ -109,6 +135,9 @@ class MyOver extends THREE.Group {
         this.add(this.returnMenu);
     }
 
+    /**
+     * Updates the game over menu
+     */
     update() {
         // add new fireworks every 20% of the calls
         if (Math.random() < 0.20) {

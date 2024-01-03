@@ -5,7 +5,14 @@ import { MyOver } from "./MyOver.js";
 import { MyRoute } from "../elements/MyRoute.js";
 import { MyObstacle } from "../elements/MyObstacle.js";
 
+/**
+ * This class contains the game logic
+ */
 class MyGame {
+    /**
+     * constructor
+     * @param {MyApp} app
+     */
     constructor(app) {
         this.app = app;
         this.reader = null;
@@ -24,12 +31,15 @@ class MyGame {
         this.startTime = 0;
         this.playerTime = 0;
         this.lapCooldown = 0;
-        this.maxLaps = 3;
+        this.maxLaps = 5;
         this.obstacles = [];
         this.pickingObstacle = false;
         this.route = null;
     }
 
+    /**
+     * Initializes the game
+     */
     init() {
         this.reader = new MyReader(this.app);
         this.reader.init();
@@ -37,6 +47,9 @@ class MyGame {
         this.mainMenu();
     }
 
+    /**
+     * Handles the game's main menu logic
+     */
     mainMenu() {
         this.state = 'menu';
         this.app.cameras['Perspective'].position.set(-100, 10, 50);
@@ -117,6 +130,9 @@ class MyGame {
         };
     }
 
+    /**
+     * Handles the game's gameplay logic
+     */
     gameplay() {
         if (this.route === null)
             this.route = new MyRoute(this.app, this.difficulty);
@@ -172,6 +188,9 @@ class MyGame {
         document.addEventListener('keydown', this.gameListener);
     }
 
+    /**
+     * Handles obstacle selection logic
+     */
     pickObstacle() {
         this.paused = true;
         this.route.clock.stop();
@@ -203,6 +222,10 @@ class MyGame {
         document.addEventListener('click', pickListener);
     }
 
+    /**
+     * Handles obstacle placement logic
+     * @param {number} index The index of the obstacle to be placed
+     */
     placeObstacle(index) {
         this.app.activateControls();
 
@@ -237,6 +260,9 @@ class MyGame {
         document.addEventListener('click', this.placeListener);
     }
 
+    /**
+     * Handles the game's end logic
+     */
     endGameplay() {
         document.removeEventListener('keydown', this.accelerateListener);
         document.removeEventListener('keydown', this.brakeListener);
@@ -267,6 +293,9 @@ class MyGame {
         this.gameOver();
     }
 
+    /**
+     * Handles the game's final menu logic
+     */
     gameOver() {
         this.state = 'over';
         this.app.cameras['Perspective'].position.set(-100, 10, 50);
@@ -351,6 +380,9 @@ class MyGame {
         document.addEventListener('click', this.restartListener);
     }
 
+    /**
+     * Initializes the game's HUD
+     */
     createHUD() {
         this.controlsElement = document.createElement('div');
         this.controlsElement.style.position = 'absolute';
@@ -486,6 +518,9 @@ class MyGame {
         document.body.appendChild(this.extraElement);
     }
 
+    /**
+     * Updates the game's HUD
+     */
     updateHUD() {
         this.statusElement.innerText = this.paused ? '[STATUS] Paused' : '[STATUS] Running';
         this.lapsElement.innerText = '[LAPS] ' + this.playerCar.laps + ' / ' + this.maxLaps;
@@ -525,6 +560,9 @@ class MyGame {
         }
     }
 
+    /**
+     * Deletes the game's HUD
+     */
     deleteHUD() {
         document.body.removeChild(this.controlsElement);
         document.body.removeChild(this.statusElement);
@@ -537,6 +575,9 @@ class MyGame {
         if (this.extraElement !== null) document.body.removeChild(this.extraElement);
     }
 
+    /**
+     * Makes the camera follow the player's car
+     */
     followCar() {
         this.app.controls.target.x = this.playerCar.position.x;
         this.app.controls.target.y = this.playerCar.position.y;
@@ -547,6 +588,9 @@ class MyGame {
         this.app.cameras['Perspective'].position.z = this.playerCar.position.z - 10;
     }
 
+    /**
+     * Checks if the player's car is off track
+     */
     offTrack() {
         let x = this.playerCar.position.x;
         let z = this.playerCar.position.z;
@@ -573,6 +617,9 @@ class MyGame {
         }
     }
 
+    /**
+     * Checks if the player's car has completed a lap
+     */
     lapCompleted() {
         const finishLine = Math.abs(this.playerCar.position.x) < 5 && Math.abs(this.playerCar.position.z) < 1;
         if (finishLine && Math.floor(this.lapCooldown / 1000) > 10) {
@@ -581,6 +628,9 @@ class MyGame {
         }
     }
 
+    /**
+     * Checks if the player's car has collided with a power-up or obstacle
+     */
     specialEffect() {
         if (this.playerCar.specialEffectTimer === 0) {
             for (const powerUp of this.reader.powerUps) {
@@ -602,6 +652,9 @@ class MyGame {
         }
     }
 
+    /**
+     * Updates the game logic
+     */
     update() {
         if (this.state === 'menu') {
             if (this.playerName != null && this.playerName != '' && this.playerCar !== null

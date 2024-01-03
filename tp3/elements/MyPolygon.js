@@ -1,8 +1,19 @@
 import * as THREE from 'three';
 import { MyTriangle } from './MyTriangle.js';
 
-// MyPolygon class, which extends the BufferGeometry class
+/**  
+ * This class contains a polygon
+ * @extends THREE.BufferGeometry
+ */
 class MyPolygon extends THREE.BufferGeometry {
+    /**
+     * constructor
+     * @param {number} radius The radius of the polygon
+     * @param {number} stacks The number of stacks
+     * @param {number} slices The number of slices
+     * @param {string} centerColor The center color
+     * @param {string} peripheryColor The periphery color
+     */
     constructor(radius, stacks, slices, centerColor, peripheryColor) {
         super()
         this.radius = radius

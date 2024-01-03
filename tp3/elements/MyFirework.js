@@ -1,6 +1,14 @@
 import * as THREE from 'three'
 
+/**
+ * This class contains the firework object
+ */
 class MyFirework {
+    /**
+     * constructor
+     * @param {*} parent 
+     * @param {THREE.Vector3} origin 
+     */
     constructor(parent, origin) {
         this.parent = parent
         this.origin = origin

@@ -5,7 +5,14 @@ import { MyVehicle } from "../elements/MyVehicle.js";
 import { MyPowerUp } from "../elements/MyPowerUp.js";
 import { MyObstacle } from "../elements/MyObstacle.js";
 
+/**
+ * This class contains the game elements
+ */
 class MyReader {
+    /**
+     * constructor
+     * @param {MyApp} app The application object
+     */
     constructor(app) {
         this.app = app;
         this.ground = null;
@@ -18,9 +25,11 @@ class MyReader {
         this.track = null;
         this.powerUps = [];
         this.obstacles = [];
-        this.route = null;
     }
 
+    /**
+     * Initializes the game elements
+     */
     init() {
         if (this.ground === null)
             this.createGround();
@@ -60,6 +69,9 @@ class MyReader {
             this.createObstacles();
     }
 
+    /**
+     * Creates the ground
+     */
     createGround() {
         const geometry = new THREE.PlaneGeometry(1000, 1000);
         let texture = new THREE.TextureLoader().load("./images/grass.jpg");
@@ -73,6 +85,9 @@ class MyReader {
         this.app.scene.add(this.ground);
     }
 
+    /**
+     * Creates the lights and light poles
+     */
     createLights() {
         let light = new THREE.PointLight(0xffffff, 1000, 400);
         light.position.set(-30, 70, 10);
@@ -123,6 +138,13 @@ class MyReader {
             this.app.scene.add(pole);
     }
 
+    /**
+     * Creates a light pole
+     * @param {number} x The x coordinate
+     * @param {number} y The y coordinate
+     * @param {number} z The z coordinate
+     * @returns {THREE.Object3D} The light pole
+     */
     createPole(x, y, z) {
         let material = new THREE.MeshPhongMaterial({ color: 0x000000 });
         let sourceMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -145,6 +167,9 @@ class MyReader {
         return pole;
     }
 
+    /**
+     * Creates the stadium
+     */
     createStadium() {
         this.stadium = new THREE.Group();
 
@@ -169,6 +194,9 @@ class MyReader {
         this.app.scene.add(this.stadium);
     }
 
+    /**
+     * Creates the parking lots
+     */
     createParkingLots() {
         this.playerPark = new MyParkingLot(-85, 0, 20);
         this.app.scene.add(this.playerPark);
@@ -181,6 +209,9 @@ class MyReader {
         this.app.scene.add(this.obstaclePark);
     }
 
+    /**
+     * Creates the cars
+     */
     createCars() {
         let car = new MyVehicle("Aquamarine", -88, 0.4, 17);
         car.rotation.y = Math.PI / 2;
@@ -222,6 +253,9 @@ class MyReader {
             this.app.scene.add(car);
     }
 
+    /**
+     * Creates the power ups
+     */
     createPowerUps() {
         let powerUp = new MyPowerUp('Speed', 2, 0, 80);
         powerUp.mesh.rotation.x = - Math.PI / 2;
@@ -235,6 +269,9 @@ class MyReader {
             this.app.scene.add(powerUp.mesh);
     }
 
+    /**
+     * Creates the obstacles
+     */
     createObstacles() {
         let obstacle = new MyObstacle('Slow', -55, 0, 86);
         this.obstacles.push(obstacle);
